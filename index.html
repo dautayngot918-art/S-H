@@ -11,28 +11,29 @@
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
 
-    <!-- ================= HEADER & TABS ================= -->
-    <header class="bg-blue-900 text-white shadow-md">
-        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+    <!-- ================= HEADER & TABS (CỐ ĐỊNH KHI CUỘN) ================= -->
+    <header class="bg-blue-900 text-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-notes-medical text-2xl text-blue-400"></i>
                 <span class="text-xl font-bold tracking-wide">Nursing Research Tracker</span>
             </div>
-            
-            <!-- Tab Navigation -->
-            <div class="flex space-x-2 bg-blue-950 p-1 rounded-xl">
-                <button onclick="switchTab('home')" id="tabHome" class="px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow">
-                    <i class="fa-solid fa-house mr-1.5"></i> Trang chủ
-                </button>
-                <button onclick="switchTab('overview')" id="tabOverview" class="px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white">
-                    <i class="fa-solid fa-chart-pie mr-1.5"></i> Tổng quan
-                </button>
-            </div>
 
+            <!-- Avatar chữ cái viết tắt tự động theo họ tên, nằm trên cùng bên phải ngang hàng -->
             <div class="flex items-center space-x-4">
-                <span class="text-xs bg-blue-800 text-blue-100 px-3 py-1.5 rounded-full font-medium shadow-inner">Vai trò: Quản lý / Mentor</span>
-                <img src="https://ui-avatars.com/api/?name=Pham+Thi+Le+Thuong&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border-2 border-white shadow" alt="Avatar">
+                <div id="userAvatar" class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold flex items-center justify-center border-2 border-white shadow text-sm">
+                    PT
+                </div>
             </div>
+        </div>
+        <!-- Thanh Tab chuyển đổi -->
+        <div class="bg-blue-950 px-6 py-2 border-t border-blue-800 flex justify-center space-x-2">
+            <button onclick="switchTab('home')" id="tabHome" class="px-4 py-1.5 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow">
+                <i class="fa-solid fa-house mr-1.5"></i> Trang chủ
+            </button>
+            <button onclick="switchTab('overview')" id="tabOverview" class="px-4 py-1.5 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white">
+                <i class="fa-solid fa-chart-pie mr-1.5"></i> Tổng quan
+            </button>
         </div>
     </header>
 
@@ -205,11 +206,23 @@
                     <input type="text" id="editDepartment" list="deptList" placeholder="Chọn hoặc nhập khoa..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
                     <datalist id="deptList">
                         <option value="Khoa Gây mê - Hồi sức">
-                        <option value="Khoa Cấp cứu">
                         <option value="Khoa Hồi sức tích cực (ICU)">
-                        <option value="Khoa Nội tổng quát">
-                        <option value="Khoa Ngoại tổng quát">
+                        <option value="Khoa Cấp cứu">
+                        <option value="Khoa Nội tổng hợp">
+                        <option value="Khoa Ngoại tổng hợp">
+                        <option value="Khoa Ngoại tiêu hóa">
+                        <option value="Khoa Ngoại tiết niệu">
+                        <option value="Khoa Ngoại thần kinh">
+                        <option value="Khoa Thần kinh">
+                        <option value="Khoa Tim mạch can thiệp">
                         <option value="Khoa Phẫu thuật tim mạch">
+                        <option value="Khoa Hô hấp">
+                        <option value="Khoa Tiêu hóa">
+                        <option value="Khoa Thận - Lọc thận">
+                        <option value="Khoa Chấn thương chỉnh hình">
+                        <option value="Khoa Ung bướu">
+                        <option value="Khoa Nhi">
+                        <option value="Khoa Phụ sản">
                         <option value="Khoa Khám bệnh">
                         <option value="Phòng Điều dưỡng">
                     </datalist>
@@ -220,11 +233,25 @@
                     <datalist id="hospList">
                         <option value="Bệnh viện Đại học Y Dược TPHCM">
                         <option value="Bệnh viện Chợ Rẫy">
-                        <option value="Bệnh viện Nhân dân 115">
-                        <option value="Bệnh viện Nhân dân Gia Định">
+                        <option value="Bệnh viện 175 (Bệnh viện Quân y 175)">
+                        <option value="Bệnh viện Trung ương Quân đội 108">
                         <option value="Bệnh viện Bạch Mai">
                         <option value="Bệnh viện Việt Đức">
+                        <option value="Bệnh viện Nguyễn Trãi">
+                        <option value="Bệnh viện 7A">
+                        <option value="Bệnh viện Nhân dân 115">
+                        <option value="Bệnh viện Nhân dân Gia Định">
+                        <option value="Bệnh viện Từ Dũ">
+                        <option value="Bệnh viện Hùng Vương">
+                        <option value="Bệnh viện Nhi Đồng 1">
+                        <option value="Bệnh viện Nhi Đồng 2">
+                        <option value="Bệnh viện Nhi Đồng Thành Phố">
+                        <option value="Bệnh viện Ung Bướu TPHCM">
+                        <option value="Bệnh viện Tim Tâm Đức">
+                        <option value="Bệnh viện Thống Nhất">
+                        <option value="Bệnh viện Trưng Vương">
                         <option value="Bệnh viện Trung ương Huế">
+                        <option value="Bệnh viện K Trung ương">
                     </datalist>
                 </div>
             </div>
@@ -361,7 +388,6 @@
 
     <!-- ================= JAVASCRIPT & LOGIC ================= -->
     <script>
-        // Dữ liệu Hồ sơ cá nhân mặc định (đã tách Khoa và Bệnh viện riêng)
         const defaultProfile = {
             name: "Phạm Thị Lê Thương",
             dob: "15/07/1990",
@@ -373,6 +399,19 @@
 
         let userProfile = JSON.parse(localStorage.getItem('nursing_user_profile')) || defaultProfile;
 
+        // Hàm tự động tạo chữ viết tắt từ Họ và tên (ví dụ: Phạm Thị Lê Thương -> PT)
+        function updateAvatarInitials(fullName) {
+            if (!fullName) return "PT";
+            const words = fullName.trim().split(/\s+/);
+            if (words.length === 1) {
+                return words[0].substring(0, 2).toUpperCase();
+            }
+            // Lấy chữ cái đầu của từ đầu tiên và từ cuối cùng
+            const firstChar = words[0].charAt(0);
+            const lastChar = words[words.length - 1].charAt(0);
+            return (firstChar + lastChar).toUpperCase();
+        }
+
         function loadProfileToUI() {
             document.getElementById('displayName').innerText = userProfile.name;
             document.getElementById('displayDegree').innerText = userProfile.degree.includes('Thạc sĩ') ? 'Thạc sĩ' : (userProfile.degree.includes('Tiến sĩ') ? 'Tiến sĩ' : userProfile.degree);
@@ -383,6 +422,9 @@
             document.getElementById('profileGradYear').innerText = userProfile.gradYear;
             document.getElementById('profileDepartment').innerText = userProfile.department;
             document.getElementById('profileHospital').innerText = userProfile.hospital;
+
+            // Cập nhật chữ viết tắt avatar trên góc phải
+            document.getElementById('userAvatar').innerText = updateAvatarInitials(userProfile.name);
         }
 
         function openProfileModal() {
@@ -440,13 +482,13 @@
             if (tabName === 'home') {
                 homeSec.classList.remove('hidden');
                 overviewSec.classList.add('hidden');
-                tabHome.className = "px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow";
-                tabOverview.className = "px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white";
+                tabHome.className = "px-4 py-1.5 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow";
+                tabOverview.className = "px-4 py-1.5 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white";
             } else {
                 homeSec.classList.add('hidden');
                 overviewSec.classList.remove('hidden');
-                tabOverview.className = "px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow";
-                tabHome.className = "px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white";
+                tabOverview.className = "px-4 py-1.5 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow";
+                tabHome.className = "px-4 py-1.5 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white";
             }
         }
 
