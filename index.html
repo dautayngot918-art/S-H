@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Công bố Khoa học - Điều dưỡng Sau đại học</title>
+    <!-- Tailwind CSS CDN - Giúp style giao diện nhanh chóng, đẹp mắt không cần file CSS cồng kềnh -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons - Thư viện icon chuẩn quốc tế cho y tế và công nghệ -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <!-- ================= 1. HEADER THANH ĐIỀU HƯỚNG ================= -->
+    <header class="bg-blue-900 text-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-notes-medical text-2xl text-blue-400"></i>
+                <span class="text-xl font-bold tracking-wide">Nursing Research Tracker</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-xs bg-blue-800 text-blue-100 px-3 py-1.5 rounded-full font-medium shadow-inner">Vai trò: Quản lý / Mentor</span>
+                <!-- Sử dụng UI Avatars để tạo avatar tự động chuyên nghiệp -->
+                <img src="https://ui-avatars.com/api/?name=Pham+Thi+Le+Thuong&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border-2 border-white shadow" alt="Avatar">
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= 2. MAIN CONTAINER ================= -->
+    <main class="container mx-auto px-6 py-8">
+
+        <!-- Page Header & Action Button -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Tổng quan Tiến độ Công bố Khoa học</h1>
+                <p class="text-sm text-slate-500 mt-1">Hệ thống chuẩn hóa quy trình từ đề cương đến xuất bản bài báo cho điều dưỡng sau đại học[cite: 1].</p>
+            </div>
+            <button onclick="alert('Mở modal thêm đề tài mới (sẽ xây dựng ở bước tiếp theo)')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm transition flex items-center space-x-2">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm đề tài mới</span>
+            </button>
+        </div>
+
+        <!-- ================= 3. DASHBOARD STATS CARDS (4 THẺ THỐNG KÊ) ================= -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Thẻ 1: Tổng số đề tài -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tổng số đề tài</p>
+                    <h3 class="text-2xl font-bold text-slate-800 mt-1">12</h3>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+            </div>
+            <!-- Thẻ 2: Đang viết bản thảo -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đang viết Bản thảo</p>
+                    <h3 class="text-2xl font-bold text-amber-600 mt-1">4</h3>
+                </div>
+                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                    <i class="fa-solid fa-pen-nib"></i>
+                </div>
+            </div>
+            <!-- Thẻ 3: Đã nộp -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đã nộp (Submitted)</p>
+                    <h3 class="text-2xl font-bold text-indigo-600 mt-1">3</h3>
+                </div>
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+            </div>
+            <!-- Thẻ 4: Cảnh báo chậm trễ -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Cảnh báo chậm trễ</p>
+                    <h3 class="text-2xl font-bold text-rose-600 mt-1">2</h3>
+                </div>
+                <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 4. PROJECT TRACKING TABLE (BẢNG THEO DÕI TIẾN ĐỘ) ================= -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h3 class="font-bold text-slate-800">Danh sách Đề tài & Trạng thái Tiến độ</h3>
+                <span class="text-xs text-slate-400 font-medium"><i class="fa-solid fa-rotate mr-1"></i> Đồng bộ thời gian thực</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
+                            <th class="py-3 px-6">Học viên / Đề tài nghiên cứu</th>
+                            <th class="py-3 px-6">Giai đoạn hiện tại</th>
+                            <th class="py-3 px-6">Hạn chót (Deadline)</th>
+                            <th class="py-3 px-6">Trạng thái rủi ro</th>
+                            <th class="py-3 px-6 text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm">
+                        <!-- Dòng dữ liệu mẫu số 1 (Đề tài an toàn) -->
+                        <tr class="hover:bg-slate-50/80 transition">
+                            <td class="py-4 px-6">
+                                <div class="font-semibold text-slate-900">Đánh giá tuân thủ tư thế người bệnh ICU</div>
+                                <div class="text-xs text-slate-500 mt-0.5">HV: Nguyễn Văn A • Mentor: ThS. Thương</div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-blue-100">Viết Bản thảo (Manuscript)</span>
+                            </td>
+                            <td class="py-4 px-6 text-slate-600 font-medium">30/11/2026</td>
+                            <td class="py-4 px-6">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span> An toàn (🟢)
+                                </span>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <button onclick="alert('Mở chi tiết đề tài số 1')" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">Chi tiết</button>
+                            </td>
+                        </tr>
+                        <!-- Dòng dữ liệu mẫu số 2 (Đề tài trễ hạn) -->
+                        <tr class="hover:bg-slate-50/80 transition">
+                            <td class="py-4 px-6">
+                                <div class="font-semibold text-slate-900">Khảo sát gánh nặng chăm sóc ở điều dưỡng</div>
+                                <div class="text-xs text-slate-500 mt-0.5">HV: Trần Thị B • Mentor: TS. C</div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <span class="bg-purple-50 text-purple-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-purple-100">Phân tích dữ liệu</span>
+                            </td>
+                            <td class="py-4 px-6 text-slate-600 font-medium">20/10/2026</td>
+                            <td class="py-4 px-6">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
+                                    <span class="w-1.5 h-1.5 mr-1.5 bg-rose-500 rounded-full"></span> Trễ hạn (🔴)
+                                </span>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <button onclick="alert('Mở chi tiết đề tài số 2')" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">Chi tiết</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
