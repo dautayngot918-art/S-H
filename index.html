@@ -42,8 +42,8 @@
             <!-- Lời chào động & Thông tin định danh -->
             <div class="border-b border-slate-100 pb-6">
                 <h2 id="greetingText" class="text-2xl font-bold text-slate-900">Xin chào...</h2>
-                <p id="profileDegreeDisplay" class="text-lg font-semibold text-blue-600 mt-1">Thạc sĩ</p>
-                <p id="profileNameDisplay" class="text-xl font-bold text-slate-800 mt-0.5">Phạm Thị Lê Thương</p>
+                <p id="displayDegree" class="text-lg font-semibold text-blue-600 mt-1">Thạc sĩ</p>
+                <p id="displayName" class="text-xl font-bold text-slate-800 mt-0.5">Phạm Thị Lê Thương</p>
             </div>
 
             <!-- Khung Hồ sơ cá nhân -->
@@ -54,7 +54,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-6 rounded-xl border border-slate-100">
                     <div>
                         <span class="block text-xs font-semibold text-slate-400 uppercase">Họ và tên đầy đủ</span>
-                        <p id="profileFullName" class="text-sm font-semibold text-slate-800 mt-1">Phạm Thị Lê Thương</p>
+                        <p id="profileName" class="text-sm font-semibold text-slate-800 mt-1">Phạm Thị Lê Thương</p>
                     </div>
                     <div>
                         <span class="block text-xs font-semibold text-slate-400 uppercase">Ngày tháng năm sinh</span>
@@ -74,11 +74,11 @@
                     </div>
                 </div>
 
-                <!-- Khung bấm để điều chỉnh hồ sơ cá nhân -->
-                <div class="flex justify-end pt-2">
-                    <button onclick="openProfileModal()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-4 py-2.5 rounded-xl text-sm font-medium transition flex items-center space-x-2 shadow-sm">
+                <!-- Nút Cập nhật canh trái -->
+                <div class="flex justify-start pt-2">
+                    <button onclick="openProfileModal()" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 border border-blue-200">
                         <i class="fa-solid fa-pen-to-square"></i>
-                        <span>Điều chỉnh hồ sơ cá nhân</span>
+                        <span>Cập nhật</span>
                     </button>
                 </div>
             </div>
@@ -172,24 +172,24 @@
 
     </main>
 
-    <!-- ================= MODAL: ĐIỀU CHỈNH HỒ SƠ CÁ NHÂN ================= -->
+    <!-- ================= MODAL: CẬP NHẬT HỒ SƠ CÁ NHÂN ================= -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col">
             <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Điều chỉnh hồ sơ cá nhân</h3>
+                <h3 class="font-bold text-slate-800">Cập nhật Hồ sơ cá nhân</h3>
                 <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="p-6 space-y-4">
+            <div class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Họ và tên đầy đủ</label>
-                    <input type="text" id="editFullName" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <input type="text" id="editName" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Ngày tháng năm sinh</label>
                     <input type="text" id="editDob" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Trình độ học vấn (Thạc sĩ / Tiến sĩ)</label>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Trình độ học vấn (Học vị)</label>
                     <input type="text" id="editDegree" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
@@ -225,7 +225,6 @@
                     <input type="text" id="inputStudent" placeholder="VD: Nguyễn Văn A" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                 </div>
                 
-                <!-- Phần Giảng viên hướng dẫn có tích hợp nút dấu "+" -->
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <label class="block text-xs font-semibold text-slate-600 uppercase">Giảng viên / Mentor hướng dẫn</label>
@@ -235,12 +234,10 @@
                     </div>
                     <input type="text" id="inputMentor1" placeholder="VD: ThS. Phạm Thị Lê Thương" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                     
-                    <!-- Khung mentor 2 (ẩn mặc định) -->
                     <div id="mentorField2" class="hidden">
                         <input type="text" id="inputMentor2" placeholder="Giảng viên / Mentor hướng dẫn 2" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                     </div>
 
-                    <!-- Khung mentor 3 (ẩn mặc định) -->
                     <div id="mentorField3" class="hidden">
                         <input type="text" id="inputMentor3" placeholder="Giảng viên / Mentor hướng dẫn 3" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                     </div>
@@ -337,7 +334,57 @@
 
     <!-- ================= JAVASCRIPT & LOGIC ================= -->
     <script>
-        // Thiết lập lời chào tự động theo thời gian thực
+        // Dữ liệu Hồ sơ cá nhân mặc định
+        const defaultProfile = {
+            name: "Phạm Thị Lê Thương",
+            dob: "15/07/1990",
+            degree: "Thạc sĩ / Học viên Sau đại học",
+            gradYear: "2024 (Dự kiến Tiến sĩ: 2028)",
+            department: "Khoa Gây mê - Hồi sức, Bệnh viện Đại học Y Dược TPHCM"
+        };
+
+        let userProfile = JSON.parse(localStorage.getItem('nursing_user_profile')) || defaultProfile;
+
+        function loadProfileToUI() {
+            document.getElementById('displayName').innerText = userProfile.name;
+            // Lấy từ khóa học vị đầu tiên để hiển thị ở dòng Thạc sĩ/Tiến sĩ
+            document.getElementById('displayDegree').innerText = userProfile.degree.includes('Thạc sĩ') ? 'Thạc sĩ' : (userProfile.degree.includes('Tiến sĩ') ? 'Tiến sĩ' : userProfile.degree);
+            
+            document.getElementById('profileName').innerText = userProfile.name;
+            document.getElementById('profileDob').innerText = userProfile.dob;
+            document.getElementById('profileDegree').innerText = userProfile.degree;
+            document.getElementById('profileGradYear').innerText = userProfile.gradYear;
+            document.getElementById('profileDepartment').innerText = userProfile.department;
+        }
+
+        function openProfileModal() {
+            document.getElementById('editName').value = userProfile.name;
+            document.getElementById('editDob').value = userProfile.dob;
+            document.getElementById('editDegree').value = userProfile.degree;
+            document.getElementById('editGradYear').value = userProfile.gradYear;
+            document.getElementById('editDepartment').value = userProfile.department;
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        function saveProfile() {
+            userProfile = {
+                name: document.getElementById('editName').value,
+                dob: document.getElementById('editDob').value,
+                degree: document.getElementById('editDegree').value,
+                gradYear: document.getElementById('editGradYear').value,
+                department: document.getElementById('editDepartment').value
+            };
+            localStorage.setItem('nursing_user_profile', JSON.stringify(userProfile));
+            loadProfileToUI();
+            closeProfileModal();
+            alert('Đã cập nhật hồ sơ cá nhân thành công!');
+        }
+
+        // Thiết lập lời chào tự động theo thời gian thực trên thiết bị
         function setDynamicGreeting() {
             const hour = new Date().getHours();
             let greeting = "Xin chào";
@@ -373,55 +420,6 @@
             }
         }
 
-        // Quản lý thông tin Hồ sơ cá nhân với localStorage
-        const defaultProfile = {
-            fullName: "Phạm Thị Lê Thương",
-            dob: "15/07/1990",
-            degree: "Thạc sĩ / Học viên Sau đại học",
-            gradYear: "2024 (Dự kiến Tiến sĩ: 2028)",
-            department: "Khoa Gây mê - Hồi sức, Bệnh viện Đại học Y Dược TPHCM"
-        };
-
-        let userProfile = JSON.parse(localStorage.getItem('nursing_research_user_profile')) || defaultProfile;
-
-        function loadProfileToUI() {
-            document.getElementById('profileNameDisplay').innerText = userProfile.fullName;
-            document.getElementById('profileDegreeDisplay').innerText = userProfile.degree.split('/')[0].trim();
-            document.getElementById('profileFullName').innerText = userProfile.fullName;
-            document.getElementById('profileDob').innerText = userProfile.dob;
-            document.getElementById('profileDegree').innerText = userProfile.degree;
-            document.getElementById('profileGradYear').innerText = userProfile.gradYear;
-            document.getElementById('profileDepartment').innerText = userProfile.department;
-        }
-
-        function openProfileModal() {
-            document.getElementById('editFullName').value = userProfile.fullName;
-            document.getElementById('editDob').value = userProfile.dob;
-            document.getElementById('editDegree').value = userProfile.degree;
-            document.getElementById('editGradYear').value = userProfile.gradYear;
-            document.getElementById('editDepartment').value = userProfile.department;
-            document.getElementById('profileModal').classList.remove('hidden');
-        }
-
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.add('hidden');
-        }
-
-        function saveProfile() {
-            userProfile = {
-                fullName: document.getElementById('editFullName').value.trim() || defaultProfile.fullName,
-                dob: document.getElementById('editDob').value.trim() || defaultProfile.dob,
-                degree: document.getElementById('editDegree').value.trim() || defaultProfile.degree,
-                gradYear: document.getElementById('editGradYear').value.trim() || defaultProfile.gradYear,
-                department: document.getElementById('editDepartment').value.trim() || defaultProfile.department
-            };
-            localStorage.setItem('nursing_research_user_profile', JSON.stringify(userProfile));
-            loadProfileToUI();
-            closeProfileModal();
-            alert('Đã cập nhật hồ sơ cá nhân thành công!');
-        }
-
-        // Quản lý Đề tài nghiên cứu
         const defaultProjects = [
             {
                 id: 1,
@@ -542,7 +540,7 @@
             }
 
             let mentorsArr = [m1, m2, m3].filter(Boolean);
-            let mentorString = mentorsArr.length > 0 ? mentorsArr.join(', ') : userProfile.fullName;
+            let mentorString = mentorsArr.length > 0 ? mentorsArr.join(', ') : 'ThS. Thương';
 
             projects.push({
                 id: Date.now(),
