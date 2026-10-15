@@ -48,9 +48,17 @@
 
             <!-- Khung Hồ sơ cá nhân -->
             <div class="space-y-4">
-                <h3 class="text-base font-bold text-slate-800 flex items-center">
-                    <i class="fa-solid fa-id-card text-blue-600 mr-2"></i> Hồ sơ cá nhân
-                </h3>
+                <!-- Tiêu đề và nút Cập nhật nằm cùng một hàng (Trái - Phải) -->
+                <div class="flex justify-between items-center">
+                    <h3 class="text-base font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-id-card text-blue-600 mr-2"></i> Hồ sơ cá nhân
+                    </h3>
+                    <button onclick="openProfileModal()" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 border border-blue-200">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Cập nhật</span>
+                    </button>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-6 rounded-xl border border-slate-100">
                     <div>
                         <span class="block text-xs font-semibold text-slate-400 uppercase">Họ và tên đầy đủ</span>
@@ -68,18 +76,14 @@
                         <span class="block text-xs font-semibold text-slate-400 uppercase">Năm tốt nghiệp</span>
                         <p id="profileGradYear" class="text-sm font-semibold text-slate-800 mt-1">2024 (Dự kiến Tiến sĩ: 2028)</p>
                     </div>
-                    <div class="md:col-span-2">
+                    <div>
                         <span class="block text-xs font-semibold text-slate-400 uppercase">Khoa làm việc</span>
-                        <p id="profileDepartment" class="text-sm font-semibold text-slate-800 mt-1">Khoa Gây mê - Hồi sức, Bệnh viện Đại học Y Dược TPHCM</p>
+                        <p id="profileDepartment" class="text-sm font-semibold text-slate-800 mt-1">Khoa Gây mê - Hồi sức</p>
                     </div>
-                </div>
-
-                <!-- Nút Cập nhật canh trái -->
-                <div class="flex justify-start pt-2">
-                    <button onclick="openProfileModal()" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 border border-blue-200">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        <span>Cập nhật</span>
-                    </button>
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-400 uppercase">Bệnh viện</span>
+                        <p id="profileHospital" class="text-sm font-semibold text-slate-800 mt-1">Bệnh viện Đại học Y Dược TPHCM</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -198,7 +202,30 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Khoa làm việc</label>
-                    <input type="text" id="editDepartment" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <input type="text" id="editDepartment" list="deptList" placeholder="Chọn hoặc nhập khoa..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                    <datalist id="deptList">
+                        <option value="Khoa Gây mê - Hồi sức">
+                        <option value="Khoa Cấp cứu">
+                        <option value="Khoa Hồi sức tích cực (ICU)">
+                        <option value="Khoa Nội tổng quát">
+                        <option value="Khoa Ngoại tổng quát">
+                        <option value="Khoa Phẫu thuật tim mạch">
+                        <option value="Khoa Khám bệnh">
+                        <option value="Phòng Điều dưỡng">
+                    </datalist>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Bệnh viện</label>
+                    <input type="text" id="editHospital" list="hospList" placeholder="Chọn hoặc nhập bệnh viện..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                    <datalist id="hospList">
+                        <option value="Bệnh viện Đại học Y Dược TPHCM">
+                        <option value="Bệnh viện Chợ Rẫy">
+                        <option value="Bệnh viện Nhân dân 115">
+                        <option value="Bệnh viện Nhân dân Gia Định">
+                        <option value="Bệnh viện Bạch Mai">
+                        <option value="Bệnh viện Việt Đức">
+                        <option value="Bệnh viện Trung ương Huế">
+                    </datalist>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
@@ -334,20 +361,20 @@
 
     <!-- ================= JAVASCRIPT & LOGIC ================= -->
     <script>
-        // Dữ liệu Hồ sơ cá nhân mặc định
+        // Dữ liệu Hồ sơ cá nhân mặc định (đã tách Khoa và Bệnh viện riêng)
         const defaultProfile = {
             name: "Phạm Thị Lê Thương",
             dob: "15/07/1990",
             degree: "Thạc sĩ / Học viên Sau đại học",
             gradYear: "2024 (Dự kiến Tiến sĩ: 2028)",
-            department: "Khoa Gây mê - Hồi sức, Bệnh viện Đại học Y Dược TPHCM"
+            department: "Khoa Gây mê - Hồi sức",
+            hospital: "Bệnh viện Đại học Y Dược TPHCM"
         };
 
         let userProfile = JSON.parse(localStorage.getItem('nursing_user_profile')) || defaultProfile;
 
         function loadProfileToUI() {
             document.getElementById('displayName').innerText = userProfile.name;
-            // Lấy từ khóa học vị đầu tiên để hiển thị ở dòng Thạc sĩ/Tiến sĩ
             document.getElementById('displayDegree').innerText = userProfile.degree.includes('Thạc sĩ') ? 'Thạc sĩ' : (userProfile.degree.includes('Tiến sĩ') ? 'Tiến sĩ' : userProfile.degree);
             
             document.getElementById('profileName').innerText = userProfile.name;
@@ -355,6 +382,7 @@
             document.getElementById('profileDegree').innerText = userProfile.degree;
             document.getElementById('profileGradYear').innerText = userProfile.gradYear;
             document.getElementById('profileDepartment').innerText = userProfile.department;
+            document.getElementById('profileHospital').innerText = userProfile.hospital;
         }
 
         function openProfileModal() {
@@ -363,6 +391,7 @@
             document.getElementById('editDegree').value = userProfile.degree;
             document.getElementById('editGradYear').value = userProfile.gradYear;
             document.getElementById('editDepartment').value = userProfile.department;
+            document.getElementById('editHospital').value = userProfile.hospital;
             document.getElementById('profileModal').classList.remove('hidden');
         }
 
@@ -376,7 +405,8 @@
                 dob: document.getElementById('editDob').value,
                 degree: document.getElementById('editDegree').value,
                 gradYear: document.getElementById('editGradYear').value,
-                department: document.getElementById('editDepartment').value
+                department: document.getElementById('editDepartment').value,
+                hospital: document.getElementById('editHospital').value
             };
             localStorage.setItem('nursing_user_profile', JSON.stringify(userProfile));
             loadProfileToUI();
