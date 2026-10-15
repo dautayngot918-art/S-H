@@ -14,19 +14,19 @@
     <!-- ================= HEADER & TABS (CỐ ĐỊNH KHI CUỘN) ================= -->
     <header class="bg-blue-900 text-white shadow-md sticky top-0 z-40">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo và tiêu đề, kết hợp Avatar chữ viết tắt ngang hàng bên phải -->
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-notes-medical text-2xl text-blue-400"></i>
                 <span class="text-xl font-bold tracking-wide">Nursing Research Tracker</span>
             </div>
 
-            <!-- Avatar chữ cái viết tắt tự động theo họ tên, nằm trên cùng bên phải ngang hàng -->
             <div class="flex items-center space-x-4">
-                <div id="userAvatar" class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold flex items-center justify-center border-2 border-white shadow text-sm">
+                <div id="userAvatarBadge" class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold flex items-center justify-center border-2 border-white shadow text-sm">
                     PT
                 </div>
             </div>
         </div>
-        <!-- Thanh Tab chuyển đổi -->
+        <!-- Thanh Tab điều hướng bên dưới trong header -->
         <div class="bg-blue-950 px-6 py-2 border-t border-blue-800 flex justify-center space-x-2">
             <button onclick="switchTab('home')" id="tabHome" class="px-4 py-1.5 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow">
                 <i class="fa-solid fa-house mr-1.5"></i> Trang chủ
@@ -203,27 +203,38 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Khoa làm việc</label>
-                    <input type="text" id="editDepartment" list="deptList" placeholder="Chọn hoặc nhập khoa..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                    <input type="text" id="editDepartment" list="deptList" placeholder="Chọn hoặc nhập khoa chuyên môn..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
                     <datalist id="deptList">
+                        <!-- Khoa lâm sàng & cận lâm sàng đa khoa lớn -->
                         <option value="Khoa Gây mê - Hồi sức">
                         <option value="Khoa Hồi sức tích cực (ICU)">
                         <option value="Khoa Cấp cứu">
-                        <option value="Khoa Nội tổng hợp">
-                        <option value="Khoa Ngoại tổng hợp">
+                        <option value="Khoa Nội tổng quát">
+                        <option value="Khoa Nội tim mạch">
+                        <option value="Khoa Nội thần kinh">
+                        <option value="Khoa Nội hô hấp">
+                        <option value="Khoa Nội tiêu hóa - gan mật">
+                        <option value="Khoa Nội thận - lọc thận">
+                        <option value="Khoa Nội tiết">
+                        <option value="Khoa Cơ xương khớp">
+                        <option value="Khoa Ngoại tổng quát">
                         <option value="Khoa Ngoại tiêu hóa">
                         <option value="Khoa Ngoại tiết niệu">
                         <option value="Khoa Ngoại thần kinh">
-                        <option value="Khoa Thần kinh">
-                        <option value="Khoa Tim mạch can thiệp">
+                        <option value="Khoa Ngoại lồng ngực - mạch máu">
                         <option value="Khoa Phẫu thuật tim mạch">
-                        <option value="Khoa Hô hấp">
-                        <option value="Khoa Tiêu hóa">
-                        <option value="Khoa Thận - Lọc thận">
                         <option value="Khoa Chấn thương chỉnh hình">
-                        <option value="Khoa Ung bướu">
+                        <option value="Khoa Sản phụ khoa">
                         <option value="Khoa Nhi">
-                        <option value="Khoa Phụ sản">
-                        <option value="Khoa Khám bệnh">
+                        <option value="Khoa Mắt">
+                        <option value="Khoa Tai Mũi Họng">
+                        <option value="Khoa Răng Hàm Mặt">
+                        <option value="Khoa Ung bướu">
+                        <option value="Khoa Da liễu">
+                        <option value="Khoa Y học cổ truyền">
+                        <option value="Khoa Chẩn đoán hình ảnh">
+                        <option value="Khoa Xét nghiệm vi sinh - sinh hóa">
+                        <option value="Khoa Dược">
                         <option value="Phòng Điều dưỡng">
                     </datalist>
                 </div>
@@ -231,27 +242,31 @@
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Bệnh viện</label>
                     <input type="text" id="editHospital" list="hospList" placeholder="Chọn hoặc nhập bệnh viện..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
                     <datalist id="hospList">
+                        <!-- Danh sách các bệnh viện lớn tại Việt Nam -->
                         <option value="Bệnh viện Đại học Y Dược TPHCM">
                         <option value="Bệnh viện Chợ Rẫy">
-                        <option value="Bệnh viện 175 (Bệnh viện Quân y 175)">
                         <option value="Bệnh viện Trung ương Quân đội 108">
+                        <option value="Bệnh viện 175">
                         <option value="Bệnh viện Bạch Mai">
                         <option value="Bệnh viện Việt Đức">
-                        <option value="Bệnh viện Nguyễn Trãi">
-                        <option value="Bệnh viện 7A">
+                        <option value="Bệnh viện Trung ương Huế">
                         <option value="Bệnh viện Nhân dân 115">
                         <option value="Bệnh viện Nhân dân Gia Định">
+                        <option value="Bệnh viện Nguyễn Trãi">
+                        <option value="Bệnh viện 7A">
+                        <option value="Bệnh viện Thống Nhất">
+                        <option value="Bệnh viện Trưng Vương">
                         <option value="Bệnh viện Từ Dũ">
                         <option value="Bệnh viện Hùng Vương">
                         <option value="Bệnh viện Nhi Đồng 1">
                         <option value="Bệnh viện Nhi Đồng 2">
                         <option value="Bệnh viện Nhi Đồng Thành Phố">
                         <option value="Bệnh viện Ung Bướu TPHCM">
-                        <option value="Bệnh viện Tim Tâm Đức">
-                        <option value="Bệnh viện Thống Nhất">
-                        <option value="Bệnh viện Trưng Vương">
-                        <option value="Bệnh viện Trung ương Huế">
                         <option value="Bệnh viện K Trung ương">
+                        <option value="Bệnh viện Tim Tâm Đức">
+                        <option value="Bệnh viện Viện Tim TPHCM">
+                        <option value="Bệnh viện Bệnh Nhiệt Đới TPHCM">
+                        <option value="Bệnh viện Phạm Ngọc Thạch">
                     </datalist>
                 </div>
             </div>
@@ -388,6 +403,7 @@
 
     <!-- ================= JAVASCRIPT & LOGIC ================= -->
     <script>
+        // Dữ liệu Hồ sơ cá nhân mặc định
         const defaultProfile = {
             name: "Phạm Thị Lê Thương",
             dob: "15/07/1990",
@@ -399,7 +415,7 @@
 
         let userProfile = JSON.parse(localStorage.getItem('nursing_user_profile')) || defaultProfile;
 
-        // Hàm tự động tạo chữ viết tắt từ Họ và tên (ví dụ: Phạm Thị Lê Thương -> PT)
+        // Hàm tự động tạo chữ viết tắt từ họ tên (VD: Phạm Thị Lê Thương -> PT)
         function updateAvatarInitials(fullName) {
             if (!fullName) return "PT";
             const words = fullName.trim().split(/\s+/);
@@ -423,8 +439,8 @@
             document.getElementById('profileDepartment').innerText = userProfile.department;
             document.getElementById('profileHospital').innerText = userProfile.hospital;
 
-            // Cập nhật chữ viết tắt avatar trên góc phải
-            document.getElementById('userAvatar').innerText = updateAvatarInitials(userProfile.name);
+            // Cập nhật chữ viết tắt lên hình tròn avatar ngang hàng
+            document.getElementById('userAvatarBadge').innerText = updateAvatarInitials(userProfile.name);
         }
 
         function openProfileModal() {
