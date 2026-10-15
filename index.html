@@ -114,9 +114,10 @@
             </div>
         </div>
 
-        <!-- STATS CARDS -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+        <!-- 4 STATS CARDS (Bố cục 2x2 mới, có thể bấm vào để lọc) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            <!-- Khung 1: Tổng số đề tài -->
+            <div onclick="filterAndOpenFilteredList('all')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-blue-300 hover:shadow-md transition">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tổng số đề tài</p>
                     <h3 id="totalCount" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
@@ -125,27 +126,30 @@
                     <i class="fa-solid fa-folder-open"></i>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <!-- Khung 2: Đã chấp nhận/ đăng báo -->
+            <div onclick="filterAndOpenFilteredList('accepted')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-emerald-300 hover:shadow-md transition">
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đang viết Bản thảo</p>
-                    <h3 id="manuscriptCount" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đã chấp nhận / Đăng báo</p>
+                    <h3 id="acceptedCount" class="text-2xl font-bold text-emerald-600 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+            </div>
+            <!-- Khung 3: Đang hoàn thành -->
+            <div onclick="filterAndOpenFilteredList('in_progress')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-amber-300 hover:shadow-md transition">
+                <div>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đang hoàn thành</p>
+                    <h3 id="inProgressCount" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
                 </div>
                 <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
-                    <i class="fa-solid fa-pen-nib"></i>
+                    <i class="fa-solid fa-spinner"></i>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <!-- Khung 4: Quá hạn -->
+            <div onclick="filterAndOpenFilteredList('danger')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-rose-300 hover:shadow-md transition">
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đã nộp (Submitted)</p>
-                    <h3 id="submittedCount" class="text-2xl font-bold text-indigo-600 mt-1">0</h3>
-                </div>
-                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Cảnh báo chậm trễ</p>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Quá hạn</p>
                     <h3 id="dangerCount" class="text-2xl font-bold text-rose-600 mt-1">0</h3>
                 </div>
                 <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
@@ -182,7 +186,6 @@
 
     <!-- ================= TAB 3: THƯ MỤC CON / CHI TIẾT ĐỀ TÀI ================= -->
     <div id="sectionSubFolder" class="container mx-auto px-6 py-8 max-w-4xl hidden space-y-6">
-        <!-- Tiêu đề cố định đầu trang với nút mũi tên quay về -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 sticky top-24 z-30">
             <button onclick="goBackToOverview()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Trở về trang trước">
                 <i class="fa-solid fa-arrow-left text-lg"></i>
@@ -193,7 +196,6 @@
             </div>
         </div>
 
-        <!-- Nội dung chi tiết tiến độ 7 mốc -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6">
             <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                 <div>
@@ -211,6 +213,38 @@
                 <div id="milestonesContainer" class="space-y-3">
                     <!-- Render động 7 mốc -->
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 4: TRANG CON LỌC THEO THẺ THỐNG KÊ ================= -->
+    <div id="sectionFilteredList" class="container mx-auto px-6 py-8 max-w-4xl hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 sticky top-24 z-30">
+            <button onclick="goBackToOverview()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Trở về trang trước">
+                <i class="fa-solid fa-arrow-left text-lg"></i>
+            </button>
+            <div>
+                <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Danh sách bài báo đã lọc</span>
+                <h2 id="filterTitle" class="text-xl font-bold text-slate-900 mt-0.5">Tiêu đề lọc</h2>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
+                            <th class="py-3 px-6">Tên đề tài nghiên cứu</th>
+                            <th class="py-3 px-6">Giai đoạn hiện tại</th>
+                            <th class="py-3 px-6">Hạn chót (Deadline)</th>
+                            <th class="py-3 px-6">Trạng thái rủi ro</th>
+                            <th class="py-3 px-6 text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="filteredTableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- Render động -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -409,7 +443,6 @@
                     <input type="text" id="inputTitle" placeholder="Nhập tên đề tài..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                 </div>
                 
-                <!-- Người hướng dẫn -->
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <label class="block text-xs font-semibold text-slate-600 uppercase">Người hướng dẫn</label>
@@ -428,7 +461,6 @@
                     </div>
                 </div>
 
-                <!-- Cộng tác viên (Không giới hạn dấu +) -->
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <label class="block text-xs font-semibold text-slate-600 uppercase">Cộng tác viên</label>
@@ -591,10 +623,12 @@
             const homeSec = document.getElementById('sectionHome');
             const overviewSec = document.getElementById('sectionOverview');
             const subFolderSec = document.getElementById('sectionSubFolder');
+            const filteredSec = document.getElementById('sectionFilteredList');
             const tabHome = document.getElementById('tabHome');
             const tabOverview = document.getElementById('tabOverview');
 
             subFolderSec.classList.add('hidden');
+            filteredSec.classList.add('hidden');
 
             if (tabName === 'home') {
                 homeSec.classList.remove('hidden');
@@ -609,24 +643,142 @@
             }
         }
 
+        // Danh sách 15 đề tài mẫu phong phú theo yêu cầu (có 2 mentor và 2-5 cộng tác viên)
         const defaultProjects = [
             {
                 id: 1,
                 title: "Đánh giá tuân thủ tư thế người bệnh ICU",
-                mentor: "ThS. Thương",
-                collaborators: "BS. A, BS. B",
-                stage: "Viết bản thảo (Manuscript)",
+                mentor: "ThS. Phạm Thị Lê Thương, PGS.TS. Nguyễn Văn Minh",
+                collaborators: "BS. Trần Văn An, ĐD. Lê Thị Hồng, CN. Hoàng Kim Long, ThS. Nguyễn Thị Mai",
+                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
                 deadline: "30/11/2026",
                 risk: "safe"
             },
             {
                 id: 2,
-                title: "Khảo sát gánh nặng chăm sóc ở điều dưỡng",
-                mentor: "TS. C",
-                collaborators: "ĐD. D",
+                title: "Khảo sát gánh nặng chăm sóc ở điều dưỡng khoa Hồi sức tích cực",
+                mentor: "TS. Trần Thị Cúc",
+                collaborators: "ĐD. Lê Văn Hùng, CN. Phạm Văn Nam",
                 stage: "Phân tích dữ liệu",
                 deadline: "20/10/2026",
                 risk: "danger"
+            },
+            {
+                id: 3,
+                title: "Hiệu quả can thiệp giáo dục sức khỏe trên người bệnh suy tim mạn",
+                mentor: "PGS.TS. Lê Quang Huy, ThS. Phạm Thị Lê Thương",
+                collaborators: "BS. Nguyễn Văn Hùng, ĐD. Trần Thị Lan, CN. Lê Hoàng Yến, BS. Đặng Văn Khoa",
+                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
+                deadline: "15/12/2026",
+                risk: "safe"
+            },
+            {
+                id: 4,
+                title: "Đặc điểm dịch tễ và lâm sàng bệnh nhân đột quỵ cấp nhập viện",
+                mentor: "TS.BS. Hoàng Văn Nam",
+                collaborators: "BS. Lê Minh Tuấn, ĐD. Vũ Thị Hoa",
+                stage: "Viết bản thảo (Manuscript)",
+                deadline: "10/01/2027",
+                risk: "warning"
+            },
+            {
+                id: 5,
+                title: "Tỷ lệ và các yếu tố liên quan đến trầm cảm ở điều dưỡng viên",
+                mentor: "ThS. Phạm Thị Lê Thương, TS. Ngô Thanh Tâm",
+                collaborators: "CN. Đỗ Văn Minh, ĐD. Nguyễn Thị Thảo, BS. Mai Văn Huy",
+                stage: "Thu thập dữ liệu",
+                deadline: "05/11/2026",
+                risk: "danger"
+            },
+            {
+                id: 6,
+                title: "Đánh giá chất lượng giấc ngủ của người bệnh sau phẫu thuật tim mạch",
+                mentor: "PGS.TS. Đỗ Kim Phượng",
+                collaborators: "ĐD. Bùi Văn Hải, ĐD. Trần Thị Mai",
+                stage: "Nộp bài báo (Submission)",
+                deadline: "25/11/2026",
+                risk: "safe"
+            },
+            {
+                id: 7,
+                title: "Khảo sát sự hài lòng của người bệnh về chăm sóc điều dưỡng toàn diện",
+                mentor: "ThS. Nguyễn Văn Đức, ThS. Phạm Thị Lê Thương",
+                collaborators: "CN. Lê Thị Thu, ĐD. Nguyễn Văn Long, BS. Trần Minh Quân, CN. Vũ Hoàng Yến",
+                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
+                deadline: "01/10/2026",
+                risk: "safe"
+            },
+            {
+                id: 8,
+                title: "Kiến thức và thái độ về chăm sóc giảm nhẹ của điều dưỡng lâm sàng",
+                mentor: "TS. Lê Thị Hồng",
+                collaborators: "ĐD. Hoàng Văn Thụ, CN. Ngô Thị Sương",
+                stage: "Phản biện & Sửa bài (Revision)",
+                deadline: "30/12/2026",
+                risk: "safe"
+            },
+            {
+                id: 9,
+                title: "Đánh giá nguy cơ loét do tỳ đè ở người bệnh cao tuổi nằm lâu",
+                mentor: "PGS.TS. Nguyễn Văn Minh, TS. Trần Thị Cúc",
+                collaborators: "ĐD. Phạm Thị Hoa, BS. Lê Văn Khôi, CN. Đinh Văn Phước, ĐD. Trần Ngọc Sơn",
+                stage: "Thu thập dữ liệu",
+                deadline: "18/09/2026",
+                risk: "danger"
+            },
+            {
+                id: 10,
+                title: "Tuân thủ quy trình vệ sinh tay của nhân viên y tế tại khối cận lâm sàng",
+                mentor: "ThS. Hoàng Kim Dung",
+                collaborators: "KSX. Nguyễn Văn Tùng, ĐD. Lê Thị Kim",
+                stage: "Viết bản thảo (Manuscript)",
+                deadline: "28/02/2027",
+                risk: "safe"
+            },
+            {
+                id: 11,
+                title: "Hiệu quả giảm đau sau mổ bằng phương pháp PCAmorphine trên bệnh nhân ngoại khoa",
+                mentor: "ThS. Phạm Thị Lê Thương, PGS.TS. Trần Quốc Đạt",
+                collaborators: "BS. Võ Minh Triết, ĐD. Phan Thị Bé, CN. Nguyễn Hữu Dũng, BS. Lê Hoàng Long",
+                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
+                deadline: "20/08/2026",
+                risk: "safe"
+            },
+            {
+                id: 12,
+                title: "Đánh giá thực trạng tuân thủ an toàn người bệnh trong dùng thuốc tại khoa nội",
+                mentor: "TS.BS. Phan Văn Hùng",
+                collaborators: "DS. Nguyễn Thị Bích, ĐD. Lê Văn Đạt",
+                stage: "Đề cương & Phê duyệt đạo đức",
+                deadline: "30/03/2027",
+                risk: "safe"
+            },
+            {
+                id: 13,
+                title: "Khảo sát stress và các yếu tố gây căng thẳng ở sinh viên điều dưỡng thực tập",
+                mentor: "ThS. Đỗ Thị Thanh",
+                collaborators: "SV. Nguyễn Văn Nam, SV. Trần Thị Hằng, CN. Vũ Văn Minh",
+                stage: "Phân tích dữ liệu",
+                deadline: "12/10/2026",
+                risk: "danger"
+            },
+            {
+                id: 14,
+                title: "Đánh giá kết quả chăm sóc vết thương mạn tính bằng băng dán sinh học mới",
+                mentor: "PGS.TS. Lê Quang Huy, ThS. Phạm Thị Lê Thương",
+                collaborators: "BS. Trịnh Văn Sơn, ĐD. Lê Thị Thúy, CN. Hoàng Văn Nam, BS. Đỗ Minh Quân",
+                stage: "Nộp bài báo (Submission)",
+                deadline: "14/11/2026",
+                risk: "warning"
+            },
+            {
+                id: 15,
+                title: "Khảo sát nhu cầu đào tạo liên tục về cấp cứu ngưng tuần hoàn hô hấp cho điều dưỡng",
+                mentor: "TS. Trần Thị Cúc",
+                collaborators: "ĐD. Nguyễn Văn Hùng, CN. Phạm Thị Mai",
+                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
+                deadline: "05/09/2026",
+                risk: "safe"
             }
         ];
 
@@ -651,7 +803,6 @@
             }
         }
 
-        // Thêm trường nhập cộng tác viên không giới hạn
         function addCollaboratorField() {
             const container = document.getElementById('collaboratorsContainer');
             const input = document.createElement('input');
@@ -665,14 +816,18 @@
             const tbody = document.getElementById('projectTableBody');
             tbody.innerHTML = '';
             
-            let manuscriptCount = 0;
-            let submittedCount = 0;
+            let totalCount = projects.length;
+            let acceptedCount = 0;
+            let inProgressCount = 0;
             let dangerCount = 0;
 
             projects.forEach((p, index) => {
-                if(p.stage.includes('Manuscript') || p.stage.includes('bản thảo')) manuscriptCount++;
-                if(p.stage.includes('Submission') || p.stage.includes('Nộp')) submittedCount++;
-                if(p.risk === 'danger') dangerCount++;
+                let isAccepted = p.stage.toLowerCase().includes('chấp nhận') || p.stage.toLowerCase().includes('đăng') || p.stage.toLowerCase().includes('publication');
+                let isDanger = p.risk === 'danger';
+
+                if(isAccepted) acceptedCount++;
+                else if(isDanger) dangerCount++;
+                else inProgressCount++;
 
                 let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
                 let dotClass = 'bg-emerald-500';
@@ -711,10 +866,79 @@
                 tbody.innerHTML += row;
             });
 
-            document.getElementById('totalCount').innerText = projects.length;
-            document.getElementById('manuscriptCount').innerText = manuscriptCount;
-            document.getElementById('submittedCount').innerText = submittedCount;
+            document.getElementById('totalCount').innerText = totalCount;
+            document.getElementById('acceptedCount').innerText = acceptedCount;
+            document.getElementById('inProgressCount').innerText = inProgressCount;
             document.getElementById('dangerCount').innerText = dangerCount;
+        }
+
+        // Lọc và mở danh sách phụ theo loại khung được bấm
+        function filterAndOpenFilteredList(type) {
+            const filteredTbody = document.getElementById('filteredTableBody');
+            filteredTbody.innerHTML = '';
+            
+            let filteredProjects = [];
+            let titleText = "";
+
+            if (type === 'all') {
+                filteredProjects = projects;
+                titleText = "Tất cả đề tài (" + projects.length + ")";
+            } else if (type === 'accepted') {
+                filteredProjects = projects.filter(p => p.stage.toLowerCase().includes('chấp nhận') || p.stage.toLowerCase().includes('đăng') || p.stage.toLowerCase().includes('publication'));
+                titleText = "Danh sách bài báo đã chấp nhận / đăng báo";
+            } else if (type === 'in_progress') {
+                filteredProjects = projects.filter(p => !(p.stage.toLowerCase().includes('chấp nhận') || p.stage.toLowerCase().includes('đăng') || p.stage.toLowerCase().includes('publication')) && p.risk !== 'danger');
+                titleText = "Danh sách bài báo đang hoàn thành";
+            } else if (type === 'danger') {
+                filteredProjects = projects.filter(p => p.risk === 'danger');
+                titleText = "Danh sách bài báo quá hạn";
+            }
+
+            document.getElementById('filterTitle').innerText = titleText;
+
+            filteredProjects.forEach((p) => {
+                let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                let dotClass = 'bg-emerald-500';
+                let riskText = 'Đúng tiến độ (🟢)';
+
+                if(p.risk === 'warning') {
+                    badgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
+                    dotClass = 'bg-amber-500';
+                    riskText = 'Sắp đến hạn (🟡)';
+                } else if(p.risk === 'danger') {
+                    badgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
+                    dotClass = 'bg-rose-500';
+                    riskText = 'Quá hạn / Kẹt (🔴)';
+                }
+
+                let originalIndex = projects.findIndex(item => item.id === p.id);
+
+                let row = `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-4 px-6">
+                            <div onclick="openSubFolder(${originalIndex})" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">${p.title}</div>
+                            <div class="text-xs text-slate-500 mt-0.5">HD: ${p.mentor} ${p.collaborators ? '• CTV: ' + p.collaborators : ''}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-blue-100">${p.stage}</span>
+                        </td>
+                        <td class="py-4 px-6 text-slate-600 font-medium">${p.deadline}</td>
+                        <td class="py-4 px-6">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass} border">
+                                <span class="w-1.5 h-1.5 mr-1.5 ${dotClass} rounded-full"></span> ${riskText}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <button onclick="openSubFolder(${originalIndex})" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">Chi tiết</button>
+                        </td>
+                    </tr>
+                `;
+                filteredTbody.innerHTML += row;
+            });
+
+            document.getElementById('sectionOverview').classList.add('hidden');
+            document.getElementById('sectionFilteredList').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function openSubFolder(index) {
@@ -731,12 +955,14 @@
 
             document.getElementById('sectionHome').classList.add('hidden');
             document.getElementById('sectionOverview').classList.add('hidden');
+            document.getElementById('sectionFilteredList').classList.add('hidden');
             document.getElementById('sectionSubFolder').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function goBackToOverview() {
             document.getElementById('sectionSubFolder').classList.add('hidden');
+            document.getElementById('sectionFilteredList').classList.add('hidden');
             document.getElementById('sectionOverview').classList.remove('hidden');
             currentEditingIndex = null;
             isUpdateMode = false;
@@ -757,7 +983,6 @@
             document.getElementById('addMentorBtn').style.display = 'flex';
             mentorCount = 1;
 
-            // Reset cộng tác viên về 1 ô
             const container = document.getElementById('collaboratorsContainer');
             container.innerHTML = '<input type="text" placeholder="VD: BS. Nguyễn Văn A" class="collaborator-input w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">';
         }
@@ -771,7 +996,6 @@
             let deadline = document.getElementById('inputDeadline').value;
             let risk = document.getElementById('inputRisk').value;
 
-            // Lấy danh sách cộng tác viên
             let collabs = [];
             document.querySelectorAll('.collaborator-input').forEach(input => {
                 if(input.value.trim()) collabs.push(input.value.trim());
