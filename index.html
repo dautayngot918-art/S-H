@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Công bố Khoa học - Điều dưỡng Sau đại học</title>
-    <!-- Tailwind CSS CDN - Giúp style giao diện nhanh chóng, đẹp mắt không cần file CSS cồng kềnh -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons - Thư viện icon chuẩn quốc tế cho y tế và công nghệ -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
 
-    <!-- ================= 1. HEADER THANH ĐIỀU HƯỚNG ================= -->
+    <!-- ================= HEADER ================= -->
     <header class="bg-blue-900 text-white shadow-md">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -20,64 +20,65 @@
             </div>
             <div class="flex items-center space-x-4">
                 <span class="text-xs bg-blue-800 text-blue-100 px-3 py-1.5 rounded-full font-medium shadow-inner">Vai trò: Quản lý / Mentor</span>
-                <!-- Sử dụng UI Avatars để tạo avatar tự động chuyên nghiệp -->
                 <img src="https://ui-avatars.com/api/?name=Pham+Thi+Le+Thuong&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border-2 border-white shadow" alt="Avatar">
             </div>
         </div>
     </header>
 
-    <!-- ================= 2. MAIN CONTAINER ================= -->
+    <!-- ================= MAIN CONTAINER ================= -->
     <main class="container mx-auto px-6 py-8">
 
-        <!-- Page Header & Action Button -->
+        <!-- Page Header & Action -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-slate-900">Tổng quan Tiến độ Công bố Khoa học</h1>
                 <p class="text-sm text-slate-500 mt-1">Hệ thống chuẩn hóa quy trình từ đề cương đến xuất bản bài báo cho điều dưỡng sau đại học[cite: 1].</p>
             </div>
-            <button onclick="alert('Mở modal thêm đề tài mới (sẽ xây dựng ở bước tiếp theo)')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm transition flex items-center space-x-2">
-                <i class="fa-solid fa-plus"></i>
-                <span>Thêm đề tài mới</span>
-            </button>
+            <div class="flex items-center space-x-3">
+                <button onclick="resetDefaultData()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2.5 rounded-lg text-sm font-medium transition flex items-center space-x-2" title="Khôi phục dữ liệu mẫu ban đầu">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Khôi phục mẫu</span>
+                </button>
+                <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm transition flex items-center space-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Thêm đề tài mới</span>
+                </button>
+            </div>
         </div>
 
-        <!-- ================= 3. DASHBOARD STATS CARDS (4 THẺ THỐNG KÊ) ================= -->
+        <!-- STATS CARDS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Thẻ 1: Tổng số đề tài -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tổng số đề tài</p>
-                    <h3 class="text-2xl font-bold text-slate-800 mt-1">12</h3>
+                    <h3 id="totalCount" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
                 </div>
                 <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
                     <i class="fa-solid fa-folder-open"></i>
                 </div>
             </div>
-            <!-- Thẻ 2: Đang viết bản thảo -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đang viết Bản thảo</p>
-                    <h3 class="text-2xl font-bold text-amber-600 mt-1">4</h3>
+                    <h3 id="manuscriptCount" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
                 </div>
                 <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
                     <i class="fa-solid fa-pen-nib"></i>
                 </div>
             </div>
-            <!-- Thẻ 3: Đã nộp -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đã nộp (Submitted)</p>
-                    <h3 class="text-2xl font-bold text-indigo-600 mt-1">3</h3>
+                    <h3 id="submittedCount" class="text-2xl font-bold text-indigo-600 mt-1">0</h3>
                 </div>
                 <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
                     <i class="fa-solid fa-paper-plane"></i>
                 </div>
             </div>
-            <!-- Thẻ 4: Cảnh báo chậm trễ -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between">
                 <div>
                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Cảnh báo chậm trễ</p>
-                    <h3 class="text-2xl font-bold text-rose-600 mt-1">2</h3>
+                    <h3 id="dangerCount" class="text-2xl font-bold text-rose-600 mt-1">0</h3>
                 </div>
                 <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -85,11 +86,11 @@
             </div>
         </div>
 
-        <!-- ================= 4. PROJECT TRACKING TABLE (BẢNG THEO DÕI TIẾN ĐỘ) ================= -->
+        <!-- TRACKING TABLE -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                 <h3 class="font-bold text-slate-800">Danh sách Đề tài & Trạng thái Tiến độ</h3>
-                <span class="text-xs text-slate-400 font-medium"><i class="fa-solid fa-rotate mr-1"></i> Đồng bộ thời gian thực</span>
+                <span class="text-xs text-emerald-600 font-medium"><i class="fa-solid fa-database mr-1"></i> Đã lưu trữ tự động (LocalStorage)</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -102,45 +103,8 @@
                             <th class="py-3 px-6 text-center">Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 text-sm">
-                        <!-- Dòng dữ liệu mẫu số 1 (Đề tài an toàn) -->
-                        <tr class="hover:bg-slate-50/80 transition">
-                            <td class="py-4 px-6">
-                                <div class="font-semibold text-slate-900">Đánh giá tuân thủ tư thế người bệnh ICU</div>
-                                <div class="text-xs text-slate-500 mt-0.5">HV: Nguyễn Văn A • Mentor: ThS. Thương</div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-blue-100">Viết Bản thảo (Manuscript)</span>
-                            </td>
-                            <td class="py-4 px-6 text-slate-600 font-medium">30/11/2026</td>
-                            <td class="py-4 px-6">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                    <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span> An toàn (🟢)
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                <button onclick="alert('Mở chi tiết đề tài số 1')" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">Chi tiết</button>
-                            </td>
-                        </tr>
-                        <!-- Dòng dữ liệu mẫu số 2 (Đề tài trễ hạn) -->
-                        <tr class="hover:bg-slate-50/80 transition">
-                            <td class="py-4 px-6">
-                                <div class="font-semibold text-slate-900">Khảo sát gánh nặng chăm sóc ở điều dưỡng</div>
-                                <div class="text-xs text-slate-500 mt-0.5">HV: Trần Thị B • Mentor: TS. C</div>
-                            </td>
-                            <td class="py-4 px-6">
-                                <span class="bg-purple-50 text-purple-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-purple-100">Phân tích dữ liệu</span>
-                            </td>
-                            <td class="py-4 px-6 text-slate-600 font-medium">20/10/2026</td>
-                            <td class="py-4 px-6">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
-                                    <span class="w-1.5 h-1.5 mr-1.5 bg-rose-500 rounded-full"></span> Trễ hạn (🔴)
-                                </span>
-                            </td>
-                            <td class="py-4 px-6 text-center">
-                                <button onclick="alert('Mở chi tiết đề tài số 2')" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">Chi tiết</button>
-                            </td>
-                        </tr>
+                    <tbody id="projectTableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- Dữ liệu render động -->
                     </tbody>
                 </table>
             </div>
@@ -148,5 +112,285 @@
 
     </main>
 
+    <!-- ================= MODAL: THÊM ĐỀ TÀI MỚI ================= -->
+    <div id="addModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Thêm đề tài nghiên cứu mới</h3>
+                <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tên đề tài nghiên cứu</label>
+                    <input type="text" id="inputTitle" placeholder="Nhập tên đề tài..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Học viên thực hiện (Điều dưỡng sau ĐH)</label>
+                    <input type="text" id="inputStudent" placeholder="VD: Nguyễn Văn A" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giảng viên / Mentor hướng dẫn</label>
+                    <input type="text" id="inputMentor" placeholder="VD: ThS. Phạm Thị Lê Thương" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giai đoạn hiện tại</label>
+                        <select id="inputStage" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                            <option value="Đề cương & Phê duyệt">Đề cương & Phê duyệt</option>
+                            <option value="Thu thập dữ liệu">Thu thập dữ liệu</option>
+                            <option value="Phân tích dữ liệu">Phân tích dữ liệu</option>
+                            <option value="Viết Bản thảo (Manuscript)" selected>Viết Bản thảo (Manuscript)</option>
+                            <option value="Nộp bài báo (Submission)">Nộp bài báo (Submission)</option>
+                            <option value="Chấp nhận / Xuất bản">Chấp nhận / Xuất bản</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Hạn chót</label>
+                        <input type="text" id="inputDeadline" placeholder="VD: 30/11/2026" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Mức độ rủi ro</label>
+                    <select id="inputRisk" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                        <option value="safe">An toàn (🟢)</option>
+                        <option value="danger">Trễ hạn / Cần lưu ý (🔴)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
+                <button onclick="closeAddModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-100 transition">Hủy</button>
+                <button onclick="addNewProject()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition">Lưu đề tài</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: CHI TIẾT TIẾN ĐỘ & XÓA ================= -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Chi tiết Tiến độ & Luồng công việc (Workflow)</h3>
+                <button onclick="closeDetailModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 space-y-6">
+                <div>
+                    <h4 id="detailTitle" class="text-base font-bold text-blue-900">Tên đề tài</h4>
+                    <p id="detailMeta" class="text-xs text-slate-500 mt-1">Học viên & Mentor</p>
+                </div>
+                
+                <div class="border-t border-b border-slate-100 py-6 space-y-4">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Các mốc chuẩn hóa quy trình nghiên cứu[cite: 1]:</p>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 text-sm">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-check"></i></div>
+                            <span class="font-medium text-slate-800">1. Đề cương nghiên cứu & Phê duyệt đạo đức</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-sm">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-check"></i></div>
+                            <span class="font-medium text-slate-800">2. Thu thập dữ liệu thực tế tại lâm sàng</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-sm">
+                            <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">3</div>
+                            <span class="font-medium text-blue-700">3. Viết bản thảo bài báo (Manuscript)</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-sm text-slate-400">
+                            <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs">4</div>
+                            <span>4. Nộp bài báo (Submission) & Phản biện (Revision)</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-sm text-slate-400">
+                            <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs">5</div>
+                            <span>5. Chấp nhận & Xuất bản (Acceptance / Publication)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nhận xét / Góp ý từ Mentor</label>
+                    <textarea id="detailFeedback" rows="3" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" placeholder="Nhập ý kiến đóng góp cho học viên..."></textarea>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                <button id="deleteBtn" onclick="" class="px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg text-sm font-medium transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-trash-can text-xs"></i>
+                    <span>Xóa đề tài</span>
+                </button>
+                <div class="flex space-x-3">
+                    <button onclick="closeDetailModal()" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-300 transition">Đóng</button>
+                    <button onclick="saveFeedback()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition">Lưu phản hồi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOCALSTORAGE ================= -->
+    <script>
+        // Khởi tạo dữ liệu mẫu nếu chưa có trong localStorage
+        const defaultProjects = [
+            {
+                id: 1,
+                title: "Đánh giá tuân thủ tư thế người bệnh ICU",
+                student: "Nguyễn Văn A",
+                mentor: "ThS. Thương",
+                stage: "Viết Bản thảo (Manuscript)",
+                deadline: "30/11/2026",
+                risk: "safe",
+                feedback: "Cần bổ sung thêm biểu đồ so sánh quý III."
+            },
+            {
+                id: 2,
+                title: "Khảo sát gánh nặng chăm sóc ở điều dưỡng",
+                student: "Trần Thị B",
+                mentor: "TS. C",
+                stage: "Phân tích dữ liệu",
+                deadline: "20/10/2026",
+                risk: "danger",
+                feedback: "Đã trễ mốc phân tích dữ liệu, cần đẩy nhanh tiến độ."
+            }
+        ];
+
+        let projects = JSON.parse(localStorage.getItem('nursing_research_projects')) || defaultProjects;
+        let currentEditingIndex = null;
+
+        function saveToStorage() {
+            localStorage.setItem('nursing_research_projects', JSON.stringify(projects));
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('projectTableBody');
+            tbody.innerHTML = '';
+            
+            let manuscriptCount = 0;
+            let submittedCount = 0;
+            let dangerCount = 0;
+
+            projects.forEach((p, index) => {
+                if(p.stage.includes('Manuscript')) manuscriptCount++;
+                if(p.stage.includes('Submission') || p.stage.includes('Nộp')) submittedCount++;
+                if(p.risk === 'danger') dangerCount++;
+
+                let badgeClass = p.risk === 'safe' 
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                    : 'bg-rose-50 text-rose-700 border-rose-200';
+                let dotClass = p.risk === 'safe' ? 'bg-emerald-500' : 'bg-rose-500';
+                let riskText = p.risk === 'safe' ? 'An toàn (🟢)' : 'Trễ hạn (🔴)';
+
+                let row = `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-4 px-6">
+                            <div class="font-semibold text-slate-900">${p.title}</div>
+                            <div class="text-xs text-slate-500 mt-0.5">HV: ${p.student} • Mentor: ${p.mentor}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-blue-100">${p.stage}</span>
+                        </td>
+                        <td class="py-4 px-6 text-slate-600 font-medium">${p.deadline}</td>
+                        <td class="py-4 px-6">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass} border">
+                                <span class="w-1.5 h-1.5 mr-1.5 ${dotClass} rounded-full"></span> ${riskText}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <button onclick="openDetailModal(${index})" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">Chi tiết</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            // Cập nhật thẻ thống kê trên Dashboard
+            document.getElementById('totalCount').innerText = projects.length;
+            document.getElementById('manuscriptCount').innerText = manuscriptCount;
+            document.getElementById('submittedCount').innerText = submittedCount;
+            document.getElementById('dangerCount').innerText = dangerCount;
+        }
+
+        // Modal Thêm mới
+        function openAddModal() {
+            document.getElementById('addModal').classList.remove('hidden');
+        }
+        function closeAddModal() {
+            document.getElementById('addModal').classList.add('hidden');
+        }
+
+        function addNewProject() {
+            let title = document.getElementById('inputTitle').value;
+            let student = document.getElementById('inputStudent').value;
+            let mentor = document.getElementById('inputMentor').value;
+            let stage = document.getElementById('inputStage').value;
+            let deadline = document.getElementById('inputDeadline').value;
+            let risk = document.getElementById('inputRisk').value;
+
+            if(!title || !student) {
+                alert('Vui lòng nhập tên đề tài và tên học viên!');
+                return;
+            }
+
+            projects.push({
+                id: Date.now(),
+                title: title,
+                student: student,
+                mentor: mentor || 'ThS. Thương',
+                stage: stage,
+                deadline: deadline || '30/12/2026',
+                risk: risk,
+                feedback: ''
+            });
+
+            saveToStorage();
+            renderTable();
+            closeAddModal();
+
+            // Reset form
+            document.getElementById('inputTitle').value = '';
+            document.getElementById('inputStudent').value = '';
+            document.getElementById('inputMentor').value = '';
+            document.getElementById('inputDeadline').value = '';
+        }
+
+        // Modal Chi tiết & Phản hồi
+        function openDetailModal(index) {
+            currentEditingIndex = index;
+            let p = projects[index];
+            document.getElementById('detailTitle').innerText = p.title;
+            document.getElementById('detailMeta').innerText = `Học viên: ${p.student} • Mentor: ${p.mentor} • Hạn chót: ${p.deadline}`;
+            document.getElementById('detailFeedback').value = p.feedback || '';
+            document.getElementById('deleteBtn').setAttribute('onclick', `deleteProject(${index})`);
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+            currentEditingIndex = null;
+        }
+
+        function saveFeedback() {
+            if(currentEditingIndex !== null) {
+                let fb = document.getElementById('detailFeedback').value;
+                projects[currentEditingIndex].feedback = fb;
+                saveToStorage();
+                alert('Đã lưu nhận xét thành công!');
+                closeDetailModal();
+            }
+        }
+
+        function deleteProject(index) {
+            if(confirm('Bạn có chắc chắn muốn xóa đề tài này khỏi hệ thống quản lý không?')) {
+                projects.splice(index, 1);
+                saveToStorage();
+                renderTable();
+                closeDetailModal();
+            }
+        }
+
+        function resetDefaultData() {
+            if(confirm('Khôi phục lại dữ liệu mẫu ban đầu?')) {
+                projects = [...defaultProjects];
+                saveToStorage();
+                renderTable();
+            }
+        }
+
+        // Khởi chạy khi tải trang
+        renderTable();
+    </script>
 </body>
 </html>
