@@ -114,12 +114,12 @@
 
     <!-- ================= MODAL: THÊM ĐỀ TÀI MỚI ================= -->
     <div id="addModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden max-h-[90vh] flex flex-col">
             <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
                 <h3 class="font-bold text-slate-800">Thêm đề tài nghiên cứu mới</h3>
                 <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div class="p-6 space-y-4">
+            <div class="p-6 space-y-4 overflow-y-auto">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tên đề tài nghiên cứu</label>
                     <input type="text" id="inputTitle" placeholder="Nhập tên đề tài..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
@@ -128,10 +128,28 @@
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Học viên thực hiện (Điều dưỡng sau ĐH)</label>
                     <input type="text" id="inputStudent" placeholder="VD: Nguyễn Văn A" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giảng viên / Mentor hướng dẫn</label>
-                    <input type="text" id="inputMentor" placeholder="VD: ThS. Phạm Thị Lê Thương" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                
+                <!-- Phần Giảng viên hướng dẫn có tích hợp nút dấu "+" -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-xs font-semibold text-slate-600 uppercase">Giảng viên / Mentor hướng dẫn</label>
+                        <button type="button" onclick="addMentorField()" id="addMentorBtn" class="w-6 h-6 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs transition font-bold" title="Thêm giảng viên hướng dẫn">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <input type="text" id="inputMentor1" placeholder="VD: ThS. Phạm Thị Lê Thương" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    
+                    <!-- Khung mentor 2 (ẩn mặc định) -->
+                    <div id="mentorField2" class="hidden">
+                        <input type="text" id="inputMentor2" placeholder="Giảng viên / Mentor hướng dẫn 2" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+
+                    <!-- Khung mentor 3 (ẩn mặc định) -->
+                    <div id="mentorField3" class="hidden">
+                        <input type="text" id="inputMentor3" placeholder="Giảng viên / Mentor hướng dẫn 3" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    </div>
                 </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giai đoạn hiện tại</label>
@@ -223,7 +241,6 @@
 
     <!-- ================= JAVASCRIPT LOCALSTORAGE ================= -->
     <script>
-        // Khởi tạo dữ liệu mẫu nếu chưa có trong localStorage
         const defaultProjects = [
             {
                 id: 1,
@@ -249,9 +266,22 @@
 
         let projects = JSON.parse(localStorage.getItem('nursing_research_projects')) || defaultProjects;
         let currentEditingIndex = null;
+        let mentorCount = 1;
 
         function saveToStorage() {
             localStorage.setItem('nursing_research_projects', JSON.stringify(projects));
+        }
+
+        // Hàm xử lý khi nhấp vào dấu "+" để thêm khung mentor
+        function addMentorField() {
+            if (mentorCount === 1) {
+                document.getElementById('mentorField2').classList.remove('hidden');
+                mentorCount = 2;
+            } else if (mentorCount === 2) {
+                document.getElementById('mentorField3').classList.remove('hidden');
+                document.getElementById('addMentorBtn').style.display = 'none'; // Ẩn nút + khi đã đủ 3 mentor
+                mentorCount = 3;
+            }
         }
 
         function renderTable() {
@@ -296,7 +326,6 @@
                 tbody.innerHTML += row;
             });
 
-            // Cập nhật thẻ thống kê trên Dashboard
             document.getElementById('totalCount').innerText = projects.length;
             document.getElementById('manuscriptCount').innerText = manuscriptCount;
             document.getElementById('submittedCount').innerText = submittedCount;
@@ -309,12 +338,22 @@
         }
         function closeAddModal() {
             document.getElementById('addModal').classList.add('hidden');
+            // Reset lại form mentor khi đóng modal
+            document.getElementById('inputMentor1').value = '';
+            document.getElementById('inputMentor2').value = '';
+            document.getElementById('inputMentor3').value = '';
+            document.getElementById('mentorField2').classList.add('hidden');
+            document.getElementById('mentorField3').classList.add('hidden');
+            document.getElementById('addMentorBtn').style.display = 'flex';
+            mentorCount = 1;
         }
 
         function addNewProject() {
             let title = document.getElementById('inputTitle').value;
             let student = document.getElementById('inputStudent').value;
-            let mentor = document.getElementById('inputMentor').value;
+            let m1 = document.getElementById('inputMentor1').value.trim();
+            let m2 = document.getElementById('inputMentor2').value.trim();
+            let m3 = document.getElementById('inputMentor3').value.trim();
             let stage = document.getElementById('inputStage').value;
             let deadline = document.getElementById('inputDeadline').value;
             let risk = document.getElementById('inputRisk').value;
@@ -324,11 +363,15 @@
                 return;
             }
 
+            // Gom các mentor lại thành chuỗi hiển thị
+            let mentorsArr = [m1, m2, m3].filter(Boolean);
+            let mentorString = mentorsArr.length > 0 ? mentorsArr.join(', ') : 'ThS. Thương';
+
             projects.push({
                 id: Date.now(),
                 title: title,
                 student: student,
-                mentor: mentor || 'ThS. Thương',
+                mentor: mentorString,
                 stage: stage,
                 deadline: deadline || '30/12/2026',
                 risk: risk,
@@ -339,10 +382,9 @@
             renderTable();
             closeAddModal();
 
-            // Reset form
+            // Reset form inputs khác
             document.getElementById('inputTitle').value = '';
             document.getElementById('inputStudent').value = '';
-            document.getElementById('inputMentor').value = '';
             document.getElementById('inputDeadline').value = '';
         }
 
@@ -389,7 +431,6 @@
             }
         }
 
-        // Khởi chạy khi tải trang
         renderTable();
     </script>
 </body>
