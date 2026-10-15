@@ -11,13 +11,24 @@
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
 
-    <!-- ================= HEADER ================= -->
+    <!-- ================= HEADER & TABS ================= -->
     <header class="bg-blue-900 text-white shadow-md">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-notes-medical text-2xl text-blue-400"></i>
                 <span class="text-xl font-bold tracking-wide">Nursing Research Tracker</span>
             </div>
+            
+            <!-- Tab Navigation -->
+            <div class="flex space-x-2 bg-blue-950 p-1 rounded-xl">
+                <button onclick="switchTab('home')" id="tabHome" class="px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow">
+                    <i class="fa-solid fa-house mr-1.5"></i> Trang chủ
+                </button>
+                <button onclick="switchTab('overview')" id="tabOverview" class="px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white">
+                    <i class="fa-solid fa-chart-pie mr-1.5"></i> Tổng quan
+                </button>
+            </div>
+
             <div class="flex items-center space-x-4">
                 <span class="text-xs bg-blue-800 text-blue-100 px-3 py-1.5 rounded-full font-medium shadow-inner">Vai trò: Quản lý / Mentor</span>
                 <img src="https://ui-avatars.com/api/?name=Pham+Thi+Le+Thuong&background=0D8ABC&color=fff" class="w-9 h-9 rounded-full border-2 border-white shadow" alt="Avatar">
@@ -25,8 +36,49 @@
         </div>
     </header>
 
-    <!-- ================= MAIN CONTAINER ================= -->
-    <main class="container mx-auto px-6 py-8">
+    <!-- ================= TAB 1: TRANG CHỦ ================= -->
+    <div id="sectionHome" class="container mx-auto px-6 py-8 max-w-4xl">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6">
+            <!-- Lời chào động & Thông tin định danh -->
+            <div class="border-b border-slate-100 pb-6">
+                <h2 id="greetingText" class="text-2xl font-bold text-slate-900">Xin chào...</h2>
+                <p id="userDegree" class="text-lg font-semibold text-blue-600 mt-1">Thạc sĩ</p>
+                <p id="userName" class="text-xl font-bold text-slate-800 mt-0.5">Phạm Thị Lê Thương</p>
+            </div>
+
+            <!-- Khung Hồ sơ cá nhân -->
+            <div>
+                <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center">
+                    <i class="fa-solid fa-id-card text-blue-600 mr-2"></i> Hồ sơ cá nhân
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-6 rounded-xl border border-slate-100">
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-400 uppercase">Họ và tên đầy đủ</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">Phạm Thị Lê Thương</p>
+                    </div>
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-400 uppercase">Ngày tháng năm sinh</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">15/07/1990</p>
+                    </div>
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-400 uppercase">Trình độ học vấn</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">Thạc sĩ / Học viên Sau đại học</p>
+                    </div>
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-400 uppercase">Năm tốt nghiệp</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">2024 (Dự kiến Tiến sĩ: 2028)</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <span class="block text-xs font-semibold text-slate-400 uppercase">Khoa làm việc</span>
+                        <p class="text-sm font-semibold text-slate-800 mt-1">Khoa Gây mê - Hồi sức, Bệnh viện Đại học Y Dược TPHCM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TAB 2: TỔNG QUAN (NỘI DUNG CŨ) ================= -->
+    <main id="sectionOverview" class="container mx-auto px-6 py-8 hidden">
 
         <!-- Page Header & Action -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -239,8 +291,44 @@
         </div>
     </div>
 
-    <!-- ================= JAVASCRIPT LOCALSTORAGE ================= -->
+    <!-- ================= JAVASCRIPT & LOGIC ================= -->
     <script>
+        // Thiết lập lời chào tự động theo thời gian thực trên thiết bị
+        function setDynamicGreeting() {
+            const hour = new Date().getHours();
+            let greeting = "Xin chào";
+            if (hour >= 4 && hour < 11) {
+                greeting = "Xin chào buổi sáng";
+            } else if (hour >= 11 && hour < 13) {
+                greeting = "Xin chào buổi trưa";
+            } else if (hour >= 13 && hour < 18) {
+                greeting = "Xin chào buổi chiều";
+            } else {
+                greeting = "Xin chào buổi tối";
+            }
+            document.getElementById('greetingText').innerText = greeting + ",";
+        }
+
+        // Chuyển đổi giữa các Tab
+        function switchTab(tabName) {
+            const homeSec = document.getElementById('sectionHome');
+            const overviewSec = document.getElementById('sectionOverview');
+            const tabHome = document.getElementById('tabHome');
+            const tabOverview = document.getElementById('tabOverview');
+
+            if (tabName === 'home') {
+                homeSec.classList.remove('hidden');
+                overviewSec.classList.add('hidden');
+                tabHome.className = "px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow";
+                tabOverview.className = "px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white";
+            } else {
+                homeSec.classList.add('hidden');
+                overviewSec.classList.remove('hidden');
+                tabOverview.className = "px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow";
+                tabHome.className = "px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white";
+            }
+        }
+
         const defaultProjects = [
             {
                 id: 1,
@@ -272,14 +360,13 @@
             localStorage.setItem('nursing_research_projects', JSON.stringify(projects));
         }
 
-        // Hàm xử lý khi nhấp vào dấu "+" để thêm khung mentor
         function addMentorField() {
             if (mentorCount === 1) {
                 document.getElementById('mentorField2').classList.remove('hidden');
                 mentorCount = 2;
             } else if (mentorCount === 2) {
                 document.getElementById('mentorField3').classList.remove('hidden');
-                document.getElementById('addMentorBtn').style.display = 'none'; // Ẩn nút + khi đã đủ 3 mentor
+                document.getElementById('addMentorBtn').style.display = 'none';
                 mentorCount = 3;
             }
         }
@@ -332,13 +419,11 @@
             document.getElementById('dangerCount').innerText = dangerCount;
         }
 
-        // Modal Thêm mới
         function openAddModal() {
             document.getElementById('addModal').classList.remove('hidden');
         }
         function closeAddModal() {
             document.getElementById('addModal').classList.add('hidden');
-            // Reset lại form mentor khi đóng modal
             document.getElementById('inputMentor1').value = '';
             document.getElementById('inputMentor2').value = '';
             document.getElementById('inputMentor3').value = '';
@@ -363,7 +448,6 @@
                 return;
             }
 
-            // Gom các mentor lại thành chuỗi hiển thị
             let mentorsArr = [m1, m2, m3].filter(Boolean);
             let mentorString = mentorsArr.length > 0 ? mentorsArr.join(', ') : 'ThS. Thương';
 
@@ -382,13 +466,11 @@
             renderTable();
             closeAddModal();
 
-            // Reset form inputs khác
             document.getElementById('inputTitle').value = '';
             document.getElementById('inputStudent').value = '';
             document.getElementById('inputDeadline').value = '';
         }
 
-        // Modal Chi tiết & Phản hồi
         function openDetailModal(index) {
             currentEditingIndex = index;
             let p = projects[index];
@@ -431,6 +513,8 @@
             }
         }
 
+        // Khởi chạy khi tải trang
+        setDynamicGreeting();
         renderTable();
     </script>
 </body>
