@@ -8,33 +8,59 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            background-color: white;
+            z-index: 10;
+        }
+        thead .sticky-col {
+            background-color: #f1f5f9;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800">
+<body class="bg-slate-100/60 font-sans text-slate-800 antialiased">
 
     <!-- ================= HEADER & TABS (CỐ ĐỊNH KHI CUỘN) ================= -->
-    <header class="bg-blue-900 text-white shadow-md sticky top-0 z-40">
+    <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-lg sticky top-0 z-40 border-b border-blue-900/40">
         <div class="container mx-auto px-6 py-4 flex flex-col gap-3">
             <!-- Hàng 1: Tiêu đề bên trái, Avatar viết tắt bên phải -->
             <div class="flex justify-between items-center w-full">
                 <div class="flex items-center space-x-3">
-                    <i class="fa-solid fa-notes-medical text-2xl text-blue-400"></i>
-                    <span class="text-xl font-bold tracking-wide">Nursing Research Tracker</span>
+                    <div class="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-400/30 flex items-center justify-center text-blue-400 shadow-inner">
+                        <i class="fa-solid fa-notes-medical text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight text-white block">Nursing Research Tracker</span>
+                        <span class="text-xs text-blue-300 font-medium">Hệ thống Quản lý & Theo dõi Công bố Khoa học</span>
+                    </div>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <div id="userAvatarInitials" class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold flex items-center justify-center border-2 border-white shadow text-sm">
+                    <div id="userAvatarInitials" class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center border-2 border-white/20 shadow-md text-sm tracking-wider">
                         PT
                     </div>
                 </div>
             </div>
 
             <!-- Hàng 2: Tab Navigation canh giữa -->
-            <div class="flex justify-center w-full">
-                <div id="tabNavContainer" class="flex space-x-2 bg-blue-950 p-1 rounded-xl">
-                    <button onclick="switchTab('home')" id="tabHome" class="px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow">
-                        <i class="fa-solid fa-house mr-1.5"></i> Trang chủ
+            <div class="flex justify-center w-full pt-1">
+                <div id="tabNavContainer" class="flex space-x-1 bg-slate-900/80 backdrop-blur p-1.5 rounded-xl border border-white/10 shadow-inner">
+                    <button onclick="switchTab('home')" id="tabHome" class="px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-600 text-white shadow-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-house"></i><span>Trang chủ</span>
                     </button>
-                    <button onclick="switchTab('overview')" id="tabOverview" class="px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white">
-                        <i class="fa-solid fa-chart-pie mr-1.5"></i> Tổng quan
+                    <button onclick="switchTab('overview')" id="tabOverview" class="px-4 py-2 rounded-lg text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-white/5 flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-pie"></i><span>Tổng quan</span>
+                    </button>
+                    <button onclick="switchTab('ds_detai')" id="tabDsDetai" class="px-4 py-2 rounded-lg text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-white/5 flex items-center space-x-2">
+                        <i class="fa-solid fa-table-list"></i><span>DS Đề tài</span>
+                    </button>
+                    <button onclick="switchTab('ds_baibao')" id="tabDsBaibao" class="px-4 py-2 rounded-lg text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-white/5 flex items-center space-x-2">
+                        <i class="fa-solid fa-newspaper"></i><span>DS Bài báo</span>
                     </button>
                 </div>
             </div>
@@ -43,50 +69,53 @@
 
     <!-- ================= TAB 1: TRANG CHỦ ================= -->
     <div id="sectionHome" class="container mx-auto px-6 py-8 max-w-4xl">
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6">
-            <!-- Lời chào động & Thông tin định danh -->
-            <div class="border-b border-slate-100 pb-6">
-                <h2 id="greetingText" class="text-2xl font-bold text-slate-900">XIN CHÀO...</h2>
-                <p id="displayDegree" class="text-lg font-semibold text-blue-600 mt-1">Thạc sĩ</p>
-                <p id="displayName" class="text-xl font-bold text-slate-800 mt-0.5">PHẠM THỊ LÊ THƯƠNG</p>
+        <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200/80 p-8 space-y-6">
+            <div class="border-b border-slate-100 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 id="greetingText" class="text-xl font-bold uppercase tracking-wide text-slate-400">XIN CHÀO...</h2>
+                    <p id="displayName" class="text-2xl font-extrabold text-slate-900 mt-1 tracking-tight">PHẠM THỊ LÊ THƯƠNG</p>
+                    <p id="displayDegree" class="text-sm font-semibold text-blue-600 mt-0.5 inline-block bg-blue-50 px-3 py-1 rounded-full border border-blue-100">Thạc sĩ</p>
+                </div>
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-md text-2xl font-bold">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
             </div>
 
-            <!-- Khung Hồ sơ cá nhân -->
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="text-base font-bold text-slate-800 flex items-center">
-                        <i class="fa-solid fa-id-card text-blue-600 mr-2"></i> Hồ sơ cá nhân
+                        <i class="fa-solid fa-id-card text-blue-600 mr-2"></i> Hồ sơ cá nhân học thuật
                     </h3>
-                    <button onclick="openProfileModal()" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2 border border-blue-200">
+                    <button onclick="openProfileModal()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2 border border-blue-200 shadow-sm">
                         <i class="fa-solid fa-pen-to-square"></i>
                         <span>Cập nhật</span>
                     </button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-6 rounded-xl border border-slate-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/80 p-6 rounded-2xl border border-slate-200/60 shadow-inner">
                     <div>
-                        <span class="block text-xs font-semibold text-slate-400 uppercase">Họ và tên đầy đủ</span>
-                        <p id="profileName" class="text-sm font-semibold text-slate-800 mt-1">PHẠM THỊ LÊ THƯƠNG</p>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Họ và tên đầy đủ</span>
+                        <p id="profileName" class="text-sm font-bold text-slate-900 mt-1">PHẠM THỊ LÊ THƯƠNG</p>
                     </div>
                     <div>
-                        <span class="block text-xs font-semibold text-slate-400 uppercase">Ngày tháng năm sinh</span>
-                        <p id="profileDob" class="text-sm font-semibold text-slate-800 mt-1">15/07/1990</p>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Ngày tháng năm sinh</span>
+                        <p id="profileDob" class="text-sm font-semibold text-slate-700 mt-1">15/07/1990</p>
                     </div>
                     <div>
-                        <span class="block text-xs font-semibold text-slate-400 uppercase">Trình độ học vấn</span>
-                        <p id="profileDegree" class="text-sm font-semibold text-slate-800 mt-1">Thạc sĩ</p>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Trình độ học vấn</span>
+                        <p id="profileDegree" class="text-sm font-semibold text-slate-700 mt-1">Thạc sĩ</p>
                     </div>
                     <div>
-                        <span class="block text-xs font-semibold text-slate-400 uppercase">Năm tốt nghiệp</span>
-                        <p id="profileGradYear" class="text-sm font-semibold text-slate-800 mt-1">2024 (Dự kiến Tiến sĩ: 2028)</p>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Năm tốt nghiệp</span>
+                        <p id="profileGradYear" class="text-sm font-semibold text-slate-700 mt-1">2024 (Dự kiến Tiến sĩ: 2028)</p>
                     </div>
                     <div>
-                        <span class="block text-xs font-semibold text-slate-400 uppercase">Khoa làm việc</span>
-                        <p id="profileDepartment" class="text-sm font-semibold text-slate-800 mt-1">Khoa Gây mê - Hồi sức</p>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Khoa làm việc</span>
+                        <p id="profileDepartment" class="text-sm font-semibold text-slate-700 mt-1">Khoa Gây mê - Hồi sức</p>
                     </div>
                     <div>
-                        <span class="block text-xs font-semibold text-slate-400 uppercase">Bệnh viện</span>
-                        <p id="profileHospital" class="text-sm font-semibold text-slate-800 mt-1">Bệnh viện Đại học Y Dược TPHCM</p>
+                        <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Bệnh viện</span>
+                        <p id="profileHospital" class="text-sm font-semibold text-slate-700 mt-1">Bệnh viện Đại học Y Dược TPHCM</p>
                     </div>
                 </div>
             </div>
@@ -94,85 +123,136 @@
     </div>
 
     <!-- ================= TAB 2: TỔNG QUAN ================= -->
-    <main id="sectionOverview" class="container mx-auto px-6 py-8 hidden">
-
-        <!-- Page Header & Action -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <main id="sectionOverview" class="container mx-auto px-6 py-8 hidden space-y-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-slate-900">Tổng quan Tiến độ Công bố Khoa học</h1>
-                <p class="text-sm text-slate-500 mt-1">Hệ thống chuẩn hóa quy trình từ đề cương đến xuất bản bài báo cho điều dưỡng sau đại học[cite: 1].</p>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Tổng quan Tiến độ Công bố Khoa học</h1>
+                <p class="text-sm text-slate-500 mt-1">Báo cáo trực quan hoạt động nghiên cứu khoa học và phát triển năng lực điều dưỡng.</p>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="resetDefaultData()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2.5 rounded-lg text-sm font-medium transition flex items-center space-x-2" title="Khôi phục dữ liệu mẫu ban đầu">
-                    <i class="fa-solid fa-rotate-right"></i>
+                <button onclick="resetDefaultData()" class="bg-white hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-semibold transition border border-slate-200 shadow-sm flex items-center space-x-2" title="Khôi phục dữ liệu mẫu ban đầu">
+                    <i class="fa-solid fa-rotate-right text-slate-400"></i>
                     <span>Khôi phục mẫu</span>
                 </button>
-                <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm transition flex items-center space-x-2">
+                <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/20 transition flex items-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Thêm đề tài mới</span>
                 </button>
             </div>
         </div>
 
-        <!-- 4 STATS CARDS (Bố cục 2x2 mới, có thể bấm vào để lọc) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-            <!-- Khung 1: Tổng số đề tài -->
-            <div onclick="filterAndOpenFilteredList('all')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-blue-300 hover:shadow-md transition">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tổng số đề tài</p>
-                    <h3 id="totalCount" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+        <!-- Khung mờ thứ 1: Thống kê tiến độ -->
+        <div class="bg-white/80 backdrop-blur p-6 rounded-2xl border border-slate-200/80 shadow-md space-y-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1 flex items-center">
+                <i class="fa-solid fa-chart-line mr-2 text-blue-600"></i> Thống kê tiến độ công bố
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div onclick="filterAndOpenFilteredList('all')" class="bg-gradient-to-br from-white to-slate-50/50 p-5 rounded-xl shadow-sm border border-slate-200/70 flex items-center justify-between cursor-pointer hover:border-blue-400 hover:shadow-md transition group">
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Tổng số đề tài</p>
+                        <h3 id="totalCount" class="text-2xl font-extrabold text-slate-900 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
                 </div>
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
-                    <i class="fa-solid fa-folder-open"></i>
+                <div onclick="filterAndOpenFilteredList('accepted')" class="bg-gradient-to-br from-white to-emerald-50/30 p-5 rounded-xl shadow-sm border border-slate-200/70 flex items-center justify-between cursor-pointer hover:border-emerald-400 hover:shadow-md transition group">
+                    <div>
+                        <p class="text-xs font-bold text-emerald-600/80 uppercase tracking-wider">Đã chấp nhận / Đăng báo</p>
+                        <h3 id="acceptedCount" class="text-2xl font-extrabold text-emerald-700 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
                 </div>
-            </div>
-            <!-- Khung 2: Đã chấp nhận/ đăng báo -->
-            <div onclick="filterAndOpenFilteredList('accepted')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-emerald-300 hover:shadow-md transition">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đã chấp nhận / Đăng báo</p>
-                    <h3 id="acceptedCount" class="text-2xl font-bold text-emerald-600 mt-1">0</h3>
+                <div onclick="filterAndOpenFilteredList('in_progress')" class="bg-gradient-to-br from-white to-amber-50/30 p-5 rounded-xl shadow-sm border border-slate-200/70 flex items-center justify-between cursor-pointer hover:border-amber-400 hover:shadow-md transition group">
+                    <div>
+                        <p class="text-xs font-bold text-amber-600/80 uppercase tracking-wider">Đang hoàn thành</p>
+                        <h3 id="inProgressCount" class="text-2xl font-extrabold text-amber-700 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition">
+                        <i class="fa-solid fa-spinner"></i>
+                    </div>
                 </div>
-                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-            </div>
-            <!-- Khung 3: Đang hoàn thành -->
-            <div onclick="filterAndOpenFilteredList('in_progress')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-amber-300 hover:shadow-md transition">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Đang hoàn thành</p>
-                    <h3 id="inProgressCount" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
-                </div>
-                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
-                    <i class="fa-solid fa-spinner"></i>
-                </div>
-            </div>
-            <!-- Khung 4: Quá hạn -->
-            <div onclick="filterAndOpenFilteredList('danger')" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-rose-300 hover:shadow-md transition">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Quá hạn</p>
-                    <h3 id="dangerCount" class="text-2xl font-bold text-rose-600 mt-1">0</h3>
-                </div>
-                <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+                <div onclick="filterAndOpenFilteredList('danger')" class="bg-gradient-to-br from-white to-rose-50/30 p-5 rounded-xl shadow-sm border border-slate-200/70 flex items-center justify-between cursor-pointer hover:border-rose-400 hover:shadow-md transition group">
+                    <div>
+                        <p class="text-xs font-bold text-rose-600/80 uppercase tracking-wider">Quá hạn</p>
+                        <h3 id="dangerCount" class="text-2xl font-extrabold text-rose-700 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- TRACKING TABLE -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h3 class="font-bold text-slate-800">Danh sách Đề tài & Trạng thái Tiến độ</h3>
-                <span class="text-xs text-emerald-600 font-medium"><i class="fa-solid fa-database mr-1"></i> Đã lưu trữ tự động (LocalStorage)</span>
+        <!-- Khung mờ thứ 2: Phân bố vai trò nghiên cứu -->
+        <div class="bg-white/80 backdrop-blur p-6 rounded-2xl border border-slate-200/80 shadow-md space-y-4">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1 flex items-center">
+                <i class="fa-solid fa-user-shield mr-2 text-indigo-600"></i> Phân bố vai trò nghiên cứu cá nhân
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div onclick="filterAndOpenRoleList('leader')" class="bg-gradient-to-br from-white to-indigo-50/20 p-5 rounded-xl shadow-sm border border-slate-200/70 flex items-center justify-between cursor-pointer hover:border-indigo-400 hover:shadow-md transition group">
+                    <div>
+                        <p class="text-xs font-bold text-indigo-600/80 uppercase tracking-wider">Chủ nhiệm đề tài</p>
+                        <h3 id="roleLeaderCount" class="text-2xl font-extrabold text-indigo-700 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                </div>
+                <div onclick="filterAndOpenRoleList('mentor')" class="bg-gradient-to-br from-white to-purple-50/20 p-5 rounded-xl shadow-sm border border-slate-200/70 flex items-center justify-between cursor-pointer hover:border-purple-400 hover:shadow-md transition group">
+                    <div>
+                        <p class="text-xs font-bold text-purple-600/80 uppercase tracking-wider">Người hướng dẫn</p>
+                        <h3 id="roleMentorCount" class="text-2xl font-extrabold text-purple-700 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                </div>
+                <div onclick="filterAndOpenRoleList('collab')" class="bg-gradient-to-br from-white to-teal-50/20 p-5 rounded-xl shadow-sm border border-slate-200/70 flex items-center justify-between cursor-pointer hover:border-teal-400 hover:shadow-md transition group">
+                    <div>
+                        <p class="text-xs font-bold text-teal-600/80 uppercase tracking-wider">Cộng tác viên</p>
+                        <h3 id="roleCollabCount" class="text-2xl font-extrabold text-teal-700 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= TAB 3: DS ĐỀ TÀI ================= -->
+    <main id="sectionDsDetai" class="container mx-auto px-6 py-8 hidden space-y-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+            <div>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Danh sách Đề tài & Trạng thái Tiến độ</h1>
+                <p class="text-sm text-slate-500 mt-1">Quản lý chi tiết toàn bộ danh mục đề tài khoa học.</p>
+            </div>
+            <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/20 transition flex items-center space-x-2">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm đề tài mới</span>
+            </button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200/80 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/80">
+                <h3 class="font-bold text-slate-900 flex items-center"><i class="fa-solid fa-table text-blue-600 mr-2"></i> Bảng Quản lý Đề tài</h3>
+                <span class="text-xs text-emerald-600 font-semibold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100"><i class="fa-solid fa-database mr-1"></i> Lưu trữ thời gian thực</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
-                            <th class="py-3 px-6">Tên đề tài nghiên cứu</th>
-                            <th class="py-3 px-6">Giai đoạn hiện tại</th>
-                            <th class="py-3 px-6">Hạn chót (Deadline)</th>
-                            <th class="py-3 px-6">Trạng thái rủi ro</th>
-                            <th class="py-3 px-6 text-center">Thao tác</th>
+                        <tr class="bg-slate-100/70 text-slate-600 text-xs uppercase tracking-wider border-b border-slate-200">
+                            <th class="py-3 px-6 sticky-col font-bold">Tên đề tài nghiên cứu</th>
+                            <th class="py-3 px-6 font-bold">Chủ nhiệm đề tài</th>
+                            <th class="py-3 px-6 font-bold">Người hướng dẫn</th>
+                            <th class="py-3 px-6 font-bold">Cộng tác viên</th>
+                            <th class="py-3 px-6 font-bold">Giai đoạn</th>
+                            <th class="py-3 px-6 font-bold">Hạn chót</th>
+                            <th class="py-3 px-6 font-bold">Trạng thái</th>
+                            <th class="py-3 px-6 text-center font-bold">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="projectTableBody" class="divide-y divide-slate-100 text-sm">
@@ -181,35 +261,125 @@
                 </table>
             </div>
         </div>
-
     </main>
 
-    <!-- ================= TAB 3: THƯ MỤC CON / CHI TIẾT ĐỀ TÀI ================= -->
-    <div id="sectionSubFolder" class="container mx-auto px-6 py-8 max-w-4xl hidden space-y-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 sticky top-24 z-30">
-            <button onclick="goBackToOverview()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Trở về trang trước">
-                <i class="fa-solid fa-arrow-left text-lg"></i>
-            </button>
+    <!-- ================= TAB 4: DS BÀI BÁO ================= -->
+    <main id="sectionDsBaibao" class="container mx-auto px-6 py-8 hidden space-y-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
             <div>
-                <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Thư mục đề tài / Bài báo</span>
-                <h2 id="subFolderTitle" class="text-xl font-bold text-slate-900 mt-0.5">Tên đề tài</h2>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Danh sách Bài báo Khoa học</h1>
+                <p class="text-sm text-slate-500 mt-1">Tổng hợp và theo dõi các xuất bản phẩm khoa học từ đề tài.</p>
             </div>
+            <button onclick="switchTab('ds_detai'); openAddModal();" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/20 transition flex items-center space-x-2">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm bài báo / đề tài mới</span>
+            </button>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
-                <div>
-                    <p id="subFolderMeta" class="text-xs text-slate-500">Người hướng dẫn & Cộng tác viên</p>
-                    <p id="subFolderDeadline" class="text-xs text-slate-500 mt-0.5">Hạn chót:</p>
-                </div>
-                <button onclick="toggleUpdateMode()" id="updateProgressBtn" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-xs font-medium transition border border-blue-200 flex items-center space-x-2">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    <span>Cập nhật tiến độ</span>
+        <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200/80 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/80">
+                <h3 class="font-bold text-slate-900 flex items-center"><i class="fa-solid fa-newspaper text-indigo-600 mr-2"></i> Bảng Tổng hợp Bài báo</h3>
+                <span class="text-xs text-indigo-600 font-semibold bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">Danh mục công bố</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100/70 text-slate-600 text-xs uppercase tracking-wider border-b border-slate-200">
+                            <th class="py-3 px-6 font-bold">Tên bài báo / Đề tài</th>
+                            <th class="py-3 px-6 font-bold">Chủ nhiệm</th>
+                            <th class="py-3 px-6 font-bold">Hướng dẫn & Cộng sự</th>
+                            <th class="py-3 px-6 font-bold">Giai đoạn xuất bản</th>
+                            <th class="py-3 px-6 text-center font-bold">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articleTableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- Render động -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= TAB PHỤ: THƯ MỤC CON / CHI TIẾT ĐỀ TÀI ================= -->
+    <div id="sectionSubFolder" class="container mx-auto px-6 py-8 max-w-4xl hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200/80 flex items-center justify-between sticky top-24 z-30">
+            <div class="flex items-center space-x-4">
+                <button onclick="goBackToOverview()" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-sm" title="Trở về trang trước">
+                    <i class="fa-solid fa-arrow-left text-base"></i>
                 </button>
+                <div>
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Hồ sơ chi tiết đề tài</span>
+                    <h2 id="subFolderTitle" class="text-xl font-extrabold text-slate-900 mt-0.5">Tên đề tài</h2>
+                </div>
+            </div>
+            <button onclick="openEditTitleModal()" class="w-10 h-10 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition border border-blue-200 shadow-sm" title="Sửa tên đề tài">
+                <i class="fa-solid fa-pen text-sm"></i>
+            </button>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200/80 p-8 space-y-6">
+            <div class="border-b border-slate-100 pb-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-600 uppercase tracking-wider bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200/60">TÁC GIẢ - CỘNG SỰ</span>
+                    <button onclick="toggleEditAuthorsMode()" id="editAuthorsBtn" class="w-9 h-9 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 flex items-center justify-center transition border border-blue-200 shadow-sm" title="Sửa thông tin tác giả, cộng sự">
+                        <i class="fa-solid fa-pen text-xs"></i>
+                    </button>
+                </div>
+
+                <div id="authorsDisplayArea" class="space-y-2 text-sm bg-slate-50/80 p-5 rounded-xl border border-slate-200/60 shadow-inner">
+                    <!-- Render động -->
+                </div>
+
+                <div id="authorsEditArea" class="hidden space-y-4 bg-blue-50/40 p-5 rounded-xl border border-blue-100">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-bold text-slate-700 uppercase">Chủ nhiệm đề tài</label>
+                            <button type="button" onclick="addEditLeaderField()" class="w-6 h-6 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-full flex items-center justify-center text-xs font-bold" title="Thêm chủ nhiệm">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="editLeadersContainer" class="space-y-2"></div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-bold text-slate-700 uppercase">Người hướng dẫn</label>
+                            <button type="button" onclick="addEditMentorField()" class="w-6 h-6 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-full flex items-center justify-center text-xs font-bold" title="Thêm người hướng dẫn">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="editMentorsContainer" class="space-y-2"></div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-bold text-slate-700 uppercase">Cộng tác viên</label>
+                            <button type="button" onclick="addEditCollabField()" class="w-6 h-6 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-full flex items-center justify-center text-xs font-bold" title="Thêm cộng tác viên">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="editCollabsContainer" class="space-y-2"></div>
+                    </div>
+
+                    <div class="flex justify-end space-x-2 pt-2">
+                        <button onclick="cancelEditAuthors()" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold">Hủy</button>
+                        <button onclick="saveEditAuthors()" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold shadow">Lưu thay đổi</button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center text-xs text-slate-500 pt-2">
+                    <span id="subFolderDeadline">Hạn chót:</span>
+                </div>
             </div>
 
             <div class="space-y-4">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Hành trình nghiên cứu chuẩn hóa (7 mốc):</p>
+                <div class="flex justify-between items-center">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Hành trình nghiên cứu chuẩn hóa (7 mốc):</p>
+                    <button onclick="toggleUpdateMode()" id="updateProgressBtn" class="bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-xl text-xs font-semibold transition border border-blue-200 shadow-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Cập nhật tiến độ</span>
+                    </button>
+                </div>
                 <div id="milestonesContainer" class="space-y-3">
                     <!-- Render động 7 mốc -->
                 </div>
@@ -217,28 +387,31 @@
         </div>
     </div>
 
-    <!-- ================= TAB 4: TRANG CON LỌC THEO THẺ THỐNG KÊ ================= -->
+    <!-- ================= TAB PHỤ: TRANG CON LỌC THEO THẺ THỐNG KÊ ================= -->
     <div id="sectionFilteredList" class="container mx-auto px-6 py-8 max-w-4xl hidden space-y-6">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 sticky top-24 z-30">
-            <button onclick="goBackToOverview()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Trở về trang trước">
-                <i class="fa-solid fa-arrow-left text-lg"></i>
+        <div class="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200/80 flex items-center space-x-4 sticky top-24 z-30">
+            <button onclick="goBackToOverview()" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-sm" title="Trở về trang trước">
+                <i class="fa-solid fa-arrow-left text-base"></i>
             </button>
             <div>
-                <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Danh sách bài báo đã lọc</span>
-                <h2 id="filterTitle" class="text-xl font-bold text-slate-900 mt-0.5">Tiêu đề lọc</h2>
+                <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Danh sách bài báo đã lọc</span>
+                <h2 id="filterTitle" class="text-xl font-extrabold text-slate-900 mt-0.5">Tiêu đề lọc</h2>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200/80 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
-                            <th class="py-3 px-6">Tên đề tài nghiên cứu</th>
-                            <th class="py-3 px-6">Giai đoạn hiện tại</th>
-                            <th class="py-3 px-6">Hạn chót (Deadline)</th>
-                            <th class="py-3 px-6">Trạng thái rủi ro</th>
-                            <th class="py-3 px-6 text-center">Thao tác</th>
+                        <tr class="bg-slate-100/70 text-slate-600 text-xs uppercase tracking-wider border-b border-slate-200">
+                            <th class="py-3 px-6 font-bold">Tên đề tài nghiên cứu</th>
+                            <th class="py-3 px-6 font-bold">Chủ nhiệm</th>
+                            <th class="py-3 px-6 font-bold">Hướng dẫn</th>
+                            <th class="py-3 px-6 font-bold">Cộng tác viên</th>
+                            <th class="py-3 px-6 font-bold">Giai đoạn</th>
+                            <th class="py-3 px-6 font-bold">Hạn chót</th>
+                            <th class="py-3 px-6 font-bold">Trạng thái</th>
+                            <th class="py-3 px-6 text-center font-bold">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="filteredTableBody" class="divide-y divide-slate-100 text-sm">
@@ -249,25 +422,39 @@
         </div>
     </div>
 
+    <!-- ================= MODAL: SỬA TÊN ĐỀ TÀI ================= -->
+    <div id="editTitleModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden p-6 space-y-4">
+            <h3 class="font-bold text-slate-900 text-lg">Chỉnh sửa tên đề tài</h3>
+            <div>
+                <input type="text" id="editTitleInput" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeEditTitleModal()" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-sm font-semibold">Hủy</button>
+                <button onclick="saveEditTitle()" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold shadow">Lưu</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ================= MODAL: CẬP NHẬT HỒ SƠ CÁ NHÂN ================= -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
             <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Cập nhật Hồ sơ cá nhân</h3>
+                <h3 class="font-bold text-slate-900">Cập nhật Hồ sơ cá nhân</h3>
                 <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Họ và tên đầy đủ (Tự động viết hoa)</label>
-                    <input type="text" id="editName" oninput="this.value = this.value.toUpperCase()" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 uppercase">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Họ và tên đầy đủ (Không chỉnh sửa ở đây)</label>
+                    <input type="text" id="editName" disabled class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-100 text-slate-500 cursor-not-allowed uppercase font-semibold">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Ngày tháng năm sinh</label>
-                    <input type="text" id="editDob" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Ngày tháng năm sinh</label>
+                    <input type="text" id="editDob" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Trình độ học vấn</label>
-                    <input type="text" id="editDegree" list="degreeList" placeholder="Chọn hoặc nhập trình độ..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Trình độ học vấn</label>
+                    <input type="text" id="editDegree" list="degreeList" placeholder="Chọn hoặc nhập trình độ..." class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
                     <datalist id="degreeList">
                         <option value="Thạc sĩ">
                         <option value="Tiến sĩ">
@@ -278,12 +465,12 @@
                     </datalist>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Năm tốt nghiệp</label>
-                    <input type="text" id="editGradYear" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Năm tốt nghiệp</label>
+                    <input type="text" id="editGradYear" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Khoa làm việc</label>
-                    <input type="text" id="editDepartment" list="deptList" placeholder="Chọn hoặc nhập khoa..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Khoa làm việc</label>
+                    <input type="text" id="editDepartment" list="deptList" placeholder="Chọn hoặc nhập khoa..." class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
                     <datalist id="deptList">
                         <option value="Khoa Nội soi">
                         <option value="Khoa Thăm dò chức năng hô hấp">
@@ -341,8 +528,8 @@
                     </datalist>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Bệnh viện</label>
-                    <input type="text" id="editHospital" list="hospList" placeholder="Chọn hoặc nhập bệnh viện..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Bệnh viện</label>
+                    <input type="text" id="editHospital" list="hospList" placeholder="Chọn hoặc nhập bệnh viện..." class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
                     <datalist id="hospList">
                         <option value="Bệnh viện Đại học Y Dược TPHCM">
                         <option value="Bệnh viện Chợ Rẫy">
@@ -422,61 +609,85 @@
                         <option value="Bệnh viện Đa khoa Tâm Anh Hà Nội">
                     </datalist>
                 </div>
+
+                <div class="space-y-2 pt-3 border-t border-slate-200">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-xs font-bold text-slate-600 uppercase">Họ và tên khác</label>
+                        <button type="button" onclick="addAltNameField('')" class="w-6 h-6 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs transition font-bold" title="Thêm họ và tên khác">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="editAltNamesContainer" class="space-y-2">
+                        <!-- Render dynamic alt names -->
+                    </div>
+                </div>
             </div>
             <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
-                <button onclick="closeProfileModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-100 transition">Hủy</button>
-                <button onclick="saveProfile()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition">Lưu thay đổi</button>
+                <button onclick="closeProfileModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-sm font-semibold transition">Hủy</button>
+                <button onclick="saveProfile()" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold shadow transition">Lưu thay đổi</button>
             </div>
         </div>
     </div>
 
     <!-- ================= MODAL: THÊM ĐỀ TÀI MỚI ================= -->
     <div id="addModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden max-h-[90vh] flex flex-col">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[90vh] flex flex-col">
             <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Thêm đề tài nghiên cứu mới</h3>
+                <h3 class="font-bold text-slate-900">Thêm đề tài nghiên cứu mới</h3>
                 <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="p-6 space-y-4 overflow-y-auto">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tên đề tài nghiên cứu</label>
-                    <input type="text" id="inputTitle" placeholder="Nhập tên đề tài..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Tên đề tài nghiên cứu</label>
+                    <input type="text" id="inputTitle" placeholder="Nhập tên đề tài..." class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
                 </div>
                 
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase">Người hướng dẫn</label>
-                        <button type="button" onclick="addMentorField()" id="addMentorBtn" class="w-6 h-6 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs transition font-bold" title="Thêm người hướng dẫn">
+                        <label class="block text-xs font-bold text-slate-600 uppercase">Chủ nhiệm đề tài</label>
+                        <button type="button" onclick="addLeaderField('add')" class="w-6 h-6 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs transition font-bold" title="Thêm chủ nhiệm">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
-                    <input type="text" id="inputMentor1" placeholder="VD: ThS. Phạm Thị Lê Thương" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-                    
-                    <div id="mentorField2" class="hidden">
-                        <input type="text" id="inputMentor2" placeholder="Người hướng dẫn 2" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-                    </div>
-
-                    <div id="mentorField3" class="hidden">
-                        <input type="text" id="inputMentor3" placeholder="Người hướng dẫn 3" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <div id="addLeadersContainer" class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" placeholder="VD: PHẠM THỊ LÊ THƯƠNG" class="add-leader-input w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 uppercase" oninput="this.value = this.value.toUpperCase()">
+                        </div>
                     </div>
                 </div>
 
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
-                        <label class="block text-xs font-semibold text-slate-600 uppercase">Cộng tác viên</label>
-                        <button type="button" onclick="addCollaboratorField()" class="w-6 h-6 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs transition font-bold" title="Thêm cộng tác viên">
+                        <label class="block text-xs font-bold text-slate-600 uppercase">Người hướng dẫn</label>
+                        <button type="button" onclick="addMentorField('add')" class="w-6 h-6 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs transition font-bold" title="Thêm người hướng dẫn">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
-                    <div id="collaboratorsContainer" class="space-y-2">
-                        <input type="text" placeholder="VD: BS. Nguyễn Văn A" class="collaborator-input w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    <div id="addMentorsContainer" class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" placeholder="VD: ThS. Nguyễn Văn A" class="add-mentor-input w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-xs font-bold text-slate-600 uppercase">Cộng tác viên</label>
+                        <button type="button" onclick="addCollaboratorField('add')" class="w-6 h-6 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs transition font-bold" title="Thêm cộng tác viên">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="addCollabsContainer" class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" placeholder="VD: BS. Trần Văn B" class="add-collab-input w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                        </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giai đoạn hiện tại</label>
-                        <select id="inputStage" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Giai đoạn hiện tại</label>
+                        <select id="inputStage" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
                             <option value="Đề cương & Phê duyệt đạo đức">1. Đề cương & Phê duyệt đạo đức</option>
                             <option value="Thu thập dữ liệu">2. Thu thập dữ liệu</option>
                             <option value="Phân tích dữ liệu">3. Phân tích dữ liệu</option>
@@ -487,13 +698,13 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Hạn chót</label>
-                        <input type="text" id="inputDeadline" placeholder="VD: 30/11/2026" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Hạn chót</label>
+                        <input type="text" id="inputDeadline" placeholder="VD: 30/11/2026" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Mức độ rủi ro / Trạng thái</label>
-                    <select id="inputRisk" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Mức độ rủi ro / Trạng thái</label>
+                    <select id="inputRisk" class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 bg-white">
                         <option value="safe">🟢 Đúng tiến độ (An toàn)</option>
                         <option value="warning">🟡 Sắp đến hạn / Cần lưu ý</option>
                         <option value="danger">🔴 Quá hạn / Kẹt ở một bước quá lâu</option>
@@ -501,8 +712,41 @@
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
-                <button onclick="closeAddModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-100 transition">Hủy</button>
-                <button onclick="addNewProject()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition">Lưu đề tài</button>
+                <button onclick="closeAddModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-sm font-semibold transition">Hủy</button>
+                <button onclick="handleSaveProjectAttempt()" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold shadow transition">Lưu đề tài</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: CẢNH BÁO THIẾU TÊN HỌC VIÊN ================= -->
+    <div id="missingNameModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden p-6 space-y-4 border-2 border-rose-500">
+            <div class="flex items-center space-x-3 text-rose-600">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                <h3 class="font-bold text-lg">Kiểm tra định danh hồ sơ</h3>
+            </div>
+            <div class="text-sm text-slate-800 font-bold leading-relaxed bg-rose-50 p-3 rounded-lg border border-rose-100">
+                ĐỀ TÀI NGHIÊN CỨU NÀY KHÔNG CÓ TÊN CỦA BẠN, KHÔNG THỂ LƯU VÀO HỒ SƠ NGHIÊN CỨU CỦA BẠN ĐƯỢC
+            </div>
+            <p class="text-sm font-semibold text-slate-700">BẠN CÓ MUỐN ĐIỀU CHỈNH LẠI KHÔNG?</p>
+            
+            <div class="flex flex-col space-y-2 pt-2">
+                <button onclick="closeMissingNameModal()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition shadow">
+                    Điều chỉnh lại
+                </button>
+                <button onclick="clearAddForm()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition shadow">
+                    Xóa
+                </button>
+                <button onclick="toggleAlternateNameInput()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-semibold transition shadow">
+                    Tên tôi viết dưới dạng khác
+                </button>
+                
+                <div id="alternateNameWrapper" class="hidden pt-2 space-y-2">
+                    <input type="text" id="alternateNameInput" placeholder="Nhập tên khác của bạn (VD: P. T. L. Thương)..." class="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-purple-500 uppercase" oninput="this.value = this.value.toUpperCase()">
+                    <button onclick="verifyAlternateName()" class="w-full py-2 bg-purple-700 hover:bg-purple-800 text-white rounded-xl text-xs font-semibold transition shadow">
+                        Xác nhận tên khác và Lưu
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -519,8 +763,8 @@
             </div>
             <p class="text-sm font-bold text-slate-800">BẠN CÓ CHẮC VỚI ĐIỀU NÀY KHÔNG, BẠN CÓ MUỐN LƯU KHÔNG?</p>
             <div class="flex justify-end space-x-3 pt-2">
-                <button onclick="cancelMilestoneChange()" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-sm font-medium hover:bg-rose-700 transition shadow">KHÔNG LƯU</button>
-                <button onclick="confirmMilestoneChange()" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition shadow">LƯU</button>
+                <button onclick="cancelMilestoneChange()" class="px-4 py-2 bg-rose-600 text-white rounded-xl text-sm font-semibold transition shadow">KHÔNG LƯU</button>
+                <button onclick="confirmMilestoneChange()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold transition shadow">LƯU</button>
             </div>
         </div>
     </div>
@@ -537,17 +781,18 @@
             "Chấp nhận / Đăng (Acceptance/Publication)"
         ];
 
-        // Dữ liệu Hồ sơ cá nhân mặc định
         const defaultProfile = {
             name: "PHẠM THỊ LÊ THƯƠNG",
             dob: "15/07/1990",
             degree: "Thạc sĩ",
             gradYear: "2024 (Dự kiến Tiến sĩ: 2028)",
             department: "Khoa Gây mê - Hồi sức",
-            hospital: "Bệnh viện Đại học Y Dược TPHCM"
+            hospital: "Bệnh viện Đại học Y Dược TPHCM",
+            alternateNames: []
         };
 
         let userProfile = JSON.parse(localStorage.getItem('nursing_user_profile')) || defaultProfile;
+        if (!userProfile.alternateNames) userProfile.alternateNames = [];
 
         function updateAvatarInitials(fullName) {
             if (!fullName) return "PT";
@@ -582,7 +827,27 @@
             document.getElementById('editGradYear').value = userProfile.gradYear;
             document.getElementById('editDepartment').value = userProfile.department;
             document.getElementById('editHospital').value = userProfile.hospital;
+            
+            let container = document.getElementById('editAltNamesContainer');
+            container.innerHTML = '';
+            let names = userProfile.alternateNames || [];
+            if (names.length === 0) names = [''];
+            names.forEach(n => {
+                addAltNameField(n);
+            });
+
             document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function addAltNameField(val = '') {
+            const container = document.getElementById('editAltNamesContainer');
+            const div = document.createElement('div');
+            div.className = "flex items-center space-x-2";
+            div.innerHTML = `
+                <input type="text" value="${val}" placeholder="VD: P. T. L. Thương..." class="edit-altname-input w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm bg-white uppercase" oninput="this.value = this.value.toUpperCase()">
+                <button type="button" onclick="this.parentElement.remove()" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm" title="Xóa"><i class="fa-solid fa-minus"></i></button>
+            `;
+            container.appendChild(div);
         }
 
         function closeProfileModal() {
@@ -590,17 +855,23 @@
         }
 
         function saveProfile() {
-            userProfile = {
-                name: (document.getElementById('editName').value || "").toUpperCase(),
-                dob: document.getElementById('editDob').value,
-                degree: document.getElementById('editDegree').value,
-                gradYear: document.getElementById('editGradYear').value,
-                department: document.getElementById('editDepartment').value,
-                hospital: document.getElementById('editHospital').value
-            };
+            userProfile.dob = document.getElementById('editDob').value;
+            userProfile.degree = document.getElementById('editDegree').value;
+            userProfile.gradYear = document.getElementById('editGradYear').value;
+            userProfile.department = document.getElementById('editDepartment').value;
+            userProfile.hospital = document.getElementById('editHospital').value;
+
+            let alts = [];
+            document.querySelectorAll('.edit-altname-input').forEach(inp => {
+                if (inp.value.trim()) alts.push(inp.value.trim().toUpperCase());
+            });
+            userProfile.alternateNames = alts;
+
             localStorage.setItem('nursing_user_profile', JSON.stringify(userProfile));
             loadProfileToUI();
             closeProfileModal();
+            renderTable();
+            renderArticleTable();
             alert('Đã cập nhật hồ sơ cá nhân thành công!');
         }
 
@@ -622,194 +893,137 @@
         function switchTab(tabName) {
             const homeSec = document.getElementById('sectionHome');
             const overviewSec = document.getElementById('sectionOverview');
+            const dsDetaiSec = document.getElementById('sectionDsDetai');
+            const dsBaibaoSec = document.getElementById('sectionDsBaibao');
             const subFolderSec = document.getElementById('sectionSubFolder');
             const filteredSec = document.getElementById('sectionFilteredList');
+            
             const tabHome = document.getElementById('tabHome');
             const tabOverview = document.getElementById('tabOverview');
+            const tabDsDetai = document.getElementById('tabDsDetai');
+            const tabDsBaibao = document.getElementById('tabDsBaibao');
 
             subFolderSec.classList.add('hidden');
             filteredSec.classList.add('hidden');
+            homeSec.classList.add('hidden');
+            overviewSec.classList.add('hidden');
+            dsDetaiSec.classList.add('hidden');
+            dsBaibaoSec.classList.add('hidden');
+
+            tabHome.className = "px-4 py-2 rounded-lg text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-white/5 flex items-center space-x-2";
+            tabOverview.className = "px-4 py-2 rounded-lg text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-white/5 flex items-center space-x-2";
+            tabDsDetai.className = "px-4 py-2 rounded-lg text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-white/5 flex items-center space-x-2";
+            tabDsBaibao.className = "px-4 py-2 rounded-lg text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-white/5 flex items-center space-x-2";
 
             if (tabName === 'home') {
                 homeSec.classList.remove('hidden');
-                overviewSec.classList.add('hidden');
-                tabHome.className = "px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow";
-                tabOverview.className = "px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white";
-            } else {
-                homeSec.classList.add('hidden');
+                tabHome.className = "px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-600 text-white shadow-sm flex items-center space-x-2";
+            } else if (tabName === 'overview') {
                 overviewSec.classList.remove('hidden');
-                tabOverview.className = "px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow";
-                tabHome.className = "px-4 py-2 rounded-lg text-sm font-medium transition text-blue-200 hover:text-white";
+                tabOverview.className = "px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-600 text-white shadow-sm flex items-center space-x-2";
+            } else if (tabName === 'ds_detai') {
+                dsDetaiSec.classList.remove('hidden');
+                tabDsDetai.className = "px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-600 text-white shadow-sm flex items-center space-x-2";
+            } else if (tabName === 'ds_baibao') {
+                dsBaibaoSec.classList.remove('hidden');
+                tabDsBaibao.className = "px-4 py-2 rounded-lg text-sm font-semibold transition bg-blue-600 text-white shadow-sm flex items-center space-x-2";
+                renderArticleTable();
             }
         }
 
-        // Danh sách 15 đề tài mẫu phong phú theo yêu cầu (có 2 mentor và 2-5 cộng tác viên)
         const defaultProjects = [
             {
                 id: 1,
                 title: "Đánh giá tuân thủ tư thế người bệnh ICU",
-                mentor: "ThS. Phạm Thị Lê Thương, PGS.TS. Nguyễn Văn Minh",
-                collaborators: "BS. Trần Văn An, ĐD. Lê Thị Hồng, CN. Hoàng Kim Long, ThS. Nguyễn Thị Mai",
+                leader: "PHẠM THỊ LÊ THƯƠNG",
+                mentor: "ThS. Nguyễn Văn A",
+                collaborators: "BS. B",
                 stage: "Chấp nhận / Đăng (Acceptance/Publication)",
                 deadline: "30/11/2026",
                 risk: "safe"
             },
             {
                 id: 2,
-                title: "Khảo sát gánh nặng chăm sóc ở điều dưỡng khoa Hồi sức tích cực",
-                mentor: "TS. Trần Thị Cúc",
-                collaborators: "ĐD. Lê Văn Hùng, CN. Phạm Văn Nam",
+                title: "Khảo sát gánh nặng chăm sóc ở điều dưỡng",
+                leader: "TRẦN THỊ B",
+                mentor: "TS. C",
+                collaborators: "ĐD. D",
                 stage: "Phân tích dữ liệu",
                 deadline: "20/10/2026",
                 risk: "danger"
-            },
-            {
-                id: 3,
-                title: "Hiệu quả can thiệp giáo dục sức khỏe trên người bệnh suy tim mạn",
-                mentor: "PGS.TS. Lê Quang Huy, ThS. Phạm Thị Lê Thương",
-                collaborators: "BS. Nguyễn Văn Hùng, ĐD. Trần Thị Lan, CN. Lê Hoàng Yến, BS. Đặng Văn Khoa",
-                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
-                deadline: "15/12/2026",
-                risk: "safe"
-            },
-            {
-                id: 4,
-                title: "Đặc điểm dịch tễ và lâm sàng bệnh nhân đột quỵ cấp nhập viện",
-                mentor: "TS.BS. Hoàng Văn Nam",
-                collaborators: "BS. Lê Minh Tuấn, ĐD. Vũ Thị Hoa",
-                stage: "Viết bản thảo (Manuscript)",
-                deadline: "10/01/2027",
-                risk: "warning"
-            },
-            {
-                id: 5,
-                title: "Tỷ lệ và các yếu tố liên quan đến trầm cảm ở điều dưỡng viên",
-                mentor: "ThS. Phạm Thị Lê Thương, TS. Ngô Thanh Tâm",
-                collaborators: "CN. Đỗ Văn Minh, ĐD. Nguyễn Thị Thảo, BS. Mai Văn Huy",
-                stage: "Thu thập dữ liệu",
-                deadline: "05/11/2026",
-                risk: "danger"
-            },
-            {
-                id: 6,
-                title: "Đánh giá chất lượng giấc ngủ của người bệnh sau phẫu thuật tim mạch",
-                mentor: "PGS.TS. Đỗ Kim Phượng",
-                collaborators: "ĐD. Bùi Văn Hải, ĐD. Trần Thị Mai",
-                stage: "Nộp bài báo (Submission)",
-                deadline: "25/11/2026",
-                risk: "safe"
-            },
-            {
-                id: 7,
-                title: "Khảo sát sự hài lòng của người bệnh về chăm sóc điều dưỡng toàn diện",
-                mentor: "ThS. Nguyễn Văn Đức, ThS. Phạm Thị Lê Thương",
-                collaborators: "CN. Lê Thị Thu, ĐD. Nguyễn Văn Long, BS. Trần Minh Quân, CN. Vũ Hoàng Yến",
-                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
-                deadline: "01/10/2026",
-                risk: "safe"
-            },
-            {
-                id: 8,
-                title: "Kiến thức và thái độ về chăm sóc giảm nhẹ của điều dưỡng lâm sàng",
-                mentor: "TS. Lê Thị Hồng",
-                collaborators: "ĐD. Hoàng Văn Thụ, CN. Ngô Thị Sương",
-                stage: "Phản biện & Sửa bài (Revision)",
-                deadline: "30/12/2026",
-                risk: "safe"
-            },
-            {
-                id: 9,
-                title: "Đánh giá nguy cơ loét do tỳ đè ở người bệnh cao tuổi nằm lâu",
-                mentor: "PGS.TS. Nguyễn Văn Minh, TS. Trần Thị Cúc",
-                collaborators: "ĐD. Phạm Thị Hoa, BS. Lê Văn Khôi, CN. Đinh Văn Phước, ĐD. Trần Ngọc Sơn",
-                stage: "Thu thập dữ liệu",
-                deadline: "18/09/2026",
-                risk: "danger"
-            },
-            {
-                id: 10,
-                title: "Tuân thủ quy trình vệ sinh tay của nhân viên y tế tại khối cận lâm sàng",
-                mentor: "ThS. Hoàng Kim Dung",
-                collaborators: "KSX. Nguyễn Văn Tùng, ĐD. Lê Thị Kim",
-                stage: "Viết bản thảo (Manuscript)",
-                deadline: "28/02/2027",
-                risk: "safe"
-            },
-            {
-                id: 11,
-                title: "Hiệu quả giảm đau sau mổ bằng phương pháp PCAmorphine trên bệnh nhân ngoại khoa",
-                mentor: "ThS. Phạm Thị Lê Thương, PGS.TS. Trần Quốc Đạt",
-                collaborators: "BS. Võ Minh Triết, ĐD. Phan Thị Bé, CN. Nguyễn Hữu Dũng, BS. Lê Hoàng Long",
-                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
-                deadline: "20/08/2026",
-                risk: "safe"
-            },
-            {
-                id: 12,
-                title: "Đánh giá thực trạng tuân thủ an toàn người bệnh trong dùng thuốc tại khoa nội",
-                mentor: "TS.BS. Phan Văn Hùng",
-                collaborators: "DS. Nguyễn Thị Bích, ĐD. Lê Văn Đạt",
-                stage: "Đề cương & Phê duyệt đạo đức",
-                deadline: "30/03/2027",
-                risk: "safe"
-            },
-            {
-                id: 13,
-                title: "Khảo sát stress và các yếu tố gây căng thẳng ở sinh viên điều dưỡng thực tập",
-                mentor: "ThS. Đỗ Thị Thanh",
-                collaborators: "SV. Nguyễn Văn Nam, SV. Trần Thị Hằng, CN. Vũ Văn Minh",
-                stage: "Phân tích dữ liệu",
-                deadline: "12/10/2026",
-                risk: "danger"
-            },
-            {
-                id: 14,
-                title: "Đánh giá kết quả chăm sóc vết thương mạn tính bằng băng dán sinh học mới",
-                mentor: "PGS.TS. Lê Quang Huy, ThS. Phạm Thị Lê Thương",
-                collaborators: "BS. Trịnh Văn Sơn, ĐD. Lê Thị Thúy, CN. Hoàng Văn Nam, BS. Đỗ Minh Quân",
-                stage: "Nộp bài báo (Submission)",
-                deadline: "14/11/2026",
-                risk: "warning"
-            },
-            {
-                id: 15,
-                title: "Khảo sát nhu cầu đào tạo liên tục về cấp cứu ngưng tuần hoàn hô hấp cho điều dưỡng",
-                mentor: "TS. Trần Thị Cúc",
-                collaborators: "ĐD. Nguyễn Văn Hùng, CN. Phạm Thị Mai",
-                stage: "Chấp nhận / Đăng (Acceptance/Publication)",
-                deadline: "05/09/2026",
-                risk: "safe"
             }
         ];
 
         let projects = JSON.parse(localStorage.getItem('nursing_research_projects')) || defaultProjects;
         let currentEditingIndex = null;
         let isUpdateMode = false;
+        let isEditAuthorsMode = false;
         let pendingTargetIndex = null;
-        let mentorCount = 1;
 
         function saveToStorage() {
             localStorage.setItem('nursing_research_projects', JSON.stringify(projects));
         }
 
-        function addMentorField() {
-            if (mentorCount === 1) {
-                document.getElementById('mentorField2').classList.remove('hidden');
-                mentorCount = 2;
-            } else if (mentorCount === 2) {
-                document.getElementById('mentorField3').classList.remove('hidden');
-                document.getElementById('addMentorBtn').style.display = 'none';
-                mentorCount = 3;
-            }
+        function addLeaderField(mode, val = '') {
+            const container = document.getElementById(mode === 'add' ? 'addLeadersContainer' : 'editLeadersContainer');
+            const cls = mode === 'add' ? 'add-leader-input' : 'edit-leader-input';
+            const div = document.createElement('div');
+            div.className = "flex items-center space-x-2";
+            div.innerHTML = `
+                <input type="text" value="${val}" placeholder="Chủ nhiệm đề tài..." class="${cls} w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm bg-white uppercase" oninput="this.value = this.value.toUpperCase()">
+                <button type="button" onclick="this.parentElement.remove()" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm" title="Xóa"><i class="fa-solid fa-minus"></i></button>
+            `;
+            container.appendChild(div);
         }
 
-        function addCollaboratorField() {
-            const container = document.getElementById('collaboratorsContainer');
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.placeholder = 'Cộng tác viên tiếp theo...';
-            input.className = 'collaborator-input w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 mt-2';
-            container.appendChild(input);
+        function addMentorField(mode, val = '') {
+            const container = document.getElementById(mode === 'add' ? 'addMentorsContainer' : 'editMentorsContainer');
+            const cls = mode === 'add' ? 'add-mentor-input' : 'edit-mentor-input';
+            const div = document.createElement('div');
+            div.className = "flex items-center space-x-2";
+            div.innerHTML = `
+                <input type="text" value="${val}" placeholder="Người hướng dẫn..." class="${cls} w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm bg-white">
+                <button type="button" onclick="this.parentElement.remove()" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm" title="Xóa"><i class="fa-solid fa-minus"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addCollaboratorField(mode, val = '') {
+            const container = document.getElementById(mode === 'add' ? 'addCollabsContainer' : 'editCollabsContainer');
+            const cls = mode === 'add' ? 'add-collab-input' : 'edit-collab-input';
+            const div = document.createElement('div');
+            div.className = "flex items-center space-x-2";
+            div.innerHTML = `
+                <input type="text" value="${val}" placeholder="Cộng tác viên..." class="${cls} w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm bg-white">
+                <button type="button" onclick="this.parentElement.remove()" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm" title="Xóa"><i class="fa-solid fa-minus"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Tô vàng khi khớp chính xác toàn bộ cụm họ và tên
+        function highlightUserName(text) {
+            if (!text) return "";
+            let names = [userProfile.name, ...(userProfile.alternateNames || [])].filter(Boolean).map(n => n.toUpperCase().trim());
+            
+            let result = text;
+            names.forEach(n => {
+                if (n && n.length > 1) {
+                    let regex = new RegExp(`(^|[^\\wÀ-ỹ])${n}([^\\wÀ-ỹ]|$)`, 'gi');
+                    result = result.replace(regex, `$1<span class="bg-yellow-200 font-bold px-1.5 py-0.5 rounded shadow-sm text-slate-900">${n}</span>$2`);
+                }
+            });
+            return result;
+        }
+
+        function isUserMatch(text) {
+            if (!text) return false;
+            let names = [userProfile.name, ...(userProfile.alternateNames || [])].filter(Boolean).map(n => n.toUpperCase().trim());
+            let upperText = text.toUpperCase();
+
+            for (let n of names) {
+                if (n && (upperText === n || upperText.includes(n))) return true;
+            }
+            return false;
         }
 
         function renderTable() {
@@ -821,6 +1035,10 @@
             let inProgressCount = 0;
             let dangerCount = 0;
 
+            let roleLeaderCount = 0;
+            let roleMentorCount = 0;
+            let roleCollabCount = 0;
+
             projects.forEach((p, index) => {
                 let isAccepted = p.stage.toLowerCase().includes('chấp nhận') || p.stage.toLowerCase().includes('đăng') || p.stage.toLowerCase().includes('publication');
                 let isDanger = p.risk === 'danger';
@@ -828,6 +1046,10 @@
                 if(isAccepted) acceptedCount++;
                 else if(isDanger) dangerCount++;
                 else inProgressCount++;
+
+                if (isUserMatch(p.leader)) roleLeaderCount++;
+                if (isUserMatch(p.mentor)) roleMentorCount++;
+                if (isUserMatch(p.collaborators)) roleCollabCount++;
 
                 let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
                 let dotClass = 'bg-emerald-500';
@@ -845,10 +1067,12 @@
 
                 let row = `
                     <tr class="hover:bg-slate-50/80 transition">
-                        <td class="py-4 px-6">
+                        <td class="py-4 px-6 sticky-col">
                             <div onclick="openSubFolder(${index})" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">${p.title}</div>
-                            <div class="text-xs text-slate-500 mt-0.5">HD: ${p.mentor} ${p.collaborators ? '• CTV: ' + p.collaborators : ''}</div>
                         </td>
+                        <td class="py-4 px-6 text-slate-700 font-medium">${highlightUserName(p.leader || '-')}</td>
+                        <td class="py-4 px-6 text-slate-700">${highlightUserName(p.mentor || '-')}</td>
+                        <td class="py-4 px-6 text-slate-700">${highlightUserName(p.collaborators || '-')}</td>
                         <td class="py-4 px-6">
                             <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-blue-100">${p.stage}</span>
                         </td>
@@ -859,7 +1083,7 @@
                             </span>
                         </td>
                         <td class="py-4 px-6 text-center">
-                            <button onclick="openSubFolder(${index})" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">Chi tiết</button>
+                            <button onclick="openSubFolder(${index})" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition shadow-sm">Chi tiết</button>
                         </td>
                     </tr>
                 `;
@@ -870,9 +1094,226 @@
             document.getElementById('acceptedCount').innerText = acceptedCount;
             document.getElementById('inProgressCount').innerText = inProgressCount;
             document.getElementById('dangerCount').innerText = dangerCount;
+
+            document.getElementById('roleLeaderCount').innerText = roleLeaderCount;
+            document.getElementById('roleMentorCount').innerText = roleMentorCount;
+            document.getElementById('roleCollabCount').innerText = roleCollabCount;
         }
 
-        // Lọc và mở danh sách phụ theo loại khung được bấm
+        function renderArticleTable() {
+            const tbody = document.getElementById('articleTableBody');
+            tbody.innerHTML = '';
+
+            projects.forEach((p, index) => {
+                let row = `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-4 px-6 font-semibold text-blue-900">${p.title}</td>
+                        <td class="py-4 px-6 text-slate-700">${highlightUserName(p.leader || '-')}</td>
+                        <td class="py-4 px-6 text-slate-700">HD: ${highlightUserName(p.mentor || '-')}<br>${p.collaborators ? 'CTV: ' + highlightUserName(p.collaborators) : ''}</td>
+                        <td class="py-4 px-6">
+                            <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-indigo-100">${p.stage}</span>
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <button onclick="openSubFolder(${index})" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition shadow-sm">Xem chi tiết</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function checkUserInFields(namesArr, leadersArr, mentorsArr, collabsArr) {
+            const targets = namesArr.filter(Boolean).map(t => t.toUpperCase().trim());
+            const allText = (leadersArr.join(" ") + " " + mentorsArr.join(" ") + " " + collabsArr.join(" ")).toUpperCase();
+            
+            for (let target of targets) {
+                if (target && allText.includes(target)) return true;
+            }
+            return false;
+        }
+
+        function handleSaveProjectAttempt() {
+            let title = document.getElementById('inputTitle').value.trim();
+            
+            let leaders = [];
+            document.querySelectorAll('.add-leader-input').forEach(input => {
+                if(input.value.trim()) leaders.push(input.value.trim());
+            });
+
+            let mentors = [];
+            document.querySelectorAll('.add-mentor-input').forEach(input => {
+                if(input.value.trim()) mentors.push(input.value.trim());
+            });
+
+            let collabs = [];
+            document.querySelectorAll('.add-collab-input').forEach(input => {
+                if(input.value.trim()) collabs.push(input.value.trim());
+            });
+
+            if(!title) {
+                alert('Vui lòng nhập tên đề tài!');
+                return;
+            }
+
+            let validNames = [userProfile.name, ...(userProfile.alternateNames || [])];
+            let isFound = checkUserInFields(validNames, leaders, mentors, collabs);
+
+            if (!isFound) {
+                document.getElementById('missingNameModal').classList.remove('hidden');
+                document.getElementById('alternateNameWrapper').classList.add('hidden');
+                document.getElementById('alternateNameInput').value = '';
+                return;
+            }
+
+            executeSaveProject(leaders, mentors, collabs);
+        }
+
+        function executeSaveProject(leadersArr, mentorsArr, collabsArr) {
+            let title = document.getElementById('inputTitle').value.trim();
+            let stage = document.getElementById('inputStage').value;
+            let deadline = document.getElementById('inputDeadline').value;
+            let risk = document.getElementById('inputRisk').value;
+
+            let leaderString = leadersArr.length > 0 ? leadersArr.join(', ') : userProfile.name;
+            let mentorString = mentorsArr.length > 0 ? mentorsArr.join(', ') : 'ThS. Thương';
+            let collabString = collabsArr.join(', ');
+
+            projects.push({
+                id: Date.now(),
+                title: title,
+                leader: leaderString,
+                mentor: mentorString,
+                collaborators: collabString,
+                stage: stage,
+                deadline: deadline || '30/12/2026',
+                risk: risk
+            });
+
+            saveToStorage();
+            renderTable();
+            renderArticleTable();
+            closeAddModal();
+            alert('Đã lưu đề tài nghiên cứu vào hồ sơ thành công!');
+        }
+
+        function closeMissingNameModal() {
+            document.getElementById('missingNameModal').classList.add('hidden');
+        }
+
+        function clearAddForm() {
+            closeMissingNameModal();
+            closeAddModal();
+        }
+
+        function toggleAlternateNameInput() {
+            const wrapper = document.getElementById('alternateNameWrapper');
+            wrapper.classList.toggle('hidden');
+        }
+
+        function verifyAlternateName() {
+            let altName = document.getElementById('alternateNameInput').value.trim().toUpperCase();
+            if (!altName) {
+                alert('Vui lòng nhập tên khác của bạn!');
+                return;
+            }
+
+            if (!userProfile.alternateNames) userProfile.alternateNames = [];
+            if (!userProfile.alternateNames.includes(altName)) {
+                userProfile.alternateNames.push(altName);
+                localStorage.setItem('nursing_user_profile', JSON.stringify(userProfile));
+            }
+
+            let leaders = [];
+            document.querySelectorAll('.add-leader-input').forEach(input => {
+                if(input.value.trim()) leaders.push(input.value.trim());
+            });
+            let mentors = [];
+            document.querySelectorAll('.add-mentor-input').forEach(input => {
+                if(input.value.trim()) mentors.push(input.value.trim());
+            });
+            let collabs = [];
+            document.querySelectorAll('.add-collab-input').forEach(input => {
+                if(input.value.trim()) collabs.push(input.value.trim());
+            });
+
+            let validNames = [userProfile.name, ...userProfile.alternateNames];
+            let isFound = checkUserInFields(validNames, leaders, mentors, collabs);
+
+            if (!isFound) {
+                alert('Tên vừa nhập vẫn không khớp với các thông tin đã điền. Vui lòng kiểm tra lại!');
+            } else {
+                closeMissingNameModal();
+                executeSaveProject(leaders, mentors, collabs);
+            }
+        }
+
+        function filterAndOpenRoleList(roleType) {
+            const filteredTbody = document.getElementById('filteredTableBody');
+            filteredTbody.innerHTML = '';
+            
+            let filteredProjects = [];
+            let titleText = "";
+
+            if (roleType === 'leader') {
+                filteredProjects = projects.filter(p => isUserMatch(p.leader));
+                titleText = "Danh sách đề tài bạn là Chủ nhiệm";
+            } else if (roleType === 'mentor') {
+                filteredProjects = projects.filter(p => isUserMatch(p.mentor));
+                titleText = "Danh sách đề tài bạn là Người hướng dẫn";
+            } else if (roleType === 'collab') {
+                filteredProjects = projects.filter(p => isUserMatch(p.collaborators));
+                titleText = "Danh sách đề tài bạn là Cộng tác viên";
+            }
+
+            document.getElementById('filterTitle').innerText = titleText;
+
+            filteredProjects.forEach((p) => {
+                let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                let dotClass = 'bg-emerald-500';
+                let riskText = 'Đúng tiến độ (🟢)';
+
+                if(p.risk === 'warning') {
+                    badgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
+                    dotClass = 'bg-amber-500';
+                    riskText = 'Sắp đến hạn (🟡)';
+                } else if(p.risk === 'danger') {
+                    badgeClass = 'bg-rose-50 text-rose-700 border-rose-200';
+                    dotClass = 'bg-rose-500';
+                    riskText = 'Quá hạn / Kẹt (🔴)';
+                }
+
+                let originalIndex = projects.findIndex(item => item.id === p.id);
+
+                let row = `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-4 px-6">
+                            <div onclick="openSubFolder(${originalIndex})" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">${p.title}</div>
+                        </td>
+                        <td class="py-4 px-6 text-slate-700 font-medium">${highlightUserName(p.leader || '-')}</td>
+                        <td class="py-4 px-6 text-slate-700">${highlightUserName(p.mentor || '-')}</td>
+                        <td class="py-4 px-6 text-slate-700">${highlightUserName(p.collaborators || '-')}</td>
+                        <td class="py-4 px-6">
+                            <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-blue-100">${p.stage}</span>
+                        </td>
+                        <td class="py-4 px-6 text-slate-600 font-medium">${p.deadline}</td>
+                        <td class="py-4 px-6">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${badgeClass} border">
+                                <span class="w-1.5 h-1.5 mr-1.5 ${dotClass} rounded-full"></span> ${riskText}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <button onclick="openSubFolder(${originalIndex})" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition shadow-sm">Chi tiết</button>
+                        </td>
+                    </tr>
+                `;
+                filteredTbody.innerHTML += row;
+            });
+
+            document.getElementById('sectionOverview').classList.add('hidden');
+            document.getElementById('sectionFilteredList').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function filterAndOpenFilteredList(type) {
             const filteredTbody = document.getElementById('filteredTableBody');
             filteredTbody.innerHTML = '';
@@ -917,8 +1358,10 @@
                     <tr class="hover:bg-slate-50/80 transition">
                         <td class="py-4 px-6">
                             <div onclick="openSubFolder(${originalIndex})" class="font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">${p.title}</div>
-                            <div class="text-xs text-slate-500 mt-0.5">HD: ${p.mentor} ${p.collaborators ? '• CTV: ' + p.collaborators : ''}</div>
                         </td>
+                        <td class="py-4 px-6 text-slate-700 font-medium">${highlightUserName(p.leader || '-')}</td>
+                        <td class="py-4 px-6 text-slate-700">${highlightUserName(p.mentor || '-')}</td>
+                        <td class="py-4 px-6 text-slate-700">${highlightUserName(p.collaborators || '-')}</td>
                         <td class="py-4 px-6">
                             <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-blue-100">${p.stage}</span>
                         </td>
@@ -929,7 +1372,7 @@
                             </span>
                         </td>
                         <td class="py-4 px-6 text-center">
-                            <button onclick="openSubFolder(${originalIndex})" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">Chi tiết</button>
+                            <button onclick="openSubFolder(${originalIndex})" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition shadow-sm">Chi tiết</button>
                         </td>
                     </tr>
                 `;
@@ -944,20 +1387,152 @@
         function openSubFolder(index) {
             currentEditingIndex = index;
             isUpdateMode = false;
+            isEditAuthorsMode = false;
             let p = projects[index];
 
             document.getElementById('subFolderTitle').innerText = p.title;
-            document.getElementById('subFolderMeta').innerText = `Người hướng dẫn: ${p.mentor} ${p.collaborators ? '• Cộng tác viên: ' + p.collaborators : ''}`;
             document.getElementById('subFolderDeadline').innerText = `Hạn chót: ${p.deadline}`;
-            document.getElementById('updateProgressBtn').innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Cập nhật tiến độ</span>';
             
+            renderAuthorsDisplay();
+            document.getElementById('authorsEditArea').classList.add('hidden');
+            document.getElementById('authorsDisplayArea').classList.remove('hidden');
+            document.getElementById('editAuthorsBtn').innerHTML = '<i class="fa-solid fa-pen text-xs"></i>';
+
+            document.getElementById('updateProgressBtn').innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Cập nhật tiến độ</span>';
             renderMilestones();
 
             document.getElementById('sectionHome').classList.add('hidden');
             document.getElementById('sectionOverview').classList.add('hidden');
+            document.getElementById('sectionDsDetai').classList.add('hidden');
+            document.getElementById('sectionDsBaibao').classList.add('hidden');
             document.getElementById('sectionFilteredList').classList.add('hidden');
             document.getElementById('sectionSubFolder').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderAuthorsDisplay() {
+            let p = projects[currentEditingIndex];
+            let area = document.getElementById('authorsDisplayArea');
+            area.innerHTML = `
+                <div><span class="font-semibold text-slate-500 uppercase text-xs">Chủ nhiệm đề tài:</span> <span class="font-bold text-slate-800">${highlightUserName(p.leader || '-')}</span></div>
+                <div><span class="font-semibold text-slate-500 uppercase text-xs">Người hướng dẫn:</span> <span class="font-medium text-slate-800">${highlightUserName(p.mentor || '-')}</span></div>
+                <div><span class="font-semibold text-slate-500 uppercase text-xs">Cộng tác viên:</span> <span class="font-medium text-slate-800">${highlightUserName(p.collaborators || 'Không có')}</span></div>
+            `;
+        }
+
+        function toggleEditAuthorsMode() {
+            isEditAuthorsMode = !isEditAuthorsMode;
+            let p = projects[currentEditingIndex];
+            const editArea = document.getElementById('authorsEditArea');
+            const dispArea = document.getElementById('authorsDisplayArea');
+            const btn = document.getElementById('editAuthorsBtn');
+
+            if (isEditAuthorsMode) {
+                dispArea.classList.add('hidden');
+                editArea.classList.remove('hidden');
+                btn.innerHTML = '<i class="fa-solid fa-xmark text-xs"></i>';
+
+                let leaders = (p.leader || '').split(',').map(l => l.trim()).filter(Boolean);
+                let leaderContainer = document.getElementById('editLeadersContainer');
+                leaderContainer.innerHTML = '';
+                if (leaders.length === 0) leaders = [userProfile.name];
+                leaders.forEach(l => {
+                    let div = document.createElement('div');
+                    div.className = "flex items-center space-x-2";
+                    div.innerHTML = `
+                        <input type="text" value="${l}" class="edit-leader-input w-full px-3 py-1.5 border border-slate-200 rounded-xl text-sm bg-white uppercase" oninput="this.value = this.value.toUpperCase()">
+                        <button type="button" onclick="this.parentElement.remove()" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm" title="Xóa"><i class="fa-solid fa-minus"></i></button>
+                    `;
+                    leaderContainer.appendChild(div);
+                });
+
+                let mentors = (p.mentor || '').split(',').map(m => m.trim()).filter(Boolean);
+                let mentorContainer = document.getElementById('editMentorsContainer');
+                mentorContainer.innerHTML = '';
+                if (mentors.length === 0) mentors = [''];
+                mentors.forEach(m => {
+                    let div = document.createElement('div');
+                    div.className = "flex items-center space-x-2";
+                    div.innerHTML = `
+                        <input type="text" value="${m}" class="edit-mentor-input w-full px-3 py-1.5 border border-slate-200 rounded-xl text-sm bg-white">
+                        <button type="button" onclick="this.parentElement.remove()" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm" title="Xóa"><i class="fa-solid fa-minus"></i></button>
+                    `;
+                    mentorContainer.appendChild(div);
+                });
+
+                let collabs = (p.collaborators || '').split(',').map(c => c.trim()).filter(Boolean);
+                let collabContainer = document.getElementById('editCollabsContainer');
+                collabContainer.innerHTML = '';
+                if (collabs.length === 0) collabs = [''];
+                collabs.forEach(c => {
+                    let div = document.createElement('div');
+                    div.className = "flex items-center space-x-2";
+                    div.innerHTML = `
+                        <input type="text" value="${c}" class="edit-collab-input w-full px-3 py-1.5 border border-slate-200 rounded-xl text-sm bg-white">
+                        <button type="button" onclick="this.parentElement.remove()" class="w-7 h-7 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-xs font-bold shadow-sm" title="Xóa"><i class="fa-solid fa-minus"></i></button>
+                    `;
+                    collabContainer.appendChild(div);
+                });
+
+            } else {
+                editArea.classList.add('hidden');
+                dispArea.classList.remove('hidden');
+                btn.innerHTML = '<i class="fa-solid fa-pen text-xs"></i>';
+            }
+        }
+
+        function saveEditAuthors() {
+            let p = projects[currentEditingIndex];
+            
+            let leadersArr = [];
+            document.querySelectorAll('.edit-leader-input').forEach(inp => {
+                if(inp.value.trim()) leadersArr.push(inp.value.trim().toUpperCase());
+            });
+            p.leader = leadersArr.join(', ');
+
+            let mentorsArr = [];
+            document.querySelectorAll('.edit-mentor-input').forEach(inp => {
+                if(inp.value.trim()) mentorsArr.push(inp.value.trim());
+            });
+            p.mentor = mentorsArr.join(', ');
+
+            let collabsArr = [];
+            document.querySelectorAll('.edit-collab-input').forEach(inp => {
+                if(inp.value.trim()) collabsArr.push(inp.value.trim());
+            });
+            p.collaborators = collabsArr.join(', ');
+
+            saveToStorage();
+            renderTable();
+            renderArticleTable();
+            renderAuthorsDisplay();
+            toggleEditAuthorsMode();
+            alert('Đã cập nhật thông tin tác giả thành công!');
+        }
+
+        function openEditTitleModal() {
+            let p = projects[currentEditingIndex];
+            document.getElementById('editTitleInput').value = p.title;
+            document.getElementById('editTitleModal').classList.remove('hidden');
+        }
+
+        function closeEditTitleModal() {
+            document.getElementById('editTitleModal').classList.add('hidden');
+        }
+
+        function saveEditTitle() {
+            let newTitle = document.getElementById('editTitleInput').value.trim();
+            if (!newTitle) {
+                alert('Tên đề tài không được để trống!');
+                return;
+            }
+            projects[currentEditingIndex].title = newTitle;
+            saveToStorage();
+            renderTable();
+            renderArticleTable();
+            document.getElementById('subFolderTitle').innerText = newTitle;
+            closeEditTitleModal();
+            alert('Đã cập nhật tên đề tài thành công!');
         }
 
         function goBackToOverview() {
@@ -966,66 +1541,36 @@
             document.getElementById('sectionOverview').classList.remove('hidden');
             currentEditingIndex = null;
             isUpdateMode = false;
+            isEditAuthorsMode = false;
             renderTable();
+            renderArticleTable();
         }
 
         function openAddModal() {
             document.getElementById('addModal').classList.remove('hidden');
+            const leaderInput = document.querySelector('.add-leader-input');
+            if (leaderInput) leaderInput.value = userProfile.name;
         }
 
         function closeAddModal() {
             document.getElementById('addModal').classList.add('hidden');
-            document.getElementById('inputMentor1').value = '';
-            document.getElementById('inputMentor2').value = '';
-            document.getElementById('inputMentor3').value = '';
-            document.getElementById('mentorField2').classList.add('hidden');
-            document.getElementById('mentorField3').classList.add('hidden');
-            document.getElementById('addMentorBtn').style.display = 'flex';
-            mentorCount = 1;
-
-            const container = document.getElementById('collaboratorsContainer');
-            container.innerHTML = '<input type="text" placeholder="VD: BS. Nguyễn Văn A" class="collaborator-input w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">';
-        }
-
-        function addNewProject() {
-            let title = document.getElementById('inputTitle').value;
-            let m1 = document.getElementById('inputMentor1').value.trim();
-            let m2 = document.getElementById('inputMentor2').value.trim();
-            let m3 = document.getElementById('inputMentor3').value.trim();
-            let stage = document.getElementById('inputStage').value;
-            let deadline = document.getElementById('inputDeadline').value;
-            let risk = document.getElementById('inputRisk').value;
-
-            let collabs = [];
-            document.querySelectorAll('.collaborator-input').forEach(input => {
-                if(input.value.trim()) collabs.push(input.value.trim());
-            });
-
-            if(!title) {
-                alert('Vui lòng nhập tên đề tài!');
-                return;
-            }
-
-            let mentorsArr = [m1, m2, m3].filter(Boolean);
-            let mentorString = mentorsArr.length > 0 ? mentorsArr.join(', ') : 'ThS. Thương';
-            let collabString = collabs.join(', ');
-
-            projects.push({
-                id: Date.now(),
-                title: title,
-                mentor: mentorString,
-                collaborators: collabString,
-                stage: stage,
-                deadline: deadline || '30/12/2026',
-                risk: risk
-            });
-
-            saveToStorage();
-            renderTable();
-            closeAddModal();
-
             document.getElementById('inputTitle').value = '';
-            document.getElementById('inputDeadline').value = '';
+            
+            document.getElementById('addLeadersContainer').innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <input type="text" placeholder="VD: PHẠM THỊ LÊ THƯƠNG" class="add-leader-input w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 uppercase" oninput="this.value = this.value.toUpperCase()">
+                </div>
+            `;
+            document.getElementById('addMentorsContainer').innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <input type="text" placeholder="VD: ThS. Nguyễn Văn A" class="add-mentor-input w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                </div>
+            `;
+            document.getElementById('addCollabsContainer').innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <input type="text" placeholder="VD: BS. Trần Văn B" class="add-collab-input w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                </div>
+            `;
         }
 
         function toggleUpdateMode() {
@@ -1033,10 +1578,10 @@
             const btn = document.getElementById('updateProgressBtn');
             if (isUpdateMode) {
                 btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Đang chọn mốc mới...</span>';
-                btn.className = "bg-amber-100 text-amber-700 px-3 py-1.5 rounded-lg text-xs font-medium transition border border-amber-300 flex items-center space-x-1.5 animate-pulse";
+                btn.className = "bg-amber-100 text-amber-700 px-3 py-1.5 rounded-xl text-xs font-semibold transition border border-amber-300 flex items-center space-x-1.5 animate-pulse";
             } else {
                 btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Cập nhật tiến độ</span>';
-                btn.className = "bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg text-xs font-medium transition border border-blue-200 flex items-center space-x-2";
+                btn.className = "bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-xl text-xs font-semibold transition border border-blue-200 shadow-sm flex items-center space-x-2";
             }
             renderMilestones();
         }
@@ -1056,14 +1601,14 @@
             milestonesList.forEach((milestone, idx) => {
                 let iconHtml = '';
                 let textClass = 'text-slate-600';
-                let bgContainerClass = isUpdateMode ? 'cursor-pointer hover:bg-blue-50 hover:shadow-sm hover:scale-[1.01] p-2 rounded-lg transition border border-transparent hover:border-blue-200' : 'p-2';
+                let bgContainerClass = isUpdateMode ? 'cursor-pointer hover:bg-blue-50 hover:shadow-sm hover:scale-[1.01] p-2.5 rounded-xl transition border border-transparent hover:border-blue-200' : 'p-2.5';
 
                 if (idx < currentIndex) {
-                    iconHtml = `<div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-check"></i></div>`;
-                    textClass = 'font-medium text-slate-800';
+                    iconHtml = `<div class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs shadow-sm"><i class="fa-solid fa-check"></i></div>`;
+                    textClass = 'font-semibold text-slate-800';
                 } else if (idx === currentIndex) {
-                    iconHtml = `<div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">${idx + 1}</div>`;
-                    textClass = 'font-bold text-blue-700';
+                    iconHtml = `<div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">${idx + 1}</div>`;
+                    textClass = 'font-extrabold text-blue-700';
                 } else {
                     iconHtml = `<div class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs">${idx + 1}</div>`;
                 }
@@ -1071,7 +1616,7 @@
                 let item = `
                     <div class="flex items-center space-x-3 text-sm ${bgContainerClass}" ${isUpdateMode ? `onclick="onSelectMilestone(${currentIndex},${idx})"` : ''}>
                         ${iconHtml}
-                        <span class="${textClass}">${idx + 1}. ${milestone} ${idx === currentIndex ? '<span class="text-xs bg-blue-50 px-2 py-0.5 rounded ml-2 border border-blue-100 font-normal">Đang thực hiện</span>' : ''}</span>
+                        <span class="${textClass}">${idx + 1}. ${milestone} ${idx === currentIndex ? '<span class="text-xs bg-blue-50 text-blue-600 px-2.5 py-0.5 rounded-full ml-2 border border-blue-100 font-semibold shadow-inner">Đang thực hiện</span>' : ''}</span>
                     </div>
                 `;
                 container.innerHTML += item;
@@ -1125,6 +1670,7 @@
                 projects = [...defaultProjects];
                 saveToStorage();
                 renderTable();
+                renderArticleTable();
             }
         }
 
@@ -1132,6 +1678,7 @@
         setDynamicGreeting();
         loadProfileToUI();
         renderTable();
+        renderArticleTable();
     </script>
 </body>
 </html>
