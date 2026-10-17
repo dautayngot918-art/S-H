@@ -1,0 +1,31 @@
+{
+  "name": "Phần mềm quản lý- theo dõi nghiên cứu",
+  "short_name": "Theo dõi NC",
+  "lang": "vi",
+  "start_url": "./nursing-research-tracker.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e3a8a",
+  "description": "Quản lý, theo dõi tiến độ đề tài nghiên cứu và bài báo khoa học",
+  "icons": [
+    {
+      "src": "icons/app-con-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/app-con-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/app-con-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
