@@ -181,7 +181,7 @@
         tr[data-open] { transition: box-shadow .15s ease; }
         tr[data-open]:hover { box-shadow: 0 6px 14px -6px rgba(30, 64, 175, 0.35); position: relative; z-index: 1; }
         tr[data-open] > td:hover { box-shadow: inset 0 0 0 1px #93c5fd; }
-        @media (max-width: 640px) { #tabNavContainer { gap: 0.25rem; } #tabNavContainer > button { padding-left: 0.5rem !important; padding-right: 0.5rem !important; font-size: 0.75rem !important; margin: 0 !important; } }
+        @media (max-width: 640px) { #tabNavContainer { gap: 0.15rem; max-width: 100%; overflow-x: auto; scrollbar-width: none; } #tabNavContainer { width: 100%; justify-content: space-between; } #tabNavContainer > button { padding: 0.35rem 0.3rem !important; font-size: 0.72rem !important; margin: 0 !important; white-space: nowrap; flex: 1 1 auto; } #tabNavContainer > button i { display: none; } }
         /* Trang chủ giữ kiểu tiêu đề cũ */
         #sectionHome .section-title { background-color: transparent; padding: 0; color: #334155; font-weight: 700; }
         #sectionHome .uppercase.text-slate-400 { color: #94a3b8 !important; font-weight: 600; }
@@ -196,21 +196,24 @@
         #sectionStageList > .rounded-xl, #sectionStageList > .rounded-2xl,
         #sectionFilteredList > .rounded-xl, #sectionFilteredList > .rounded-2xl,
         #sectionSubFolder > .rounded-2xl { border-color: #93c5fd !important; }
+        /* Tổng quan: hàng tiêu đề khung theo mốc có số tổng canh phải, cả hàng nền xanh nhạt */
+        .ov-head { background-color: #e8f1ff; padding: 0.5rem 0.85rem; border-radius: 0.65rem; }
+        .ov-head div.flex:has(> .section-title) { background-color: transparent; padding: 0; }
     </style>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
 
     <!-- ================= HEADER & TABS (CỐ ĐỊNH KHI CUỘN) ================= -->
     <header class="bg-blue-900 text-white shadow-md sticky top-0 z-40">
-        <div class="container mx-auto px-6 py-4 flex flex-col gap-3">
+        <div class="container mx-auto px-3 sm:px-6 py-2 sm:py-4 flex flex-col gap-2 sm:gap-3">
             <!-- Hàng 1: Tiêu đề bên trái, Avatar viết tắt bên phải -->
             <div class="flex justify-between items-center w-full">
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
                     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB4bWxuczpjMnBhPSJodHRwOi8vYzJwYS5vcmcvbWFuaWZlc3QiPjxtZXRhZGF0YT48YzJwYTptYW5pZmVzdD5BQUFXZ21wMWJXSUFBQUFlYW5WdFpHTXljR0VBRVFBUWdBQUFxZ0E0bTNFRFl6SndZUUFBQUJaY2FuVnRZZ0FBQUVkcWRXMWtZekp0WVFBUkFCQ0FBQUNxQURpYmNRTjFjbTQ2WXpKd1lUbzJaVFpsWW1Sak55MHdabU15TFRRMFlUVXRZV0prWVMweVpEWTRZVGsxWlRSaVpUY0FBQUFEbDJwMWJXSUFBQUFwYW5WdFpHTXlZWE1BRVFBUWdBQUFxZ0E0bTNFRFl6SndZUzVoYzNObGNuUnBiMjV6QUFBQUFMeHFkVzFpQUFBQVJHcDFiV1JqWW05eUFCRUFFSUFBQUtvQU9KdHhFMk15Y0dFdWFXNW5jbVZrYVdWdWRDNTJNd0FBQUFBWVl6SnphQVdabmpBM0RIdTZ6VTRCbHJEOFhMZ0FBQUJ3WTJKdmNxTnBaR002Wm05eWJXRjBiV2x0WVdkbEwzTjJaeXQ0Yld4cWFXNXpkR0Z1WTJWSlJIZ3NlRzF3T21scFpEcGpZV0l5TXpGbU1DMHpPRFJqTFRSbVlUVXRZV1ZtWXkwMVlqZzBNekUxTW1NNE5XTnNjbVZzWVhScGIyNXphR2x3YUhCaGNtVnVkRTltQUFBQjRtcDFiV0lBQUFCQmFuVnRaR05pYjNJQUVRQVFnQUFBcWdBNG0zRVRZekp3WVM1aFkzUnBiMjV6TG5ZeUFBQUFBQmhqTW5Ob25MbGFRSDA2UVFHNmZjZ2sxdGN3QXdBQUFabGpZbTl5b21kaFkzUnBiMjV6Z3FKbVlXTjBhVzl1YTJNeWNHRXViM0JsYm1Wa2FuQmhjbUZ0WlhSbGNuT2hhMmx1WjNKbFpHbGxiblJ6Z2FKamRYSnNlQzF6Wld4bUkycDFiV0ptUFdNeWNHRXVZWE56WlhKMGFXOXVjeTlqTW5CaExtbHVaM0psWkdsbGJuUXVkak5rYUdGemFGZ2dXUk04bW1ha1phb25IbG80SFdFWGUrWlZjcExLRDJVengvblhhWCsybGtla1ptRmpkR2x2Ym5nZFkyOXRMbUZ1ZEdoeWIzQnBZeTVqYkdGMVpHVXVjSEp2ZG1sa1pXUnFjR0Z5WVcxbGRHVnljNkY0SDJOdmJTNWhiblJvY205d2FXTXViM0pwWjJsdUxXTnZibVpwWkdWdVkyVm5kVzVyYm05M2JtdGtaWE5qY21sd2RHbHZibmhtUTJ4aGRXUmxJSEJ5YjNacFpHVmtJSFJvYVhNZ1ptbHNaU0JoZENCMGFHVWdjbVZ4ZFdWemRDQnZaaUJoSUhWelpYSWdZVzVrSUcxaGVTQm9ZWFpsSUdOeVpXRjBaV1FnYjNJZ2JXOWthV1pwWldRZ2RHaGxJR1pwYkdVZ1kyOXVkR1Z1ZEhNdWJYTnZablIzWVhKbFFXZGxiblNoWkc1aGJXVm1RMnhoZFdSbGNtRnNiRUZqZEdsdmJuTkpibU5zZFdSbFpQVUFBQURJYW5WdFlnQUFBRUJxZFcxa1kySnZjZ0FSQUJDQUFBQ3FBRGliY1JOak1uQmhMbWhoYzJndVpHRjBZUUFBQUFBWVl6SnphUFVrYU12OEJwQkFaQXVjQnBBV3Q3RUFBQUNBWTJKdmNxVmpZV3huWm5Ob1lUSTFObU53WVdSTkFBQUFBQUFBQUFBQUFBQUFBR1JvWVhOb1dDQ05lSGY2eGQxcEYvRXRpbkJFWjMwVktVZVB5ZWxYRnRCdjBtc2xCNkJKY1dSdVlXMWxibXAxYldKbUlHMWhibWxtWlhOMGFtVjRZMngxYzJsdmJuT0JvbVZ6ZEdGeWRCaDlabXhsYm1kMGFCa2VCQUFBQWo1cWRXMWlBQUFBSjJwMWJXUmpNbU5zQUJFQUVJQUFBS29BT0p0eEEyTXljR0V1WTJ4aGFXMHVkaklBQUFBQ0QyTmliM0tsWTJGc1oyWnphR0V5TlRacGMybG5ibUYwZFhKbGVFMXpaV3htSTJwMWJXSm1QUzlqTW5CaEwzVnlianBqTW5CaE9qWmxObVZpWkdNM0xUQm1Zekl0TkRSaE5TMWhZbVJoTFRKa05qaGhPVFZsTkdKbE55OWpNbkJoTG5OcFoyNWhkSFZ5WldwcGJuTjBZVzVqWlVsRWVDeDRiWEE2YVdsa09tSm1NR1poTVdRekxXTTFPVEF0TkRreE5DMDRZVE16TFRFeVpURXdOalU0WTJKak4zSmpjbVZoZEdWa1gyRnpjMlZ5ZEdsdmJuT0RvbU4xY214NExYTmxiR1lqYW5WdFltWTlZekp3WVM1aGMzTmxjblJwYjI1ekwyTXljR0V1YVc1bmNtVmthV1Z1ZEM1Mk0yUm9ZWE5vV0NCWkV6eWFacVJscWljZVdqZ2RZUmQ3NWxWeWtzb1BaVFBIK2RkcGY3YVdSNkpqZFhKc2VDcHpaV3htSTJwMWJXSm1QV015Y0dFdVlYTnpaWEowYVc5dWN5OWpNbkJoTG1GamRHbHZibk11ZGpKa2FHRnphRmdndUZvWEwvb2dDVUpZbW0wZldxdi8xWjZwaVNGeGN1cHRBZ015K3NaYjd0K2lZM1Z5YkhncGMyVnNaaU5xZFcxaVpqMWpNbkJoTG1GemMyVnlkR2x2Ym5Ndll6SndZUzVvWVhOb0xtUmhkR0ZrYUdGemFGZ2dHNEJUMXBsa0UxK0U0eDhIWDc3STAxUmY0SVFROU9QZVNwLzJVZ216Q1d0MFkyeGhhVzFmWjJWdVpYSmhkRzl5WDJsdVptK2paRzVoYldWdlFXNTBhSEp2Y0dsaklFWnBiR1Z6WjNabGNuTnBiMjVsTVM0d0xqQnJjM0JsWTFabGNuTnBiMjVsTWk0MExqQUFBQkE0YW5WdFlnQUFBQ2hxZFcxa1l6Smpjd0FSQUJDQUFBQ3FBRGliY1FOak1uQmhMbk5wWjI1aGRIVnlaUUFBQUJBSVkySnZjdEtFV1FJU29nRW1HQ0ZaQWdvd2dnSUdNSUlCamFBREFnRUNBaFJBNWFBSzdzSTUwTDY0Zy9vR1FnVTlaMVVUQURBS0JnZ3Foa2pPUFFRREF6QkpNUmN3RlFZRFZRUUtFdzVCYm5Sb2NtOXdhV01zSUZCQ1F6RXVNQ3dHQTFVRUF4TWxRVzUwYUhKdmNHbGpJRU52Ym5SbGJuUWdRM0psWkdWdWRHbGhiSE1nVW05dmRDQkRRVEFlRncweU5qQTRNRGN4T0RRek5UWmFGdzB5T0RBNE1EWXhPVFF6TlRaYU1FUXhGekFWQmdOVkJBb1REa0Z1ZEdoeWIzQnBZeXdnVUVKRE1Ta3dKd1lEVlFRREV5QkJiblJvY205d2FXTWdRMnhoZFdSbElFTnZiblJsYm5RZ1UybG5ibWx1WnpCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkpoNkNtdkxVQmdGRk5VMHZVS2xPVnRFNmRqZDE3TDVTdXdYMExlbUZpc0JNM2RrZC8zY3lqeEZBM1FvNVM0NmZYMC9paFkwVlo3bWZiOUtGNzAzdDVPaldEQldNQTRHQTFVZER3RUIvd1FFQXdJSGdEQVZCZ05WSFNVRURqQU1CZ29yQmdFRUFZUG9YZ0lCTUF3R0ExVWRFd0VCL3dRQ01BQXdId1lEVlIwakJCZ3dGb0FVemxIaUJJRk9aRnNqK09QRXo1bytuTUhYWE1Jd0NnWUlLb1pJemowRUF3TURad0F3WkFJd01YTWRGSjRCZXRMTFZZN09SdUU5bm9xYmJBWk9abi9hQXJYeVR3RkFaZktyUHp4RjJ2UG9KTmYxK1VDZGcxWEdBakJ3WDF6ZDlXR3FZa3FtTDVTRnF3MVF5U2pyMXpKZnBKTTkrMXJkRHdTUExNT1BPakt1aVhqb1UvcFVVZUc5UndtaFkzQmhaRmtObmdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFQWllRRXFvVG1lSGJJTEdJMUFaSDErTitmUkpDM0F4TUZEMHY2NmxhUU1uS2RKSkNJSy9IZHhMd3VScnM2MkNwYVdSQUttTnYzZ24wV2NaOUxUMzhISFBtTWM9PC9jMnBhOm1hbmlmZXN0PjwvbWV0YWRhdGE+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzFlNDBhZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzBiMWY0ZCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0icGciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZmZmZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZGJlNmZmIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0idXJsKCNiZykiLz4KICA8Y2lyY2xlIGN4PSIyNTYiIGN5PSIyMDAiIHI9IjE1MCIgZmlsbD0iI2ZmZmZmZiIgb3BhY2l0eT0iMC4wNiIvPgogIDwhLS0gc8OhY2ggbeG7nyAtLT4KICA8cGF0aCBkPSJNMjU2IDMxOCBDMjE0IDI5MiAxNTggMjg0IDkyIDI5MiBMOTIgNDEwIEMxNTggNDAyIDIxNCA0MTAgMjU2IDQzNiBaIiBmaWxsPSJ1cmwoI3BnKSIvPgogIDxwYXRoIGQ9Ik0yNTYgMzE4IEMyOTggMjkyIDM1NCAyODQgNDIwIDI5MiBMNDIwIDQxMCBDMzU0IDQwMiAyOTggNDEwIDI1NiA0MzYgWiIgZmlsbD0idXJsKCNwZykiLz4KICA8cGF0aCBkPSJNMjU2IDMxOCBMMjU2IDQzNiIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjQiLz4KICA8cGF0aCBkPSJNMTIwIDMyNCBDMTYwIDMyMCAyMDAgMzI0IDIzMiAzMzggTTEyMCAzNTIgQzE2MCAzNDggMjAwIDM1MiAyMzIgMzY2IE0xMjAgMzgwIEMxNjAgMzc2IDIwMCAzODAgMjMyIDM5NCIgc3Ryb2tlPSIjOTNjNWZkIiBzdHJva2Utd2lkdGg9IjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSIvPgogIDwhLS0gxJHGsOG7nW5nIHRp4bq/biDEkeG7mSDEkWkgbMOqbiAtLT4KICA8cG9seWxpbmUgcG9pbnRzPSIyOTAsMzg0IDMyNiwzNTIgMzU2LDM2NiAzOTYsMzIwIiBmaWxsPSJub25lIiBzdHJva2U9IiMxZTQwYWYiIHN0cm9rZS13aWR0aD0iMTIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDwhLS0gY2jhu68gdGjhuq1wIMSRaeG7gXUgZMaw4buhbmcgKyBrw61uaCBsw7pwIC0tPgogIDxjaXJjbGUgY3g9IjIzMiIgY3k9IjE3NiIgcj0iODYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZiYmYyNCIgc3Ryb2tlLXdpZHRoPSIyMiIvPgogIDxsaW5lIHgxPSIyOTQiIHkxPSIyMzgiIHgyPSIzNTIiIHkyPSIyOTYiIHN0cm9rZT0iI2ZiYmYyNCIgc3Ryb2tlLXdpZHRoPSIyOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHJlY3QgeD0iMjE2IiB5PSIxMjgiIHdpZHRoPSIzMiIgaGVpZ2h0PSI5NiIgcng9IjgiIGZpbGw9IiNmZmZmZmYiLz4KICA8cmVjdCB4PSIxODQiIHk9IjE2MCIgd2lkdGg9Ijk2IiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iI2ZmZmZmZiIvPgo8L3N2Zz4K" alt="" class="w-9 h-9 rounded-lg shadow-sm shrink-0">
-                    <span class="text-xl font-bold tracking-wide">Phần mềm quản lý- theo dõi nghiên cứu</span>
+                    <span class="text-[15px] leading-tight sm:text-xl font-bold tracking-wide line-clamp-2">Phần mềm quản lý- theo dõi nghiên cứu</span>
                 </div>
-                <div class="flex items-center space-x-3 relative" id="userMenuWrapper">
-                    <span id="syncStatus" class="hidden text-xs text-blue-200 whitespace-nowrap"></span>
+                <div class="flex items-center gap-2 sm:gap-3 relative shrink-0" id="userMenuWrapper">
+                    <span id="syncStatus" class="hidden"></span>
                     <div id="userAvatarInitials" onclick="toggleUserMenu()" title="Tài khoản" class="w-10 h-10 rounded-full bg-blue-700 text-white font-bold flex items-center justify-center border-2 border-white shadow text-sm cursor-pointer hover:bg-blue-600 transition">
                         PA
                     </div>
@@ -389,17 +392,23 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
-                <div class="flex items-center justify-between gap-2">
-                    <h3 class="section-title"><i class="fa-solid fa-flask mr-1.5 text-blue-600"></i> Đề tài theo mốc tiến độ</h3>
-                    <button onclick="switchTab('ds_detai')" class="text-xs font-medium text-blue-600 hover:underline">Xem danh sách →</button>
+                <div class="ov-head flex items-center justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
+                        <h3 class="section-title"><i class="fa-solid fa-flask mr-1.5 text-blue-600"></i> Đề tài theo mốc tiến độ</h3>
+                        <button onclick="switchTab('ds_detai')" class="text-xs font-medium text-blue-600 hover:underline">Xem danh sách →</button>
+                    </div>
+                    <span id="ovProjectTotal" class="shrink-0 text-base font-extrabold text-blue-800" style="margin-right:-0.35rem" title="Tổng số">0</span>
                 </div>
                 <div id="ovProjectBar" class="flex gap-0.5 h-1 rounded-full overflow-hidden bg-slate-100"></div>
                 <div id="ovProjectStages" class="flex flex-col"></div>
             </div>
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 space-y-3">
-                <div class="flex items-center justify-between gap-2">
-                    <h3 class="section-title"><i class="fa-solid fa-newspaper mr-1.5 text-indigo-600"></i> Bài báo theo trạng thái xuất bản</h3>
-                    <button onclick="switchTab('ds_baibao')" class="text-xs font-medium text-blue-600 hover:underline">Xem danh sách →</button>
+                <div class="ov-head flex items-center justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
+                        <h3 class="section-title"><i class="fa-solid fa-newspaper mr-1.5 text-indigo-600"></i> Bài báo theo trạng thái xuất bản</h3>
+                        <button onclick="switchTab('ds_baibao')" class="text-xs font-medium text-blue-600 hover:underline">Xem danh sách →</button>
+                    </div>
+                    <span id="ovArticleTotal" class="shrink-0 text-base font-extrabold text-blue-800" style="margin-right:-0.35rem" title="Tổng số">0</span>
                 </div>
                 <div id="ovArticleBar" class="flex gap-0.5 h-1 rounded-full overflow-hidden bg-slate-100"></div>
                 <div id="ovArticleStages" class="flex flex-col"></div>
@@ -523,7 +532,10 @@
         <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
             <div class="px-6 py-3 border-b border-slate-100 bg-slate-50/50 flex flex-row justify-between items-center gap-4">
                 <h3 class="section-title"><i class="fa-solid fa-stairs text-blue-600 mr-1.5"></i>Đề tài theo mốc tiến độ</h3>
-                <span class="text-xs text-slate-400 hidden sm:inline">Bấm vào từng mốc để xem danh sách</span>
+                <div class="flex items-center gap-4 shrink-0">
+                    <span class="text-xs text-slate-400 hidden sm:inline">Bấm vào từng mốc để xem danh sách</span>
+                    <span id="projectStageTotal" class="text-base font-extrabold text-blue-800" title="Tổng số">0</span>
+                </div>
             </div>
             <div id="projectStagePanel" class="px-3 py-2 flex flex-col"></div>
         </div>
@@ -640,7 +652,10 @@
         <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
             <div class="px-6 py-3 border-b border-slate-100 bg-slate-50/50 flex flex-row justify-between items-center gap-4">
                 <h3 class="section-title"><i class="fa-solid fa-paper-plane text-blue-600 mr-1.5"></i>Bài báo theo trạng thái xuất bản</h3>
-                <span class="text-xs text-slate-400 hidden sm:inline">Bấm vào từng trạng thái để xem danh sách</span>
+                <div class="flex items-center gap-4 shrink-0">
+                    <span class="text-xs text-slate-400 hidden sm:inline">Bấm vào từng trạng thái để xem danh sách</span>
+                    <span id="articleStageTotal" class="text-base font-extrabold text-blue-800" title="Tổng số">0</span>
+                </div>
             </div>
             <div id="articleStagePanel" class="px-3 py-2 flex flex-col"></div>
         </div>
@@ -1593,7 +1608,15 @@
                 ok: '<i class="fa-solid fa-cloud mr-1"></i>Đã lưu lên Google Sheets',
                 error: '<i class="fa-solid fa-triangle-exclamation mr-1 text-amber-300"></i><span class="text-amber-200">Chưa lưu được, sẽ thử lại</span>'
             };
-            el.innerHTML = map[state] || '';
+            // Chỉ hiện biểu tượng đám mây cho gọn; chữ đầy đủ hiện khi rê chuột / nhấn giữ
+            const badge = {
+                saving: '<i class="fa-solid fa-rotate fa-spin text-blue-100" style="font-size:9px"></i>',
+                ok: '<i class="fa-solid fa-circle-check text-emerald-400 bg-blue-900 rounded-full" style="font-size:10px"></i>',
+                error: '<i class="fa-solid fa-circle-exclamation text-amber-300 bg-blue-900 rounded-full" style="font-size:10px"></i>'
+            }[state] || '';
+            el.title = (map[state] || '').replace(/<[^>]+>/g, '');
+            el.className = 'relative inline-flex items-center justify-center w-7 h-7 cursor-default';
+            el.innerHTML = `<i class="fa-solid fa-cloud text-blue-200 text-lg"></i><span class="absolute -bottom-0.5 -right-0.5 leading-none">${badge}</span>`;
             el.classList.remove('hidden');
         }
 
@@ -3086,6 +3109,8 @@
                 const bar = document.getElementById(prefix + 'Bar');
                 const list = document.getElementById(prefix + 'Stages');
                 if (!bar || !list) return;
+                const totalEl = document.getElementById(prefix + 'Total');
+                if (totalEl) totalEl.innerText = total;
                 bar.innerHTML = counts.map((n, i) => n ? `<div class="${color(i)} rounded-full" style="flex:${n} 1 0" title="${stages[i]}: ${n}"></div>` : '').join('');
                 list.innerHTML = stages.map((stage, i) => `
                     <button onclick="openStageList('${type}', ${i})" class="stage-row w-full flex items-center justify-between gap-3 rounded-lg px-2 py-1 text-left" title="Bấm để xem danh sách">
@@ -3099,6 +3124,8 @@
             const stages = getStageEntries(type);
             const panel = document.getElementById(type === 'article' ? 'articleStagePanel' : 'projectStagePanel');
             const total = (type === 'article' ? articles : projects).filter(isOwnedByUser).length;
+            const totalEl = document.getElementById(type + 'StageTotal');
+            if (totalEl) totalEl.innerText = total;
             const colors = type === 'article'
                 ? ['bg-slate-400', 'bg-blue-500', 'bg-amber-500', 'bg-emerald-500']
                 : ['bg-slate-400', 'bg-blue-500', 'bg-indigo-500', 'bg-amber-500', 'bg-emerald-500'];
