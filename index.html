@@ -20,6 +20,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* Bảng tổng hợp: cố định hàng tiêu đề khi cuộn (bảng cuộn trong khung cao vừa màn hình) */
+        .hdr-scroll { max-height: calc(100vh - var(--hdr-h, 96px) - 24px); overflow: auto; }
+        @supports (height: 100dvh) { .hdr-scroll { max-height: calc(100dvh - var(--hdr-h, 96px) - 24px); } }
+        .hdr-scroll > table > thead { position: sticky; top: 0; z-index: 12; box-shadow: 0 1px 0 #cbd5e1, 0 2px 4px rgba(15, 23, 42, 0.06); }
+        .hdr-scroll > table > thead th { background-clip: padding-box; }
         /* CSS cố định cột STT và cột đầu tiên của bảng */
         .sticky-col {
             position: sticky;
@@ -584,7 +589,7 @@
                     </div>
                 </div>
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto hdr-scroll">
                 <table class="data-table w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
@@ -705,7 +710,7 @@
                     </div>
                 </div>
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto hdr-scroll">
                 <table class="data-table w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
@@ -3891,7 +3896,7 @@
                 .concat(['Giai đoạn', 'Ngày bắt đầu', 'Hạn chót', 'Ngày hoàn thành', 'Trạng thái'], showProof ? ['Minh chứng'] : []);
             const head = '<th class="py-3 px-6 text-center w-16">STT</th>' + cols.map((c, i) => `<th class="py-3 px-6${i === 0 ? ' sticky-col' : ''}">${c}</th>`).join('');
             const rows = items.map((item, idx) => fullRowHtml(item, idx, type, list.findIndex(x => x.id === item.id), showProof)).join('');
-            return `<div class="overflow-x-auto"><table class="data-table w-full text-left border-collapse">
+            return `<div class="overflow-x-auto hdr-scroll"><table class="data-table w-full text-left border-collapse">
                     <thead><tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">${head}</tr></thead>
                     <tbody class="divide-y divide-slate-100 text-sm">${rows || `<tr><td colspan="${cols.length + 1}" class="text-center text-slate-400 py-6">Không có ${type === 'article' ? 'bài báo' : 'đề tài'} nào.</td></tr>`}</tbody>
                 </table></div>`;
