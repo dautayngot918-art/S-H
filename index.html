@@ -187,6 +187,11 @@
         tr[data-open] { transition: box-shadow .15s ease; }
         tr[data-open]:hover { box-shadow: 0 6px 14px -6px rgba(30, 64, 175, 0.35); position: relative; z-index: 1; }
         tr[data-open] > td:hover { box-shadow: inset 0 0 0 1px #93c5fd; }
+        /* Thanh tab đầu trang: luôn một hàng, chữ không xuống dòng, hẹp thì kéo ngang để xem, chọn */
+        #tabNavContainer { max-width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        #tabNavContainer::-webkit-scrollbar { display: none; }
+        #tabNavContainer > button { flex: none; white-space: nowrap; }
+        @media (max-width: 1023px) { #tabNavWrap { justify-content: flex-start; } #tabNavContainer > button { padding: 0.45rem 0.7rem !important; } }
         @media (max-width: 640px) { #tabNavContainer { gap: 0.15rem; max-width: 100%; overflow-x: auto; scrollbar-width: none; } #tabNavContainer { width: 100%; justify-content: space-between; } #tabNavContainer > button { padding: 0.35rem 0.3rem !important; font-size: 0.72rem !important; margin: 0 !important; white-space: nowrap; flex: 1 1 auto; } #tabNavContainer > button i { display: none; } }
         /* Trang chủ giữ kiểu tiêu đề cũ */
         #sectionHome .section-title { background-color: transparent; padding: 0; color: #334155; font-weight: 700; }
@@ -264,7 +269,7 @@
             </div>
 
             <!-- Hàng 2: Tab Navigation canh giữa -->
-            <div class="flex justify-center w-full">
+            <div id="tabNavWrap" class="flex justify-center w-full">
                 <div id="tabNavContainer" class="flex space-x-2 bg-blue-950 p-1 rounded-xl">
                     <button onclick="switchTab('home')" id="tabHome" class="px-4 py-2 rounded-lg text-sm font-medium transition bg-blue-600 text-white shadow">
                         <i class="fa-solid fa-house mr-1.5"></i> Trang chủ
@@ -763,13 +768,13 @@
                     <span class="block text-xs font-semibold text-slate-600 uppercase mb-1">Đến ngày</span>
                     <input id="reportTo" type="text" inputmode="numeric" placeholder="--/--/----" oninput="formatDobInput(this); onReportToChange()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
                 </label>
-                <label class="block">
+                <div class="block relative">
                     <span class="block text-xs font-semibold text-slate-600 uppercase mb-1">Gửi đến</span>
-                    <select id="reportRecipient" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-                        <option value="dept">Khoa</option>
-                        <option value="hospital">Bệnh viện</option>
-                    </select>
-                </label>
+                    <input id="reportRecipient" type="text" autocomplete="off" placeholder="Gõ khoa / phòng nhận..." title="Gõ tên nơi nhận, có gợi ý; nhiều nơi nhận thì ngăn cách bằng dấu ;"
+                        oninput="rptToIndex = 0; rptToRender()" onfocus="rptToRender()" onblur="setTimeout(() => document.getElementById('reportRecipientList').classList.add('hidden'), 150)" onkeydown="rptToKey(event)"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                    <div id="reportRecipientList" class="hidden absolute left-0 right-0 sm:right-auto sm:w-80 top-full mt-1 z-40 bg-white border border-blue-200 rounded-xl shadow-xl max-h-72 overflow-y-auto py-1"></div>
+                </div>
                 <label class="block">
                     <span class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nội dung</span>
                     <select id="reportScope" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
@@ -1649,6 +1654,7 @@
                     fullName: 'PHẠM VĂN ANH',
                     passwordHash: nrtHash('phamvananh', '123456'),
                     usingInitialPassword: true,
+                    initialPassword: '123456',
                     active: true,
                     seedSample: true,
                     department: 'Khoa Gây mê - Hồi sức',
@@ -3045,13 +3051,77 @@
             return notes.map(nrtEscape).join('; ');
         }
 
+        // Danh mục khoa / phòng / trung tâm dùng cho gợi ý (vẫn gõ tự do được tên khác)
+        const HOSPITAL_LEADERS = ['Ban Giám đốc Bệnh viện', 'Hội đồng Khoa học - Công nghệ Bệnh viện', 'Hội đồng Đạo đức trong nghiên cứu y sinh học',
+            'Hội đồng Thuốc và điều trị', 'Hội đồng Kiểm soát nhiễm khuẩn', 'Hội đồng Điều dưỡng', 'Hội đồng Quản lý chất lượng', 'Đảng ủy Bệnh viện', 'Công đoàn Bệnh viện', 'Đoàn Thanh niên Bệnh viện'];
+        const HOSPITAL_OFFICES = ['Phòng Kế hoạch tổng hợp', 'Phòng Tổ chức cán bộ', 'Phòng Hành chính', 'Phòng Hành chính quản trị', 'Phòng Hành chính - Văn thư',
+            'Phòng Tài chính kế toán', 'Phòng Điều dưỡng', 'Phòng Đào tạo', 'Phòng Đào tạo - Chỉ đạo tuyến', 'Phòng Chỉ đạo tuyến', 'Phòng Nghiên cứu khoa học',
+            'Phòng Quản lý khoa học và Đào tạo', 'Phòng Khoa học - Công nghệ', 'Phòng Quản lý chất lượng', 'Phòng Vật tư - Thiết bị y tế', 'Phòng Vật tư y tế',
+            'Phòng Trang thiết bị y tế', 'Phòng Công nghệ thông tin', 'Phòng Công tác xã hội', 'Phòng Hợp tác quốc tế', 'Phòng Bảo hiểm y tế', 'Phòng Pháp chế',
+            'Phòng Truyền thông', 'Phòng Quản trị - Xây dựng cơ bản', 'Phòng Quản lý dự án', 'Phòng Chăm sóc khách hàng', 'Phòng Bảo vệ - An ninh',
+            'Trung tâm Đào tạo', 'Trung tâm Đào tạo nhân lực y tế', 'Trung tâm Huấn luyện kỹ năng y khoa', 'Trung tâm Nghiên cứu lâm sàng',
+            'Trung tâm Truyền thông - Giáo dục sức khỏe', 'Trung tâm Chẩn đoán y khoa', 'Trung tâm Ung bướu', 'Trung tâm Tim mạch', 'Trung tâm Đột quỵ',
+            'Trung tâm Hỗ trợ sinh sản', 'Trung tâm Khám sức khỏe', 'Trung tâm Y học hạt nhân', 'Trung tâm Huyết học - Truyền máu'];
+        const HOSPITAL_DEPTS = ['Khoa Khám bệnh', 'Khoa Khám sức khỏe theo yêu cầu', 'Khoa Cấp cứu', 'Khoa Hồi sức tích cực (ICU)', 'Khoa Hồi sức cấp cứu',
+            'Khoa Hồi sức ngoại khoa', 'Khoa Hồi sức nội khoa', 'Khoa Gây mê - Hồi sức', 'Khoa Điều trị trong ngày', 'Khoa Nội tổng quát', 'Khoa Nội Tim mạch',
+            'Khoa Tim mạch can thiệp', 'Khoa Nội Tiêu hóa - Gan mật', 'Khoa Nội Tiết', 'Khoa Nội Thần kinh', 'Khoa Đột quỵ', 'Khoa Hô hấp', 'Khoa Nội cơ xương khớp',
+            'Khoa Nội thận - Thận nhân tạo', 'Khoa Lọc máu', 'Khoa Huyết học lâm sàng', 'Khoa Lão - Chăm sóc giảm nhẹ', 'Khoa Truyền nhiễm', 'Khoa Bệnh nhiệt đới',
+            'Khoa Lao - Bệnh phổi', 'Khoa Tâm thần', 'Khoa Da liễu - Thẩm mỹ da', 'Khoa Ung bướu', 'Khoa Hóa trị ung thư', 'Khoa Xạ trị', 'Khoa Tầm soát ung thư',
+            'Khoa Y học cổ truyền', 'Khoa Phục hồi chức năng', 'Khoa Vật lý trị liệu', 'Khoa Y học thể thao', 'Khoa Ngoại tổng quát', 'Khoa Ngoại Tiêu hóa',
+            'Khoa Ngoại Gan - Mật - Tụy', 'Khoa Hậu môn - Trực tràng', 'Khoa Ngoại Lồng ngực - Mạch máu', 'Khoa Phẫu thuật Tim mạch', 'Khoa Ngoại Thần kinh',
+            'Khoa Chấn thương chỉnh hình', 'Khoa Ngoại Tiết niệu', 'Khoa Niệu học chức năng', 'Khoa Nam học', 'Khoa Tuyến vú', 'Khoa Tạo hình - Thẩm mỹ', 'Khoa Bỏng',
+            'Khoa Phẫu thuật hàm mặt - Răng hàm mặt', 'Khoa Răng Hàm Mặt', 'Khoa Mắt', 'Khoa Tai Mũi Họng', 'Khoa Phụ sản', 'Khoa Sản', 'Khoa Phụ khoa',
+            'Khoa Hỗ trợ sinh sản', 'Khoa Nhi', 'Khoa Ngoại Nhi', 'Khoa Sơ sinh', 'Khoa Hồi sức sơ sinh', 'Khoa Nội soi', 'Khoa Thăm dò chức năng',
+            'Khoa Thăm dò chức năng hô hấp', 'Khoa Chẩn đoán hình ảnh', 'Khoa Y học hạt nhân', 'Khoa Xét nghiệm', 'Khoa Hóa sinh', 'Khoa Vi sinh', 'Khoa Huyết học - Truyền máu',
+            'Khoa Sinh học phân tử', 'Khoa Miễn dịch - Dị ứng', 'Khoa Di truyền', 'Khoa Giải phẫu bệnh', 'Khoa Dược', 'Khoa Kiểm soát nhiễm khuẩn', 'Khoa Dinh dưỡng'];
+        const HOSPITAL_UNITS = HOSPITAL_DEPTS.concat(HOSPITAL_OFFICES);
+        (function fillDeptList() {
+            const dl = document.getElementById('deptList');
+            if (dl) dl.innerHTML = HOSPITAL_UNITS.map(u => `<option value="${u}">`).join('');
+        })();
+
+        // Ô "Gửi đến" của báo cáo: gõ tự do, có gợi ý ban giám đốc, hội đồng, phòng, trung tâm, khoa
+        const foldText = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/chanh/g, 'chinh');
+        let rptToIndex = 0;
+        function rptToOptions() {
+            const dept = (userProfile && userProfile.department) || '';
+            const all = [...new Set((dept ? ['Ban Chủ nhiệm ' + dept] : []).concat(HOSPITAL_LEADERS, HOSPITAL_OFFICES, HOSPITAL_DEPTS))];
+            const input = document.getElementById('reportRecipient');
+            const q = foldText(input.value.split(/[;,]/).pop().trim());
+            const words = q.split(/\s+/).filter(Boolean);
+            return all.filter(o => { const f = foldText(o); return words.every(w => f.includes(w)); }).slice(0, 40);
+        }
+        function rptToRender() {
+            const list = document.getElementById('reportRecipientList');
+            const opts = rptToOptions();
+            rptToIndex = Math.min(rptToIndex, Math.max(0, opts.length - 1));
+            list.innerHTML = opts.map((o, i) => `<button type="button" onmousedown="event.preventDefault()" onclick="rptToPick(${i})" class="w-full text-left px-3 py-2 text-sm ${i === rptToIndex ? 'bg-blue-50' : ''} hover:bg-blue-50">${nrtEscape(o)}</button>`).join('')
+                || '<p class="px-3 py-2 text-sm text-slate-400">Không có gợi ý, cứ gõ tên nơi nhận.</p>';
+            list.classList.remove('hidden');
+        }
+        function rptToPick(i) {
+            const o = rptToOptions()[i];
+            if (!o) return;
+            const input = document.getElementById('reportRecipient');
+            const parts = input.value.split(';');
+            parts[parts.length - 1] = (parts.length > 1 ? ' ' : '') + o;
+            input.value = parts.join(';');
+            document.getElementById('reportRecipientList').classList.add('hidden');
+        }
+        function rptToKey(e) {
+            const n = rptToOptions().length;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); rptToIndex = (rptToIndex + (e.key === 'ArrowDown' ? 1 : -1) + n) % Math.max(1, n); rptToRender(); }
+            else if (e.key === 'Enter') { e.preventDefault(); if (n) rptToPick(rptToIndex); }
+            else if (e.key === 'Escape') document.getElementById('reportRecipientList').classList.add('hidden');
+        }
+
         function generateReport(regenerate) {
             const from = rptParse(document.getElementById('reportFrom').value);
             const to = rptParse(document.getElementById('reportTo').value);
             if (!from || !to || from > to) { alert('Kỳ báo cáo chưa đúng. Vui lòng nhập "Từ ngày" và "Đến ngày" theo dạng ngày/tháng/năm, từ ngày phải trước đến ngày.'); return; }
             if (regenerate && reportEdited && !confirm('Tạo lại sẽ bỏ các chỉnh sửa bạn đã gõ trong báo cáo. Tiếp tục?')) return;
             const scope = document.getElementById('reportScope').value;
-            const toHospital = document.getElementById('reportRecipient').value === 'hospital';
+            const recipientRaw = document.getElementById('reportRecipient').value.trim().replace(/[;,\s]+$/, '');
             const inP = d => { const x = rptParse(d); return x && x >= from && x <= to; };
             const prj = scope === 'article' ? [] : projects.filter(isOwnedByUser).filter(it => rptInPeriod(it, from, to));
             const art = scope === 'project' ? [] : articles.filter(isOwnedByUser).filter(it => rptInPeriod(it, from, to));
@@ -3060,6 +3130,9 @@
             const name = toNameCase(p.name || OWNER_FULL_NAME || '');
             const dept = p.department || '....................';
             const hospital = p.hospital || '....................';
+            // Để trống "Gửi đến" thì gửi Ban Chủ nhiệm khoa như trước; gửi đến khoa (của mình hoặc khoa khác) thì ký xác nhận của trưởng khoa
+            const recipient = recipientRaw || 'Ban Chủ nhiệm ' + dept;
+            const toHospital = !/^(ban chủ nhiệm\s+)?khoa\b/i.test(recipient.split(';')[0].trim());
             const today = new Date();
             const fromS = rptFormat(from), toS = rptFormat(to);
             const months = Math.max(1, Math.round((to - from) / (30.44 * 86400000)));
@@ -3080,7 +3153,7 @@
                 </tr></table>
                 <h1>Báo cáo tiến độ nghiên cứu khoa học</h1>
                 <p class="center italic">(Kỳ báo cáo ${months} tháng: từ ngày ${fromS} đến ngày ${toS})</p>
-                <p class="center" style="margin:10pt 0 12pt">Kính gửi: ${toHospital ? 'Ban Giám đốc ' + esc(hospital) + '; Phòng Quản lý Khoa học / Đào tạo - Nghiên cứu khoa học' : 'Ban Chủ nhiệm ' + esc(dept)}.</p>
+                <p class="center" style="margin:10pt 0 12pt">Kính gửi: ${esc(recipient)}.</p>
                 ${H('Thông tin người báo cáo')}
                 <p>- Họ và tên: <b>${esc(name)}</b>${p.degree ? ' &nbsp;&nbsp; Học vị: ' + esc(p.degree) : ''}</p>
                 <p>- Đơn vị công tác: ${esc(dept)}, ${esc(hospital)}.</p>
@@ -4883,6 +4956,7 @@
                 try { await nrtApi('logout', { token: localStorage.getItem(NRT_KEYS.childToken) }); } catch (err) { /* vẫn đăng xuất */ }
                 clearChildSession();
             } else {
+                if (CURRENT_USERNAME) nrtUpdateAccount(CURRENT_USERNAME, { lastSeen: null });
                 localStorage.removeItem(NRT_KEYS.childSession);
             }
             location.reload();
@@ -4973,6 +5047,7 @@
                 try { await nrtApi('logout', { token: localStorage.getItem(NRT_KEYS.childToken) }); } catch (err) { /* vẫn đăng xuất */ }
                 clearChildSession();
             } else {
+                if (CURRENT_USERNAME) nrtUpdateAccount(CURRENT_USERNAME, { lastSeen: null });
                 localStorage.removeItem(NRT_KEYS.childSession);
             }
             location.reload();
@@ -4993,6 +5068,20 @@
                 return true;
             }
             return false;
+        }
+
+        // Báo cho app chủ biết tài khoản đang online (app chủ coi là Online nếu có tín hiệu trong vài phút gần nhất)
+        function sendPresence() {
+            if (!CURRENT_ACCOUNT || !CURRENT_USERNAME) return;
+            if (!NRT_REMOTE) { nrtUpdateAccount(CURRENT_USERNAME, { lastSeen: new Date().toISOString() }); return; }
+            const token = localStorage.getItem(NRT_KEYS.childToken);
+            if (token) nrtApi('ping', { token }).catch(() => { /* máy chủ cũ chưa có ping: bỏ qua */ });
+        }
+
+        function startPresence() {
+            sendPresence();
+            setInterval(sendPresence, 2 * 60000);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) sendPresence(); });
         }
 
         function startIdleWatch() {
@@ -5034,6 +5123,7 @@
             nrtUpdateAccount(CURRENT_USERNAME, {
                 passwordHash: nrtHash(CURRENT_USERNAME, next),
                 usingInitialPassword: false,
+                initialPassword: '',
                 passwordChangedAt: new Date().toISOString()
             });
             CURRENT_ACCOUNT.passwordChangedAt = new Date().toISOString();
@@ -5049,6 +5139,7 @@
         } else if (CURRENT_ACCOUNT) {
             markChildActive();
             startIdleWatch();
+            startPresence();
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('userMenuName').innerText = CURRENT_ACCOUNT.fullName;
             document.getElementById('userMenuUsername').innerText = CURRENT_ACCOUNT.username;
