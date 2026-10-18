@@ -866,6 +866,7 @@
                     </button>
                 </div>
             </div>
+            <p class="-mt-2 text-xs text-slate-500 leading-snug"><i class="fa-solid fa-circle-info mr-1 text-slate-400"></i><span id="journeyDateHint">Ngày bắt đầu và ngày kết thúc không bắt buộc nhập. Khi nhập, chúng chỉ giúp bạn nhìn lại quá trình làm việc với đề tài này kéo dài bao lâu.</span></p>
             <p id="updateModeHint" class="hidden text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-3 py-2">Bấm vào mốc bạn đang thực hiện để chuyển tiến độ. Bấm lại nút phía trên để thoát.</p>
             <div id="liquidationBanner" class="hidden bg-slate-100 border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-700"></div>
             <div id="milestonesContainer" class="pt-1">
@@ -895,8 +896,45 @@
             <p id="proofUploading" class="hidden text-xs text-blue-600"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang lưu ảnh...</p>
             <div id="proofImages" class="grid grid-cols-3 sm:grid-cols-5 gap-2"></div>
             <div id="proofLinkFields" class="grid sm:grid-cols-2 gap-3"></div>
-            <div class="flex justify-end">
+            <div class="flex justify-end items-center gap-3">
+                <span id="proofLinkSaved" class="hidden text-xs font-medium text-emerald-600"><i class="fa-solid fa-circle-check mr-1"></i>Đã lưu link</span>
                 <button type="button" onclick="saveProofLinks()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium">Lưu link</button>
+            </div>
+        </div>
+
+        <!-- Thông tin xuất bản của bài báo: các ngày in trên trang đầu bài (nhận bài, phản biện, duyệt đăng, xuất bản) -->
+        <div id="pubInfoCard" class="hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-4">
+            <div class="flex flex-wrap justify-between items-center gap-2">
+                <h3 class="section-title"><i id="pubInfoIcon" class="fa-solid fa-newspaper mr-1.5 text-indigo-600"></i> <span id="pubInfoHeading">Thông tin xuất bản</span></h3>
+                <span id="pubInfoSaved" class="hidden text-xs font-medium text-emerald-600"><i class="fa-solid fa-circle-check mr-1"></i>Đã lưu</span>
+            </div>
+            <p class="text-xs text-slate-500 leading-snug"><i class="fa-solid fa-circle-info mr-1 text-slate-400"></i><span id="pubInfoHint"></span></p>
+            <div id="pubInfoFields" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+            <div id="pubInfoSummary" class="space-y-1.5"></div>
+        </div>
+
+        <!-- Xóa hoàn toàn đề tài / bài báo -->
+        <div class="flex justify-center pt-2 pb-4">
+            <button type="button" onclick="openDeleteItemModal()" class="bg-white hover:bg-red-50 text-red-600 border border-red-300 px-5 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition">
+                <i class="fa-solid fa-trash-can"></i><span>Xóa hoàn toàn</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: XÁC NHẬN XÓA HOÀN TOÀN ================= -->
+    <div id="deleteItemModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4" onclick="if (event.target === this) closeDeleteItemModal()">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-4">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 shrink-0 rounded-full bg-red-100 text-red-600 flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-slate-800">Cảnh báo xóa hoàn toàn</h3>
+                    <p id="deleteItemText" class="text-sm text-slate-600 mt-1 break-words"></p>
+                    <p class="text-xs text-slate-500 mt-2">Các số liệu thống kê liên quan sẽ tự động cập nhật lại. Không thể hoàn tác.</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-end gap-2">
+                <button type="button" onclick="closeDeleteItemModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">Không xóa</button>
+                <button type="button" onclick="confirmDeleteItem()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">Đồng ý xóa</button>
             </div>
         </div>
     </div>
@@ -994,6 +1032,7 @@
                     <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Trình độ học vấn</label>
                     <input type="text" id="editDegree" list="degreeList" placeholder="Chọn hoặc nhập trình độ..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
                     <datalist id="degreeList">
+                        <option value="Cử nhân">
                         <option value="Thạc sĩ">
                         <option value="Tiến sĩ">
                         <option value="Phó giáo sư">
@@ -1226,21 +1265,25 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Giai đoạn hiện tại</label>
                         <select id="inputStage" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                            <option value="" selected disabled>Chọn giai đoạn</option>
                             <option value="1. Thông qua hội đồng khoa học & hội đồng đạo đức">1. Thông qua hội đồng khoa học & hội đồng đạo đức</option>
-                            <option value="2. Thu thập dữ liệu" selected>2. Thu thập dữ liệu</option>
+                            <option value="2. Thu thập dữ liệu">2. Thu thập dữ liệu</option>
                             <option value="3. Phân tích dữ liệu">3. Phân tích dữ liệu</option>
                             <option value="4. Báo cáo nghiệm thu">4. Báo cáo nghiệm thu</option>
                             <option value="5. Chứng nhận nghiệm thu">5. Chứng nhận nghiệm thu</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Ngày bắt đầu</label>
-                        <input type="text" id="inputStartDate" inputmode="numeric" placeholder="--/--/----" oninput="formatDobInput(this)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-                    </div>
-                    <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Hạn chót</label>
                         <input type="text" id="inputDeadline" inputmode="numeric" placeholder="--/--/----" oninput="formatDobInput(this)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                     </div>
+                    <p class="col-span-2 -mt-2 text-xs text-slate-500 leading-snug"><i class="fa-solid fa-circle-info mr-1 text-slate-400"></i>Hạn chót không bắt buộc. Khi bạn chọn, app sẽ nhắc bạn lúc gần tới hạn hoặc đã quá hạn.</p>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Ngày bắt đầu</label>
+                        <input type="text" id="inputStartDate" inputmode="numeric" placeholder="--/--/----" oninput="formatDobInput(this)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div></div>
+                    <p class="col-span-2 -mt-2 text-xs text-slate-500 leading-snug"><i class="fa-solid fa-circle-info mr-1 text-slate-400"></i>Ngày bắt đầu không bắt buộc. Chọn ngày này giúp bạn theo dõi mình đã bắt đầu đề tài từ khi nào.</p>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end space-x-3">
@@ -1309,20 +1352,24 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Trạng thái xuất bản</label>
                         <select id="inputArtStage" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 bg-white">
+                            <option value="" selected disabled>Chọn trạng thái</option>
                             <option value="1. Viết bản thảo">1. Viết bản thảo</option>
-                            <option value="2. Nộp bài báo" selected>2. Nộp bài báo</option>
+                            <option value="2. Nộp bài báo">2. Nộp bài báo</option>
                             <option value="3. Phản biện và sửa bài">3. Phản biện và sửa bài</option>
                             <option value="4. Chấp nhận/ Đăng bài">4. Chấp nhận/ Đăng bài</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Ngày bắt đầu</label>
-                        <input type="text" id="inputArtStartDate" inputmode="numeric" placeholder="--/--/----" oninput="formatDobInput(this)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-                    </div>
-                    <div>
                         <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Hạn chót</label>
                         <input type="text" id="inputArtDeadline" inputmode="numeric" placeholder="--/--/----" oninput="formatDobInput(this)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                     </div>
+                    <p class="col-span-2 -mt-2 text-xs text-slate-500 leading-snug"><i class="fa-solid fa-circle-info mr-1 text-slate-400"></i>Hạn chót không bắt buộc. Khi bạn chọn, app sẽ nhắc bạn lúc gần tới hạn hoặc đã quá hạn.</p>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Ngày bắt đầu</label>
+                        <input type="text" id="inputArtStartDate" inputmode="numeric" placeholder="--/--/----" oninput="formatDobInput(this)" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div></div>
+                    <p class="col-span-2 -mt-2 text-xs text-slate-500 leading-snug"><i class="fa-solid fa-circle-info mr-1 text-slate-400"></i>Ngày bắt đầu không bắt buộc. Chọn ngày này giúp bạn theo dõi mình đã bắt đầu bài báo từ khi nào.</p>
                 </div>
 
                 <div>
@@ -1468,6 +1515,8 @@
                 body: JSON.stringify(Object.assign({ action }, payload || {}))
             });
             const data = await res.json();
+            // Máy chủ chạy bản Code.gs cũ chưa có chức năng này: báo rõ cách cập nhật
+            if (!data.ok && /không hợp lệ/i.test(data.error || '')) throw new Error('Máy chủ Google Sheets đang chạy bản Code.gs cũ, chưa có chức năng này. Người quản trị cần dán Code.gs mới vào Apps Script rồi Triển khai > Quản lý bản triển khai > Sửa > Phiên bản mới > Triển khai.');
             if (!data.ok) throw new Error(data.error || 'Lỗi máy chủ.');
             return data;
         }
@@ -1685,7 +1734,47 @@
         // Họ tên viết hoa chữ cái đầu: "PHẠM THỊ HUỆ" -> "Phạm Thị Huệ".
         // Học hàm/học vị và chữ viết tắt có dấu chấm (PGS.TS., ThS., BS., P.) giữ nguyên như khi nhập.
         const NAME_TITLES = { gs: 'GS', pgs: 'PGS', ts: 'TS', ths: 'ThS', bs: 'BS', ds: 'DS', đd: 'ĐD', cn: 'CN', ksk: 'KSK', bsck: 'BSCK', bscki: 'BSCKI', bsckii: 'BSCKII', cki: 'CKI', ckii: 'CKII', ncs: 'NCS', hv: 'HV' };
+        // Chức danh viết tắt thường dùng trong ngành y (gợi ý ở ô nhỏ trước họ tên)
+        const NAME_TITLE_OPTIONS = [
+            ['GS.', 'Giáo sư'], ['PGS.', 'Phó giáo sư'], ['GS.TS.', 'Giáo sư, Tiến sĩ'], ['PGS.TS.', 'Phó giáo sư, Tiến sĩ'],
+            ['GS.TS BS.', 'Giáo sư, Tiến sĩ, Bác sĩ'], ['PGS.TS BS.', 'Phó giáo sư, Tiến sĩ, Bác sĩ'],
+            ['TS.', 'Tiến sĩ'], ['TS BS.', 'Tiến sĩ, Bác sĩ'], ['TS ĐD.', 'Tiến sĩ, Điều dưỡng'], ['TS DS.', 'Tiến sĩ, Dược sĩ'],
+            ['ThS.', 'Thạc sĩ'], ['ThS BS.', 'Thạc sĩ, Bác sĩ'], ['ThS ĐD.', 'Thạc sĩ, Điều dưỡng'], ['ThS DS.', 'Thạc sĩ, Dược sĩ'], ['ThS YTCC.', 'Thạc sĩ Y tế công cộng'],
+            ['BS CKII.', 'Bác sĩ chuyên khoa II'], ['BS CKI.', 'Bác sĩ chuyên khoa I'], ['BSNT.', 'Bác sĩ nội trú'], ['BS.', 'Bác sĩ'],
+            ['DS CKII.', 'Dược sĩ chuyên khoa II'], ['DS CKI.', 'Dược sĩ chuyên khoa I'], ['DS.', 'Dược sĩ'],
+            ['ĐD CKI.', 'Điều dưỡng chuyên khoa I'], ['CN ĐD.', 'Cử nhân Điều dưỡng'], ['CN HS.', 'Cử nhân Hộ sinh'], ['CN XN.', 'Cử nhân Xét nghiệm'],
+            ['CN KTV.', 'Cử nhân Kỹ thuật y học'], ['CN YTCC.', 'Cử nhân Y tế công cộng'], ['CN.', 'Cử nhân'],
+            ['ĐDT.', 'Điều dưỡng trưởng'], ['ĐD.', 'Điều dưỡng'], ['HS.', 'Hộ sinh'], ['KTV.', 'Kỹ thuật viên'], ['YS.', 'Y sĩ'],
+            ['NCS.', 'Nghiên cứu sinh'], ['HV.', 'Học viên'], ['SV.', 'Sinh viên'],
+            ['Prof.', 'Professor'], ['Assoc. Prof.', 'Associate Professor'], ['Dr.', 'Doctor'], ['PhD.', 'Doctor of Philosophy'],
+            ['MD.', 'Doctor of Medicine'], ['MSc.', 'Master of Science'], ['RN.', 'Registered Nurse']
+        ];
+        const titleKey = t => String(t || '').toLocaleLowerCase('vi').replace(/[\s.]+/g, '');
+        const NAME_TITLE_BY_KEY = Object.fromEntries(NAME_TITLE_OPTIONS.map(([t]) => [titleKey(t), t]).concat([['bscki', 'BS CKI.'], ['bsckii', 'BS CKII.'], ['dscki', 'DS CKI.'], ['dsckii', 'DS CKII.']]));
+        const TITLE_PREFIX_RE = new RegExp('^((?:' + Object.values(NAME_TITLE_BY_KEY).concat(['BSCKI.', 'BSCKII.', 'DSCKI.', 'DSCKII.'])
+            .sort((a, b) => b.length - a.length)
+            .map(t => t.replace(/\.$/, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '\\s*'))
+            .join('|') + ')\\.?)(?:\\s+|$)', 'iu');
+        function canonicalTitle(t) {
+            const v = String(t || '').trim();
+            return NAME_TITLE_BY_KEY[titleKey(v)] || v;
+        }
+        // Tách chức danh đứng đầu: "ThS BS. Nguyễn Văn A" -> { title: "ThS BS.", name: "Nguyễn Văn A" }
+        function splitNameTitle(text) {
+            const v = String(text || '').replace(/\s+/g, ' ').trim();
+            const m = v.match(TITLE_PREFIX_RE);
+            if (!m || !v.slice(m[0].length).trim()) return { title: '', name: v };
+            return { title: canonicalTitle(m[1]), name: v.slice(m[0].length).trim() };
+        }
         function toNameCase(text) {
+            if (!text) return text || '';
+            return String(text).split(/\s*,\s*/).map(part => {
+                const { title, name } = splitNameTitle(part);
+                const cased = toNameCaseWords(name);
+                return title ? title + ' ' + cased : cased;
+            }).filter(Boolean).join(', ');
+        }
+        function toNameCaseWords(text) {
             if (!text) return text || '';
             return String(text).replace(/\s+/g, ' ').trim().split(' ').map(word => {
                 const dot = word.lastIndexOf('.');
@@ -1701,7 +1790,56 @@
             if (e.target.matches && e.target.matches(NAME_INPUT_SELECTOR) && e.target.value.trim()) {
                 e.target.value = toNameCase(e.target.value);
             }
+            if (e.target.classList && e.target.classList.contains('name-title-input') && e.target.value.trim()) {
+                e.target.value = canonicalTitle(e.target.value);
+            }
         });
+
+        // Ô nhỏ chọn/gõ chức danh trước mỗi ô họ tên tác giả. Ô họ tên vẫn trả về "Chức danh Họ tên"
+        // như trước, nên mọi chỗ đọc/ghi .value giữ nguyên cách lưu dữ liệu.
+        const TITLE_BOX_SELECTOR = '.add-leader-input, .add-mentor-input, .add-collab-input, .art-leader-input, .art-mentor-input, .art-collab-input, .edit-leader-input, .edit-mentor-input, .edit-collab-input';
+        const NATIVE_INPUT_VALUE = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+        function attachTitleBox(inp) {
+            if (inp.dataset.titleBox || !inp.parentNode) return;
+            inp.dataset.titleBox = '1';
+            const box = document.createElement('input');
+            box.type = 'text';
+            box.setAttribute('list', 'nameTitleList');
+            box.autocomplete = 'off';
+            box.placeholder = 'Chức danh';
+            box.title = 'Chức danh (gõ hoặc chọn): TS., ThS., CN., BS., ĐD....';
+            box.className = 'name-title-input shrink-0 px-2 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:border-blue-500';
+            box.style.width = '6.75rem';
+            inp.parentNode.insertBefore(box, inp);
+            if (inp.parentNode.classList.contains('space-x-2')) { inp.parentNode.classList.remove('space-x-2'); inp.parentNode.classList.add('gap-2'); }
+            inp.placeholder = (inp.placeholder || '').replace(/^(VD: )?(ThS|BS|TS|CN|ĐD)\. /, '$1');
+            Object.defineProperty(inp, 'value', {
+                configurable: true,
+                get() {
+                    const t = box.value.trim(), n = NATIVE_INPUT_VALUE.get.call(inp).trim();
+                    return t && n ? canonicalTitle(t) + ' ' + n : NATIVE_INPUT_VALUE.get.call(inp);
+                },
+                set(v) {
+                    const sp = splitNameTitle(v == null ? '' : String(v));
+                    if (sp.title || !String(v || '').trim()) box.value = sp.title;
+                    NATIVE_INPUT_VALUE.set.call(inp, sp.name);
+                }
+            });
+            inp.value = NATIVE_INPUT_VALUE.get.call(inp);
+        }
+        function attachTitleBoxes(root) {
+            if (root.matches && root.matches(TITLE_BOX_SELECTOR)) attachTitleBox(root);
+            if (root.querySelectorAll) root.querySelectorAll(TITLE_BOX_SELECTOR).forEach(attachTitleBox);
+        }
+        (function initTitleBoxes() {
+            const dl = document.createElement('datalist');
+            dl.id = 'nameTitleList';
+            dl.innerHTML = NAME_TITLE_OPTIONS.map(([t, label]) => `<option value="${t}">${label}</option>`).join('');
+            document.body.appendChild(dl);
+            attachTitleBoxes(document.body);
+            new MutationObserver(list => list.forEach(m => m.addedNodes.forEach(n => n.nodeType === 1 && attachTitleBoxes(n))))
+                .observe(document.body, { childList: true, subtree: true });
+        })();
 
         function normalizeItemNames(item) {
             ['leader', 'mentor', 'collaborators'].forEach(k => { if (item[k]) item[k] = toNameCase(item[k]); });
@@ -2503,6 +2641,7 @@
             const card = document.getElementById('proofCard');
             const item = getCurrentItem();
             if (!card || !item) return;
+            renderPubInfoCard();
             if (!needsProofColumn(item) && !hasProof(item)) { card.classList.add('hidden'); return; }
             card.classList.remove('hidden');
             const isArticle = currentEditingType === 'article';
@@ -2517,7 +2656,7 @@
             const field = (key, label, placeholder) => `
                 <label class="block">
                     <span class="block text-xs font-semibold text-slate-600 uppercase mb-1">${label}</span>
-                    <input id="proof_${key}" type="text" value="${nrtEscape(pr[key] || '')}" placeholder="${placeholder}" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" onkeydown="if (event.key === 'Enter') saveProofLinks()">
+                    <input id="proof_${key}" type="text" value="${nrtEscape(pr[key] || '')}" placeholder="${placeholder}" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" onkeydown="if (event.key === 'Enter') saveProofLinks()" onchange="saveProofLinks()">
                     ${pr[key] ? `<a href="${nrtEscape(key === 'doi' ? doiUrl(pr[key]) : proofUrl(pr[key]))}" target="_blank" rel="noopener" class="inline-block mt-1 text-xs text-blue-600 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>Mở ${key === 'doi' ? 'DOI' : 'link'}</a>` : ''}
                 </label>`;
             document.getElementById('proofLinkFields').innerHTML = isArticle
@@ -2616,7 +2755,7 @@
             }
             status.classList.add('hidden');
             proofImageCache[id] = dataUrl;
-            item.proof = Object.assign({ images: [], link: '', doi: '' }, item.proof);
+            item.proof = Object.assign({ images: [], link: '', doi: '' }, item.proof, typedProofLinks(item));
             item.proof.images = (item.proof.images || []).concat(entry);
             afterProofChange();
         }
@@ -2636,11 +2775,29 @@
             afterProofChange();
         }
 
+        // Link / DOI đang gõ trong ô (kể cả chưa bấm "Lưu link"): giữ lại khi thêm ảnh để không bị mất
+        function typedProofLinks(item) {
+            const get = key => { const el = document.getElementById('proof_' + key); return el ? el.value.trim() : (item.proof && item.proof[key]) || ''; };
+            return { link: get('link'), doi: get('doi') };
+        }
+
         function saveProofLinks() {
             const item = getCurrentItem();
-            const get = key => { const el = document.getElementById('proof_' + key); return el ? el.value.trim() : (item.proof && item.proof[key]) || ''; };
-            item.proof = Object.assign({ images: [] }, item.proof, { link: get('link'), doi: get('doi') });
+            if (!item) return;
+            const typed = typedProofLinks(item);
+            const pr = item.proof || {};
+            if ((pr.link || '') === typed.link && (pr.doi || '') === typed.doi) return;
+            item.proof = Object.assign({ images: [] }, pr, typed);
             afterProofChange();
+            showProofSaved();
+        }
+
+        function showProofSaved() {
+            const el = document.getElementById('proofLinkSaved');
+            if (!el) return;
+            el.classList.remove('hidden');
+            clearTimeout(showProofSaved.t);
+            showProofSaved.t = setTimeout(() => el.classList.add('hidden'), 2500);
         }
 
         function afterProofChange() {
@@ -3112,17 +3269,21 @@
                 accepted: mine.filter(it => !isLiquidated(it) && isItemAccepted(it)),
                 closed: mine.filter(isLiquidated)
             };
+            // Dòng nhỏ dưới mỗi ô: bấm riêng từng phần để mở đúng danh sách phần đó
+            const part = (kind, only, text) => `<button type="button" onclick="event.stopPropagation(); openOverviewList('${kind}', '${only}')" class="hover:text-blue-700 hover:underline">${text}</button>`;
+            const setHtml = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+            const LIST_KEYS = { total: 'all', inProgress: 'in_progress', warning: 'warning', danger: 'danger', accepted: 'accepted', closed: 'closed' };
             Object.entries(groups).forEach(([key, list]) => {
                 const nArt = list.filter(it => articles.includes(it)).length;
                 set(key + 'Count', list.length);
-                set(key + 'Split', (list.length - nArt) + ' đề tài · ' + nArt + ' bài báo');
+                setHtml(key + 'Split', part(LIST_KEYS[key], 'project', (list.length - nArt) + ' đề tài') + ' · ' + part(LIST_KEYS[key], 'article', nArt + ' bài báo'));
             });
             // Bài báo quốc tế / trong nước (không tính bài đã rút)
             [['intl', a => isArticleForeign(a)], ['domestic', a => !isArticleForeign(a)]].forEach(([key, test]) => {
                 const list = articles.filter(isOwnedByUser).filter(a => !isLiquidated(a) && test(a));
                 const done = list.filter(isArticleAccepted).length;
                 set(key + 'Count', list.length);
-                set(key + 'Split', done + ' đã đăng · ' + (list.length - done) + ' đang làm');
+                setHtml(key + 'Split', part(key, 'published', done + ' đã đăng') + ' · ' + part(key, 'working', (list.length - done) + ' đang làm'));
             });
             // Vai trò: tách riêng đề tài và bài báo
             const myP = projects.filter(isOwnedByUser), myA = articles.filter(isOwnedByUser);
@@ -3224,7 +3385,18 @@
                 ? groups.map(g => tabBtn('status:' + g.key, g.label, getStatusItems(g.key, type).length, g.key === statusKey)).join('')
                 : stages.map((s, i) => tabBtn(i, stageName(s), getStageItems(type, i).length, i === stageIndex)).join('');
 
-            document.getElementById('stageListTable').innerHTML = compactTableHtml(items, type);
+            // Bài báo đều đã đăng (VD mốc "4. Chấp nhận/ Đăng bài") thì tách riêng đăng trong nước / quốc tế
+            const pubSplit = type === 'article' && items.length > 0 && items.every(a => !isLiquidated(a) && isArticleAccepted(a));
+            if (pubSplit) {
+                const dom = items.filter(a => !isArticleForeign(a)), intl = items.filter(isArticleForeign);
+                const part = (label, list, icon) => list.length ? `
+                    <div class="flex items-center justify-between gap-2 px-4 py-2.5 border-b bg-indigo-50 border-indigo-200"><h3 class="section-title !text-indigo-800"><i class="fa-solid ${icon} mr-1.5 text-indigo-600"></i> ${label}</h3><span class="shrink-0 text-xs font-bold text-indigo-700 border-indigo-200 bg-white border px-2.5 py-0.5 rounded-full">${list.length}</span></div>
+                    ${compactTableHtml(list, type)}` : '';
+                document.getElementById('stageListTable').innerHTML = part('Đăng trong nước', dom, 'fa-newspaper') + part('Đăng quốc tế', intl, 'fa-globe');
+                document.getElementById('stageListCount').innerText = `${dom.length} trong nước · ${intl.length} quốc tế`;
+            } else {
+                document.getElementById('stageListTable').innerHTML = compactTableHtml(items, type);
+            }
 
             ['sectionHome', 'sectionOverview', 'sectionDsDetai', 'sectionDsBaibao', 'sectionSubFolder', 'sectionFilteredList']
                 .forEach(id => document.getElementById(id).classList.add('hidden'));
@@ -3409,6 +3581,11 @@
                 alert('Vui lòng nhập tên đề tài!');
                 return;
             }
+            if (!document.getElementById('inputStage').value) {
+                alert('Vui lòng chọn giai đoạn hiện tại của đề tài!');
+                document.getElementById('inputStage').focus();
+                return;
+            }
 
             let validNames = [userProfile.name, ...(userProfile.alternateNames || [])];
             let isFound = checkUserInFields(validNames, leaders, mentors, collabs);
@@ -3428,8 +3605,8 @@
             let stage = document.getElementById('inputStage').value;
             let deadline = document.getElementById('inputDeadline').value;
 
-            let leaderString = leadersArr.length > 0 ? leadersArr.join(', ') : userProfile.name;
-            let mentorString = mentorsArr.length > 0 ? mentorsArr.join(', ') : 'ThS. Anh';
+            let leaderString = leadersArr.join(', ');
+            let mentorString = mentorsArr.join(', ');
             let collabString = collabsArr.join(', ');
 
             projects.push({
@@ -3485,6 +3662,11 @@
                 alert('Vui lòng nhập tên bài báo!');
                 return;
             }
+            if (!stage) {
+                alert('Vui lòng chọn trạng thái xuất bản của bài báo!');
+                document.getElementById('inputArtStage').focus();
+                return;
+            }
 
             let validNames = [userProfile.name, ...(userProfile.alternateNames || [])];
             let isFound = checkUserInFields(validNames, leaders, mentors, collabs);
@@ -3500,7 +3682,7 @@
         }
 
         function executeSaveArticle(leadersArr, mentorsArr, collabsArr, journal, stage, title) {
-            let leaderString = leadersArr.length > 0 ? leadersArr.join(', ') : userProfile.name;
+            let leaderString = leadersArr.join(', ');
             let mentorString = mentorsArr.filter(Boolean).join(', ');
             let collabString = collabsArr.filter(Boolean).join(', ');
 
@@ -3527,8 +3709,7 @@
 
         function openAddArticleModal() {
             document.getElementById('addArticleModal').classList.remove('hidden');
-            const leaderInput = document.querySelector('.art-leader-input');
-            if (leaderInput) leaderInput.value = toNameCase(userProfile.name);
+            document.getElementById('inputArtStage').value = '';
         }
 
         function closeAddArticleModal() {
@@ -3689,18 +3870,37 @@
             collab_article: { title: 'Bài báo bạn là cộng tác viên', articleOnly: true, article: 'DS bài báo bạn là cộng tác viên', test: it => isUserMatch(it.collaborators) }
         };
 
-        function openOverviewList(kind) {
-            const cfg = OVERVIEW_LISTS[kind] || OVERVIEW_LISTS.all;
+        // only: 'project' / 'article' chỉ mở một phần; 'published' / 'working' tách bài đã đăng / đang làm
+        let lastOverviewList = null;
+        function openOverviewList(kind, only) {
+            lastOverviewList = { kind, only };
+            let cfg = OVERVIEW_LISTS[kind] || OVERVIEW_LISTS.all;
+            if (only === 'project') cfg = Object.assign({}, cfg, { projectOnly: true, articleOnly: false, title: cfg.title + ' · Đề tài' });
+            if (only === 'article') cfg = Object.assign({}, cfg, { articleOnly: true, projectOnly: false, title: cfg.title + ' · Bài báo' });
+            if (only === 'published' || only === 'working') {
+                const base = cfg.test;
+                const pub = only === 'published';
+                cfg = Object.assign({}, cfg, { title: cfg.title + (pub ? ' · Đã đăng' : ' · Đang làm'), article: cfg.article + (pub ? ' đã đăng' : ' đang làm'),
+                    test: it => base(it) && (pub ? isArticleAccepted(it) : !isArticleAccepted(it)) });
+            }
             const myProjects = cfg.articleOnly ? [] : projects.filter(isOwnedByUser).filter(cfg.test);
             const myArticles = cfg.projectOnly ? [] : articles.filter(isOwnedByUser).filter(cfg.test);
+            // Nhóm bài báo đều đã đăng thì tách riêng trong nước / quốc tế
+            const splitPub = myArticles.length > 0 && myArticles.every(a => !isLiquidated(a) && isArticleAccepted(a))
+                && !myArticles.every(isArticleForeign) && !myArticles.every(a => !isArticleForeign(a));
+            const myDomestic = myArticles.filter(a => !isArticleForeign(a));
+            const myForeign = myArticles.filter(isArticleForeign);
             document.getElementById('filterTitle').innerText = cfg.title;
             // Hai ô đếm riêng: bấm ô nào thì cuộn tới đúng bảng đề tài / bài báo bên dưới
             const chip = (type, n, label, color) => `<button type="button" onclick="scrollToFilteredBlock('${type}')" class="${color} border text-xs font-bold px-2.5 py-1 rounded-full transition whitespace-nowrap" title="Xem danh sách ${label}">${n} ${label}</button>`;
             document.getElementById('filterCount').innerHTML =
                 (cfg.articleOnly ? '' : chip('project', myProjects.length, 'đề tài', 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200')) +
-                (cfg.projectOnly ? '' : chip('article', myArticles.length, 'bài báo', 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200'));
-            const block = (label, items, type, icon) => `
-                <div id="filteredBlock_${type}" class="bg-white rounded-2xl shadow-sm border ${type === 'article' ? 'border-indigo-200' : 'border-blue-200'} overflow-hidden">
+                (cfg.projectOnly ? '' : splitPub
+                    ? chip('domestic', myDomestic.length, 'bài trong nước', 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200') +
+                      chip('foreign', myForeign.length, 'bài quốc tế', 'bg-violet-50 hover:bg-violet-100 text-violet-700 border-violet-200')
+                    : chip('article', myArticles.length, 'bài báo', 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200'));
+            const block = (label, items, type, icon, blockId = type) => `
+                <div id="filteredBlock_${blockId}" class="bg-white rounded-2xl shadow-sm border ${type === 'article' ? 'border-indigo-200' : 'border-blue-200'} overflow-hidden">
                     <div class="flex items-center justify-between gap-2 px-4 py-2.5 border-b ${type === 'article' ? 'bg-indigo-50 border-indigo-200' : 'bg-blue-50 border-blue-200'}">
                         <h3 class="section-title ${type === 'article' ? '!text-indigo-800' : '!text-blue-800'}"><i class="fa-solid ${icon} mr-1.5 ${type === 'article' ? 'text-indigo-600' : 'text-blue-600'}"></i> ${label}</h3>
                         <span class="shrink-0 text-xs font-bold ${type === 'article' ? 'text-indigo-700 border-indigo-200' : 'text-blue-700 border-blue-200'} bg-white border px-2.5 py-0.5 rounded-full">${items.length}</span>
@@ -3708,7 +3908,10 @@
                     ${compactTableHtml(items, type)}
                 </div>`;
             document.getElementById('filteredTables').innerHTML =
-                (cfg.articleOnly ? '' : block(cfg.project, myProjects, 'project', 'fa-flask')) + (cfg.projectOnly ? '' : block(cfg.article, myArticles, 'article', 'fa-newspaper'));
+                (cfg.articleOnly ? '' : block(cfg.project, myProjects, 'project', 'fa-flask')) +
+                (cfg.projectOnly ? '' : splitPub
+                    ? block('DS bài báo đăng trong nước', myDomestic, 'article', 'fa-newspaper', 'domestic') + block('DS bài báo đăng quốc tế', myForeign, 'article', 'fa-globe', 'foreign')
+                    : block(cfg.article, myArticles, 'article', 'fa-newspaper'));
             document.getElementById('sectionOverview').classList.add('hidden');
             document.getElementById('sectionFilteredList').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3773,6 +3976,7 @@
             document.getElementById('sectionDsDetai').classList.add('hidden');
             document.getElementById('sectionDsBaibao').classList.add('hidden');
             document.getElementById('sectionFilteredList').classList.add('hidden');
+            renderPubInfoCard();
             document.getElementById('sectionSubFolder').classList.remove('hidden');
             if (focus && focus !== 'title') {
                 window.scrollTo({ top: 0 });
@@ -3780,6 +3984,136 @@
             } else {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+        }
+
+        // ================= THÔNG TIN XUẤT BẢN (BÀI BÁO) / GIẤY CHỨNG NHẬN NGHIỆM THU (ĐỀ TÀI) =================
+        // dates: [khóa, nhãn, chú thích]; texts: [khóa, nhãn, chú thích, gợi ý nhập, danh sách chọn]
+        const PUB_INFO = {
+            article: {
+                store: 'pub', heading: 'Thông tin xuất bản', icon: 'fa-newspaper',
+                hint: 'Các ngày này thường in ở trang đầu bài báo (Received, Revised, Accepted, Published). Không bắt buộc, có ngày nào điền ngày đó. App tự lưu khi bạn rời ô.',
+                dates: [
+                    ['received', 'Ngày nhận bài', 'Received / Submitted'],
+                    ['reviewed', 'Ngày phản biện', 'Nhận kết quả phản biện'],
+                    ['revised', 'Ngày nhận bản sửa', 'Revised'],
+                    ['accepted', 'Ngày duyệt đăng', 'Accepted'],
+                    ['online', 'Ngày đăng trực tuyến', 'Published online'],
+                    ['published', 'Ngày xuất bản', 'Số báo chính thức']
+                ],
+                texts: [
+                    ['volume', 'Tập', 'Volume', 'VD: 12'],
+                    ['issue', 'Số', 'Issue', 'VD: 3'],
+                    ['pages', 'Trang', 'Pages', 'VD: 45-52']
+                ]
+            },
+            project: {
+                store: 'cert', heading: 'Thông tin giấy chứng nhận nghiệm thu', icon: 'fa-award',
+                hint: 'Điền theo giấy chứng nhận nghiệm thu đề tài (số GCN, số quyết định, ngày, xếp loại...). Không bắt buộc, có mục nào điền mục đó. App tự lưu khi bạn rời ô.',
+                dates: [
+                    ['decisionDate', 'Ngày quyết định', 'Ngày ra QĐ nghiệm thu'],
+                    ['certDate', 'Ngày cấp GCN', 'Ngày ký giấy chứng nhận']
+                ],
+                texts: [
+                    ['level', 'Cấp đề tài', 'Cấp quản lý', 'Chọn hoặc nhập', ['Cấp cơ sở', 'Cấp bệnh viện', 'Cấp trường', 'Cấp Sở', 'Cấp Bộ', 'Cấp tỉnh/thành phố', 'Cấp Nhà nước']],
+                    ['grade', 'Xếp loại', 'Kết quả đánh giá', 'Chọn hoặc nhập', ['Xuất sắc', 'Tốt', 'Khá', 'Đạt', 'Không đạt']],
+                    ['decisionNo', 'Số quyết định', 'QĐ nghiệm thu', 'VD: 2321/QĐ-ĐHYD'],
+                    ['certNo', 'Số GCN', 'Số giấy chứng nhận', 'VD: 254/GCN-KHCN'],
+                    ['issuer', 'Đơn vị cấp', 'Cơ quan cấp GCN', 'VD: Đại học Y Dược TP.HCM'],
+                    ['signer', 'Người ký', 'Họ tên, chức vụ', 'VD: Nguyễn Văn Chinh']
+                ]
+            }
+        };
+        const pubInfoCfg = () => PUB_INFO[currentEditingType === 'article' ? 'article' : 'project'];
+
+        function renderPubInfoCard() {
+            const card = document.getElementById('pubInfoCard');
+            const item = getCurrentItem();
+            // Chỉ hiện cùng khung minh chứng (bài báo đã chấp nhận/đăng, đề tài đã chứng nhận nghiệm thu)
+            if (!item || (!needsProofColumn(item) && !hasProof(item))) { card.classList.add('hidden'); return; }
+            const cfg = pubInfoCfg();
+            card.classList.remove('hidden');
+            document.getElementById('pubInfoHeading').textContent = cfg.heading;
+            document.getElementById('pubInfoIcon').className = `fa-solid ${cfg.icon} mr-1.5 text-indigo-600`;
+            document.getElementById('pubInfoHint').textContent = cfg.hint;
+            const pub = item[cfg.store] || {};
+            const field = (key, label, sub, extra, list) => `
+                <label class="block min-w-0">
+                    <span class="block text-[11px] font-semibold text-slate-600 uppercase leading-tight">${label}</span>
+                    <span class="block text-[10px] text-slate-400 mb-1 truncate">${sub}</span>
+                    <input type="text" id="pub_${key}" value="${nrtEscape(pub[key] || '')}" ${extra} ${list ? `list="pubList_${key}" autocomplete="off"` : ''} onchange="savePubInfo()" onkeydown="if (event.key === 'Enter') this.blur()" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:border-indigo-500">
+                    ${list ? `<datalist id="pubList_${key}">${list.map(o => `<option value="${o}">`).join('')}</datalist>` : ''}
+                </label>`;
+            document.getElementById('pubInfoFields').innerHTML =
+                (currentEditingType === 'article' ? '' : cfg.texts.slice(0, 2).map(([k, l, sub, ph, list]) => field(k, l, sub, `placeholder="${ph}"`, list)).join('')) +
+                cfg.dates.map(([k, l, sub]) => field(k, l, sub, 'inputmode="numeric" placeholder="--/--/----" oninput="formatDobInput(this)"')).join('') +
+                (currentEditingType === 'article' ? cfg.texts : cfg.texts.slice(2)).map(([k, l, sub, ph, list]) => field(k, l, sub, `placeholder="${ph}"`, list)).join('');
+            renderPubSummary(item);
+        }
+
+        function renderPubSummary(item) {
+            const cfg = pubInfoCfg();
+            const pub = item[cfg.store] || {};
+            const lines = [];
+            const filled = cfg.dates.filter(([k]) => pub[k] && parseDeadline(pub[k]));
+            for (let i = 1; i < filled.length; i++) {
+                const [k, l] = filled[i], [pk, pl] = filled[i - 1];
+                if (parseDeadline(pub[k]) < parseDeadline(pub[pk])) {
+                    lines.push(`<p class="text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-3 py-1.5"><i class="fa-solid fa-triangle-exclamation mr-1"></i>${l} (${pub[k]}) đang trước ${pl.toLowerCase()} (${pub[pk]}), bạn kiểm tra lại nhé.</p>`);
+                }
+            }
+            const line = (icon, html) => lines.push(`<p class="text-xs text-slate-600"><i class="fa-solid ${icon} mr-1 text-indigo-500"></i>${html}</p>`);
+            const ok = k => pub[k] && parseDeadline(pub[k]);
+            const stat = (a, b, text) => {
+                if (!ok(a) || !ok(b)) return;
+                const d = Math.round((parseDeadline(pub[b]) - parseDeadline(pub[a])) / 86400000);
+                if (d >= 0) line('fa-clock', `${text}: <b>${d} ngày</b>`);
+            };
+            if (currentEditingType === 'article') {
+                stat('received', 'accepted', 'Từ nhận bài đến duyệt đăng');
+                stat('accepted', pub.online ? 'online' : 'published', 'Từ duyệt đăng đến khi đăng');
+                const cite = [pub.volume && 'Tập ' + pub.volume, pub.issue && 'Số ' + pub.issue, pub.pages && 'tr. ' + pub.pages].filter(Boolean).join(', ');
+                if (cite) line('fa-book-open', nrtEscape((item.journal ? item.journal + ', ' : '') + cite));
+            } else {
+                const head = [pub.level, pub.grade && 'Xếp loại ' + pub.grade].filter(Boolean).join(' · ');
+                if (head) line('fa-award', `<b>${nrtEscape(head)}</b>`);
+                if (pub.decisionNo || pub.decisionDate) line('fa-file-signature', nrtEscape('Quyết định' + (pub.decisionNo ? ' số ' + pub.decisionNo : '') + (pub.decisionDate ? ' ngày ' + pub.decisionDate : '')));
+                if (pub.certNo || pub.certDate) line('fa-certificate', nrtEscape('Giấy chứng nhận' + (pub.certNo ? ' số ' + pub.certNo : '') + (pub.certDate ? ' ngày ' + pub.certDate : '') + (pub.issuer ? ' · ' + pub.issuer : '')));
+                else if (pub.issuer) line('fa-building-columns', nrtEscape(pub.issuer));
+                if (pub.signer) line('fa-pen-nib', nrtEscape('Người ký: ' + pub.signer));
+                stat('decisionDate', 'certDate', 'Từ quyết định đến khi cấp giấy');
+            }
+            document.getElementById('pubInfoSummary').innerHTML = lines.join('');
+        }
+
+        function savePubInfo() {
+            const item = getCurrentItem();
+            if (!item) return;
+            const cfg = pubInfoCfg();
+            const pub = {};
+            for (const [k, l] of cfg.dates) {
+                const el = document.getElementById('pub_' + k);
+                const v = el ? el.value.trim() : '';
+                if (v && !parseDeadline(v)) {
+                    alert(l + ' chưa đúng dạng ngày/tháng/năm (VD: 15/03/2026).');
+                    el.focus();
+                    return;
+                }
+                if (v) pub[k] = v;
+            }
+            cfg.texts.forEach(([k]) => {
+                const el = document.getElementById('pub_' + k);
+                const v = el ? el.value.replace(/\s+/g, ' ').trim() : '';
+                if (v) pub[k] = v;
+            });
+            const sorted = o => JSON.stringify(Object.keys(o).sort().map(k => [k, o[k]]));
+            if (sorted(pub) === sorted(item[cfg.store] || {})) return;
+            if (Object.keys(pub).length) item[cfg.store] = pub; else delete item[cfg.store];
+            saveToStorage();
+            renderPubSummary(item);
+            const okEl = document.getElementById('pubInfoSaved');
+            okEl.classList.remove('hidden');
+            clearTimeout(savePubInfo.t);
+            savePubInfo.t = setTimeout(() => okEl.classList.add('hidden'), 2500);
         }
 
         function authorLabels(type) {
@@ -3977,8 +4311,7 @@
 
         function openAddModal() {
             document.getElementById('addModal').classList.remove('hidden');
-            const leaderInput = document.querySelector('.add-leader-input');
-            if (leaderInput) leaderInput.value = toNameCase(userProfile.name);
+            document.getElementById('inputStage').value = '';
         }
 
         function closeAddModal() {
@@ -4002,6 +4335,38 @@
                     <input type="text" placeholder="VD: BS. Trần Văn B" class="add-collab-input w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500">
                 </div>
             `;
+        }
+
+        // Xóa hoàn toàn đề tài / bài báo đang mở, rồi quay lại trang trước với số liệu đã cập nhật
+        function openDeleteItemModal() {
+            const item = getCurrentItem();
+            if (!item) return;
+            const kind = currentEditingType === 'article' ? 'bài báo' : 'đề tài';
+            const el = document.getElementById('deleteItemText');
+            el.textContent = '';
+            el.append('Bạn đang xóa hoàn toàn ' + kind + ' "');
+            const b = document.createElement('b'); b.className = 'text-slate-800'; b.textContent = item.title || '';
+            el.append(b, '". Bạn có chắc xóa ' + kind + ' này không?');
+            document.getElementById('deleteItemModal').classList.remove('hidden');
+        }
+
+        function closeDeleteItemModal() {
+            document.getElementById('deleteItemModal').classList.add('hidden');
+        }
+
+        function confirmDeleteItem() {
+            const list = currentEditingType === 'article' ? articles : projects;
+            if (currentEditingIndex == null || !list[currentEditingIndex]) { closeDeleteItemModal(); return; }
+            list.splice(currentEditingIndex, 1);
+            saveToStorage();
+            closeDeleteItemModal();
+            const origin = subFolderOrigin;
+            goBackToOverview();
+            renderOverview();
+            if (origin && origin.section === 'sectionFilteredList' && lastOverviewList) {
+                openOverviewList(lastOverviewList.kind, lastOverviewList.only);
+                window.scrollTo({ top: origin.y || 0, behavior: 'instant' });
+            }
         }
 
         function getCurrentItem() {
@@ -4247,6 +4612,7 @@
             document.getElementById('milestonesHeading').innerText = currentEditingType === 'article'
                 ? `Hành trình xuất bản bài báo (${activeMilestones.length} mốc)`
                 : `Hành trình nghiên cứu chuẩn hóa (${activeMilestones.length} mốc)`;
+            document.getElementById('journeyDateHint').textContent = `Ngày bắt đầu và ngày kết thúc không bắt buộc nhập. Khi nhập, chúng chỉ giúp bạn nhìn lại quá trình làm việc với ${currentEditingType === 'article' ? 'bài báo' : 'đề tài'} này kéo dài bao lâu.`;
 
             let html = journeyDateNodeHtml('startDate', item, '');
             activeMilestones.forEach((milestone, idx) => {
