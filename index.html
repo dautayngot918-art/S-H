@@ -239,6 +239,9 @@
         .app-title-l2 { font-size: 1.3rem; font-weight: 600; letter-spacing: 0.05em; color: #fde68a; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
         .app-title-tag { font-family: inherit; font-size: 0.62rem; letter-spacing: 0.02em; text-transform: none; font-weight: 700; color: #1e3a8a; background: #fde68a; border-radius: 9999px; padding: 0.1rem 0.45rem; }
         @media (max-width: 640px) { .app-title-l1 { font-size: 1rem; letter-spacing: 0.12em; } .app-title-l2 { font-size: 1.12rem; } }
+        .no-scrollbar { scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        @media print { .col-find-btn, .col-find-chips { display: none !important; } }
     </style>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
@@ -593,21 +596,22 @@
                     </div>
                 </div>
             </div>
+            <div id="projectColChips" class="col-find-chips hidden px-6 py-2.5 border-b border-slate-100 flex-nowrap items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
             <div class="overflow-x-auto hdr-scroll">
                 <table class="data-table w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
                             <th class="py-3 px-6 text-center w-16">STT</th>
-                            <th class="py-3 px-6 sticky-col">Tên đề tài nghiên cứu</th>
-                            <th class="py-3 px-6">Chủ nhiệm đề tài</th>
-                            <th class="py-3 px-6">Thư ký đề tài</th>
-                            <th class="py-3 px-6">Thành viên chính</th>
-                            <th class="py-3 px-6">Thành viên</th>
-                            <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('project', 'stage')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="project" data-sort-key="stage">Giai đoạn<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
+                            <th data-col-find="project:title" class="py-3 px-6 sticky-col">Tên đề tài nghiên cứu</th>
+                            <th data-col-find="project:leader" class="py-3 px-6">Chủ nhiệm đề tài</th>
+                            <th data-col-find="project:secretary" class="py-3 px-6">Thư ký đề tài</th>
+                            <th data-col-find="project:mentor" class="py-3 px-6">Thành viên chính</th>
+                            <th data-col-find="project:collaborators" class="py-3 px-6">Thành viên</th>
+                            <th data-col-find="project:stage" class="py-3 px-6"><button type="button" onclick="toggleTableSort('project', 'stage')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="project" data-sort-key="stage">Giai đoạn<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
                             <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('project', 'startDate')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="project" data-sort-key="startDate">Ngày bắt đầu<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
                             <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('project', 'deadline')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="project" data-sort-key="deadline">Hạn chót<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
                             <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('project', 'endDate')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="project" data-sort-key="endDate">Ngày hoàn thành<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
-                            <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('project', 'status')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="project" data-sort-key="status">Trạng thái<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
+                            <th data-col-find="project:status" class="py-3 px-6"><button type="button" onclick="toggleTableSort('project', 'status')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="project" data-sort-key="status">Trạng thái<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
                             <th class="py-3 px-6">Minh chứng</th>
                         </tr>
                     </thead>
@@ -714,21 +718,22 @@
                     </div>
                 </div>
             </div>
+            <div id="articleColChips" class="col-find-chips hidden px-6 py-2.5 border-b border-slate-100 flex-nowrap items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
             <div class="overflow-x-auto hdr-scroll">
                 <table class="data-table w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-100">
                             <th class="py-3 px-6 text-center w-16">STT</th>
-                            <th class="py-3 px-6 sticky-col">Tên bài báo</th>
-                            <th class="py-3 px-6">Chủ nhiệm</th>
-                            <th class="py-3 px-6">Người hướng dẫn / Đồng tác giả</th>
-                            <th class="py-3 px-6">Cộng tác viên</th>
-                            <th class="py-3 px-6">Nơi đăng / Tạp chí</th>
-                            <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('article', 'stage')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="article" data-sort-key="stage">Giai đoạn<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
+                            <th data-col-find="article:title" class="py-3 px-6 sticky-col">Tên bài báo</th>
+                            <th data-col-find="article:leader" class="py-3 px-6">Chủ nhiệm</th>
+                            <th data-col-find="article:mentor" class="py-3 px-6">Người hướng dẫn / Đồng tác giả</th>
+                            <th data-col-find="article:collaborators" class="py-3 px-6">Cộng tác viên</th>
+                            <th data-col-find="article:journal" class="py-3 px-6">Nơi đăng / Tạp chí</th>
+                            <th data-col-find="article:stage" class="py-3 px-6"><button type="button" onclick="toggleTableSort('article', 'stage')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="article" data-sort-key="stage">Giai đoạn<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
                             <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('article', 'startDate')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="article" data-sort-key="startDate">Ngày bắt đầu<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
                             <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('article', 'deadline')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="article" data-sort-key="deadline">Hạn chót<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
                             <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('article', 'endDate')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="article" data-sort-key="endDate">Ngày hoàn thành<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
-                            <th class="py-3 px-6"><button type="button" onclick="toggleTableSort('article', 'status')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="article" data-sort-key="status">Trạng thái<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
+                            <th data-col-find="article:status" class="py-3 px-6"><button type="button" onclick="toggleTableSort('article', 'status')" class="sort-btn inline-flex items-center gap-1 uppercase" data-sort-table="article" data-sort-key="status">Trạng thái<span class="sort-arrows"><span class="sa-up">▲</span><span class="sa-down">▼</span></span></button></th>
                             <th class="py-3 px-6">Minh chứng</th>
                         </tr>
                     </thead>
@@ -2377,6 +2382,8 @@
             let result = list.slice();
             if (q) result = result.filter(it => [it.title, it.leader, it.secretary, it.mentor, it.collaborators, it.journal]
                 .some(v => (v || '').toLocaleLowerCase('vi').includes(q)));
+            result = result.filter(colFindMatch(prefix));
+            renderColFindChips(prefix);
             const st = tableSort[prefix];
             if (st.key) {
                 result.sort((a, b) => {
@@ -2390,6 +2397,172 @@
             updateSortArrows(prefix);
             return result;
         }
+
+        // ================= KÍNH LÚP LỌC THEO CỘT (chọn được nhiều mục cùng lúc) =================
+        // Mỗi cột giữ danh sách giá trị đang lọc; dòng khớp một trong các giá trị của cột là được,
+        // nhiều cột cùng lọc thì dòng phải khớp tất cả các cột. Giá trị bắt đầu bằng COL_CONTAINS là "có chứa chữ".
+        const COL_CONTAINS = '\u0001';
+        const colFind = { project: {}, article: {} };
+        let colFindAt = null, colFindIndex = 0;
+        const colFold = text => (text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+        const colNames = text => (text || '').split(/[,;]/).map(n => toNameCase(n.trim())).filter(n => n && n !== '-');
+        function colFindStatus(it) {
+            if (isDoneItem(it)) return 'Đã hoàn thành';
+            const risk = getEffectiveRisk(it);
+            if (risk === 'liquidated') return closedLabel(it.type);
+            if (risk === 'warning') return 'Sắp đến hạn';
+            if (risk === 'danger') return 'Quá hạn / Kẹt';
+            if (isMissingDeadline(it)) return 'Chưa đặt hạn chót';
+            return 'Đúng tiến độ';
+        }
+        const COL_FIND = {
+            title: [() => 'Tên', it => [it.title || '']],
+            leader: [() => 'Chủ nhiệm', it => colNames(it.leader)],
+            secretary: [() => 'Thư ký', it => colNames(it.secretary)],
+            mentor: [p => p === 'article' ? 'Người hướng dẫn' : 'Thành viên chính', it => colNames(it.mentor)],
+            collaborators: [p => p === 'article' ? 'Cộng tác viên' : 'Thành viên', it => colNames(it.collaborators)],
+            journal: [() => 'Nơi đăng', it => [(it.journal || '').trim()].filter(Boolean)],
+            stage: [() => 'Giai đoạn', it => [stageLabel(it.stage)]],
+            status: [() => 'Trạng thái', it => [colFindStatus(it)]]
+        };
+        function colFindHit(want, vals) {
+            return want.startsWith(COL_CONTAINS) ? vals.some(v => colFold(v).includes(colFold(want.slice(1)))) : vals.includes(want);
+        }
+        function colFindMatch(prefix) {
+            const active = Object.entries(colFind[prefix]).filter(([, w]) => w.length);
+            return it => active.every(([f, w]) => { const vals = COL_FIND[f][1](it); return w.some(x => colFindHit(x, vals)); });
+        }
+        function colFindText(prefix, f, v) {
+            const label = COL_FIND[f][0](prefix);
+            return v.startsWith(COL_CONTAINS) ? `${label} có chứa "${v.slice(1)}"` : `${label}: ${v}`;
+        }
+        // Gắn nút kính lúp vào tiêu đề các cột có lọc
+        function decorateColFind() {
+            document.querySelectorAll('th[data-col-find]').forEach(th => {
+                if (th.querySelector('.col-find-btn')) return;
+                const [prefix, f] = th.dataset.colFind.split(':');
+                const btn = `<button type="button" data-col-btn="${prefix}:${f}" onclick="openColFind(event, '${prefix}', '${f}')" title="Tìm theo ${COL_FIND[f][0](prefix).toLowerCase()} (chọn được nhiều mục)" class="col-find-btn w-7 h-7 -my-1 shrink-0 rounded-full flex items-center justify-center text-blue-700 hover:bg-blue-100 transition"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></button>`;
+                th.innerHTML = `<div class="flex items-center justify-between gap-2"><span class="min-w-0">${th.innerHTML}</span>${btn}</div>`;
+            });
+        }
+        function renderColFindChips(prefix) {
+            const box = document.getElementById(prefix + 'ColChips');
+            if (!box) return;
+            const entries = [];
+            Object.entries(colFind[prefix]).forEach(([f, w]) => w.forEach(v => entries.push([f, v])));
+            document.querySelectorAll(`[data-col-btn^="${prefix}:"]`).forEach(b => {
+                const on = (colFind[prefix][b.dataset.colBtn.split(':')[1]] || []).length > 0;
+                b.classList.toggle('bg-blue-100', on);
+                b.classList.toggle('ring-1', on);
+                b.classList.toggle('ring-blue-300', on);
+            });
+            box.classList.toggle('hidden', !entries.length);
+            box.classList.toggle('flex', entries.length > 0);
+            box.innerHTML = entries.length ? '<span class="shrink-0 text-xs font-semibold text-slate-500">Đang tìm:</span>' + entries.map(([f, v]) =>
+                `<span class="shrink-0 inline-flex items-center gap-2 text-xs font-semibold bg-blue-600 text-white rounded-full pl-3 pr-1 py-1 max-w-[16rem]"><span class="truncate">${nrtEscape(colFindText(prefix, f, v))}</span><button type="button" data-f="${f}" data-v="${nrtEscape(v)}" onclick="colFindRemove('${prefix}', this.dataset.f, this.dataset.v)" title="Bỏ lọc" class="shrink-0 w-5 h-5 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center"><i class="fa-solid fa-xmark text-[10px]"></i></button></span>`).join('')
+                + (entries.length > 1 ? `<button type="button" onclick="colFindClear('${prefix}')" class="shrink-0 text-xs font-semibold text-rose-600 hover:underline px-1">Bỏ hết</button>` : '') : '';
+        }
+        function colFindRefresh(prefix) {
+            if (prefix === 'article') filterArticleTab(currentArticleFilter); else filterDsTab(currentDsFilter);
+        }
+        function colFindRemove(prefix, f, v) {
+            colFind[prefix][f] = (colFind[prefix][f] || []).filter(x => x !== v);
+            colFindRefresh(prefix);
+        }
+        function colFindClear(prefix) {
+            colFind[prefix] = {};
+            colFindRefresh(prefix);
+        }
+        function openColFind(event, prefix, f) {
+            event.stopPropagation();
+            event.preventDefault();
+            const pop = document.getElementById('colFindPop');
+            if (!pop.classList.contains('hidden') && colFindAt && colFindAt[0] === prefix && colFindAt[1] === f) return closeColFind();
+            colFindAt = [prefix, f];
+            const target = event.currentTarget;
+            let btn = target.getBoundingClientRect();
+            if (btn.bottom + 320 > window.innerHeight) {
+                const hdr = document.querySelector('header').offsetHeight;
+                window.scrollBy({ top: btn.top - hdr - 16 });
+                btn = target.getBoundingClientRect();
+            }
+            const width = Math.min(300, window.innerWidth - 24);
+            pop.style.left = Math.max(12, Math.min(btn.left, window.innerWidth - width - 12)) + 'px';
+            pop.style.top = (btn.bottom + 6) + 'px';
+            pop.style.bottom = 'auto';
+            document.getElementById('colFindList').style.maxHeight = '360px';
+            pop.classList.remove('hidden');
+            const input = document.getElementById('colFindInput');
+            input.placeholder = 'Gõ ' + COL_FIND[f][0](prefix).toLowerCase() + '...';
+            input.value = '';
+            colFindIndex = 0;
+            renderColFind();
+            if (btn.bottom + 6 + pop.offsetHeight > window.innerHeight) {
+                const hdr = document.querySelector('header').offsetHeight;
+                pop.style.top = 'auto';
+                pop.style.bottom = (window.innerHeight - btn.top + 6) + 'px';
+                document.getElementById('colFindList').style.maxHeight = Math.min(360, btn.top - hdr - 70) + 'px';
+            }
+            input.focus();
+        }
+        function closeColFind() {
+            document.getElementById('colFindPop').classList.add('hidden');
+        }
+        function renderColFind() {
+            if (!colFindAt) return;
+            const [prefix, f] = colFindAt;
+            const raw = document.getElementById('colFindInput').value.trim();
+            const q = colFold(raw);
+            const pool = (prefix === 'article' ? articles : projects).filter(isOwnedByUser);
+            const values = [...new Set(pool.flatMap(COL_FIND[f][1]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'vi'));
+            const list = values.filter(v => !q || colFold(v).includes(q));
+            const current = colFind[prefix][f] || [];
+            const options = (q ? [{ value: COL_CONTAINS + raw, label: raw, contains: true }] : []).concat(list.map(v => ({ value: v, label: v })));
+            colFindIndex = Math.min(colFindIndex, Math.max(0, options.length - 1));
+            const mark = label => {
+                const at = q ? colFold(label).indexOf(q) : -1;
+                return at < 0 ? nrtEscape(label) : nrtEscape(label.slice(0, at)) + '<mark class="bg-amber-100 text-slate-900 rounded px-0.5">' + nrtEscape(label.slice(at, at + q.length)) + '</mark>' + nrtEscape(label.slice(at + q.length));
+            };
+            document.getElementById('colFindHint').innerText = current.length ? `Đang chọn ${current.length} mục · bấm mục đã chọn để bỏ` : 'Chọn một mục, mở lại kính lúp để chọn thêm';
+            document.getElementById('colFindList').innerHTML = options.map((o, i) => `
+                <button type="button" data-value="${nrtEscape(o.value)}" onclick="pickColFind(this.dataset.value)" onmouseenter="colFindIndex=${i}; highlightColFind()"
+                    class="col-find-opt w-full text-left px-3 py-2 text-sm flex items-center justify-between gap-2 ${o.contains ? 'font-semibold text-blue-700 border-b border-slate-100' : 'text-slate-700'}">
+                    <span class="truncate">${o.contains ? `<i class="fa-solid fa-filter mr-1.5"></i>Lọc có chứa "<b>${nrtEscape(o.label)}</b>"` : mark(o.label)}</span>
+                    ${current.includes(o.value) ? '<i class="fa-solid fa-check text-blue-600 text-xs"></i>' : ''}
+                </button>`).join('') || '<p class="px-3 py-3 text-sm text-slate-400">Không tìm thấy kết quả phù hợp.</p>';
+            highlightColFind();
+        }
+        function highlightColFind() {
+            document.querySelectorAll('#colFindList .col-find-opt').forEach((el, i) => el.classList.toggle('bg-blue-50', i === colFindIndex));
+        }
+        function colFindKey(e) {
+            const opts = document.querySelectorAll('#colFindList .col-find-opt');
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                colFindIndex = (colFindIndex + (e.key === 'ArrowDown' ? 1 : -1) + opts.length) % Math.max(1, opts.length);
+                highlightColFind();
+                if (opts[colFindIndex]) opts[colFindIndex].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (opts[colFindIndex]) pickColFind(opts[colFindIndex].dataset.value);
+            } else if (e.key === 'Escape') {
+                closeColFind();
+            }
+        }
+        // Chọn thêm một mục (chọn lại mục đã có thì bỏ mục đó), xong đóng khung để bấm kính lúp chọn tiếp
+        function pickColFind(value) {
+            if (!colFindAt) return;
+            const [prefix, f] = colFindAt;
+            closeColFind();
+            const cur = colFind[prefix][f] || [];
+            colFind[prefix][f] = cur.includes(value) ? cur.filter(x => x !== value) : cur.concat(value);
+            colFindRefresh(prefix);
+        }
+        document.addEventListener('mousedown', e => {
+            const pop = document.getElementById('colFindPop');
+            if (pop && !pop.classList.contains('hidden') && !pop.contains(e.target) && !e.target.closest('.col-find-btn')) closeColFind();
+        });
+        window.addEventListener('resize', () => { const pop = document.getElementById('colFindPop'); if (pop) closeColFind(); });
 
         function addLeaderField(mode, val = '') {
             const container = document.getElementById(mode === 'add' ? 'addLeadersContainer' : 'editLeadersContainer');
@@ -4051,6 +4224,7 @@
         window.addEventListener('resize', syncHeaderHeight);
         window.addEventListener('load', syncHeaderHeight);
         syncHeaderHeight();
+        decorateColFind();
 
         function scrollToFilteredBlock(type) {
             const el = document.getElementById('filteredBlock_' + type);
@@ -5279,5 +5453,15 @@
             enhance(document);
         })();
     </script>
+    <div id="colFindPop" class="hidden fixed z-[60] bg-white rounded-xl shadow-2xl border border-blue-200 overflow-hidden" style="width: min(300px, calc(100vw - 24px))">
+        <div class="p-2 border-b border-slate-100">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input id="colFindInput" oninput="renderColFind()" onkeydown="colFindKey(event)" autocomplete="off" placeholder="Gõ để tìm..." class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400">
+            </div>
+            <p id="colFindHint" class="text-[11px] text-slate-400 mt-1.5 px-1"></p>
+        </div>
+        <div id="colFindList" class="overflow-y-auto py-1" style="max-height: 360px"></div>
+    </div>
 </body>
 </html>
