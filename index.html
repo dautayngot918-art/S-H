@@ -750,7 +750,7 @@
         <div class="flex flex-row justify-between items-center gap-4">
             <div class="min-w-0">
                 <h1 class="page-title">Báo cáo tiến độ</h1>
-                <p class="text-sm text-slate-500 mt-1">Chọn kỳ báo cáo, xem và sửa trực tiếp, rồi xuất PDF, Word hoặc in.</p>
+                <p class="text-sm text-slate-500 mt-1">Chọn kỳ báo cáo và cách trình bày (văn bản, bảng, biểu đồ cột, đường, tròn), xem và sửa trực tiếp, rồi xuất PDF, Word hoặc in.</p>
             </div>
         </div>
 
@@ -788,6 +788,10 @@
                         <option value="article">Chỉ bài báo</option>
                     </select>
                 </label>
+            </div>
+            <div class="space-y-1.5">
+                <span class="block text-xs font-semibold text-slate-600 uppercase">Cách trình bày số liệu <span class="normal-case font-normal text-slate-400">(bấm để chọn, chọn được nhiều dạng)</span></span>
+                <div id="reportForms" class="flex flex-wrap gap-2"></div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <button type="button" onclick="generateReport()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold"><i class="fa-solid fa-file-lines mr-1.5"></i>Tạo báo cáo</button>
@@ -3288,6 +3292,287 @@
             else if (e.key === 'Escape') document.getElementById('reportRecipientList').classList.add('hidden');
         }
 
+        // ----- Cách trình bày báo cáo: người dùng tự chọn (chọn được nhiều) văn bản, bảng, biểu đồ cột / đường / tròn -----
+        // Biểu đồ vẽ bằng SVG: xem và in giữ nguyên nét; khi tải PDF / Word thì đổi sang ảnh PNG để mở ở đâu cũng thấy
+        const RPT_FORMS = { text: ['Văn bản thường', 'fa-align-left'], table: ['Bảng số liệu', 'fa-table'], cards: ['Thẻ cột từng người', 'fa-id-card'],
+            col: ['Biểu đồ cột', 'fa-chart-column'], line: ['Biểu đồ đường', 'fa-chart-line'], pie: ['Biểu đồ tròn', 'fa-chart-pie'] };
+        const rptFormSel = {}, rptFormCb = {};
+        (function () {
+            const st = document.createElement('style');
+            st.textContent = `.rpt-form-btn { display: inline-flex; align-items: center; gap: .4rem; padding: .4rem .85rem; border-radius: 9999px; border: 1px solid #cbd5e1; background: #fff; color: #334155; font-size: .8125rem; font-weight: 600; transition: all .15s; }
+                .rpt-form-btn:hover { border-color: #93c5fd; }
+                .rpt-form-btn.active { background: #eff6ff; border-color: #2563eb; color: #1d4ed8; box-shadow: 0 0 0 2px #dbeafe; }
+                .rpt-form-btn i { width: 1rem; text-align: center; }
+                .rpt-doc .rpt-fig { text-align: center; margin: 8pt 0 2pt; page-break-inside: avoid; }
+                .rpt-doc .rpt-fig svg { max-width: 100%; height: auto; }
+                .rpt-doc .rpt-cap { text-align: center; font-style: italic; font-size: 11pt; margin: 0 0 10pt; }`;
+            document.head.appendChild(st);
+        })();
+        function rptFormsRender(boxId, forms, def, cb) {
+            if (!rptFormSel[boxId]) rptFormSel[boxId] = def.slice();
+            if (cb) rptFormCb[boxId] = cb;
+            const sel = rptFormSel[boxId];
+            document.getElementById(boxId).innerHTML = forms.map(k => `<button type="button" data-form="${k}" onclick="rptFormToggle('${boxId}', '${k}')" class="rpt-form-btn${sel.includes(k) ? ' active' : ''}" title="${sel.includes(k) ? 'Bấm để bỏ' : 'Bấm để thêm'} ${RPT_FORMS[k][0].toLowerCase()}"><i class="fa-solid ${sel.includes(k) ? 'fa-check' : RPT_FORMS[k][1]}"></i>${RPT_FORMS[k][0]}</button>`).join('');
+            document.getElementById(boxId).dataset.forms = forms.join(',');
+        }
+        function rptFormToggle(boxId, k) {
+            const sel = rptFormSel[boxId];
+            const i = sel.indexOf(k);
+            if (i >= 0) { if (sel.length === 1) { alert('Cần giữ ít nhất một cách trình bày.'); return; } sel.splice(i, 1); } else sel.push(k);
+            rptFormsRender(boxId, document.getElementById(boxId).dataset.forms.split(','), sel);
+            if (rptFormCb[boxId]) rptFormCb[boxId]();
+        }
+        const rptHas = (boxId, k) => (rptFormSel[boxId] || []).includes(k);
+
+        const RPT_COLORS = { project: '#2563eb', article: '#0d9488', run: '#3b82f6', soon: '#f59e0b', over: '#e11d48', done: '#10b981', liq: '#94a3b8', none: '#a855f7', proof: '#f97316' };
+        const RPT_PALETTE = ['#2563eb', '#e11d48', '#059669', '#d97706', '#7c3aed', '#0891b2', '#db2777', '#65a30d', '#475569', '#ea580c'];
+        const svgEsc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        // Thang trục tung: bước 1, 2, 5, 10, 20... sao cho có tối đa 6 vạch, luôn là số nguyên
+        function rptScale(v) {
+            let step = 1;
+            for (let p = 1; ; p *= 10) { const s = [1, 2, 5].map(m => m * p).find(x => Math.floor(v / x) + 1 <= 6); if (s) { step = s; break; } }
+            const ticks = Math.floor(v / step) + 1;
+            return { max: ticks * step, ticks };
+        }
+        // Chia nhãn dài thành tối đa 2 dòng
+        function rptWrap(t, n) {
+            const words = String(t).split(' '), lines = [''];
+            words.forEach(w => { const cur = lines[lines.length - 1]; if (cur && (cur + ' ' + w).length > n && lines.length < 2) lines.push(w); else lines[lines.length - 1] = cur ? cur + ' ' + w : w; });
+            return lines.map(l => l.length > n + 4 ? l.slice(0, n + 2) + '…' : l);
+        }
+        function rptSvgOpen(w, h, title) {
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" data-w="${w}" data-h="${h}" font-family="Arial, Helvetica, sans-serif"><rect width="${w}" height="${h}" fill="#ffffff"/>`
+                + `<text x="${w / 2}" y="22" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">${svgEsc(title)}</text>`;
+        }
+        function rptLegend(items, w, y) {
+            const widths = items.map(it => 22 + it.name.length * 6.6 + 14);
+            let x = (w - widths.reduce((a, b) => a + b, 0)) / 2;
+            return items.map((it, i) => { const s = `<rect x="${x}" y="${y - 9}" width="14" height="10" rx="2" fill="${it.color}"/><text x="${x + 19}" y="${y}" font-size="12" fill="#334155">${svgEsc(it.name)}</text>`; x += widths[i]; return s; }).join('');
+        }
+        function rptAxes(o, w, h, top, bottom, left, sc) {
+            const y0 = top, y1 = h - bottom, x0 = left, x1 = w - 14;
+            let s = '';
+            for (let i = 0; i <= sc.ticks; i++) {
+                const v = sc.max / sc.ticks * i, y = y1 - (y1 - y0) * i / sc.ticks;
+                s += `<line x1="${x0}" y1="${y}" x2="${x1}" y2="${y}" stroke="${i ? '#e2e8f0' : '#64748b'}" stroke-width="1"/><text x="${x0 - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="#64748b">${v}</text>`;
+            }
+            const gw = (x1 - x0) / o.labels.length, maxCh = Math.max(6, Math.floor(gw / 6.4));
+            o.labels.forEach((l, i) => {
+                const cx = x0 + gw * (i + .5);
+                s += rptWrap(l, maxCh).map((ln, j) => `<text x="${cx}" y="${y1 + 16 + j * 13}" text-anchor="middle" font-size="11" fill="#334155">${svgEsc(ln)}</text>`).join('');
+            });
+            return { s, y0, y1, x0, x1, gw };
+        }
+        // Biểu đồ cột nhóm: o = { title, labels: [...], series: [{ name, color, values }] }
+        function rptColChart(o) {
+            const w = 640, h = 320, top = o.series.length > 1 ? 62 : 44;
+            const sc = rptScale(Math.max(1, ...o.series.flatMap(s => s.values))), max = sc.max;
+            let s = rptSvgOpen(w, h, o.title) + (o.series.length > 1 ? rptLegend(o.series, w, 44) : '');
+            const ax = rptAxes(o, w, h, top, 44, 40, sc);
+            s += ax.s;
+            const n = o.series.length, bw = Math.min(38, ax.gw * .72 / n);
+            o.labels.forEach((l, i) => {
+                const gx = ax.x0 + ax.gw * (i + .5) - bw * n / 2;
+                o.series.forEach((se, j) => {
+                    const v = se.values[i] || 0, bh = (ax.y1 - ax.y0) * v / max, x = gx + j * bw;
+                    s += `<rect x="${x + 1}" y="${ax.y1 - bh}" width="${bw - 2}" height="${bh}" rx="2" fill="${(se.colors && se.colors[i]) || se.color}"/>`
+                        + `<text x="${x + bw / 2}" y="${ax.y1 - bh - 4}" text-anchor="middle" font-size="11" font-weight="bold" fill="#0f172a">${v}</text>`;
+                });
+            });
+            return s + '</svg>';
+        }
+        // Biểu đồ đường: cùng dạng dữ liệu với biểu đồ cột
+        function rptLineChart(o) {
+            const w = 640, h = 320, top = o.series.length > 1 ? 62 : 44;
+            const sc = rptScale(Math.max(1, ...o.series.flatMap(s => s.values))), max = sc.max;
+            let s = rptSvgOpen(w, h, o.title) + (o.series.length > 1 ? rptLegend(o.series, w, 44) : '');
+            const ax = rptAxes(o, w, h, top, 44, 40, sc);
+            s += ax.s;
+            const showVal = o.labels.length <= 14;
+            o.series.forEach((se, j) => {
+                const pts = se.values.map((v, i) => [ax.x0 + ax.gw * (i + .5), ax.y1 - (ax.y1 - ax.y0) * (v || 0) / max]);
+                s += `<polyline points="${pts.map(p => p.map(x => x.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="${se.color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+                pts.forEach((p, i) => {
+                    s += `<circle cx="${p[0]}" cy="${p[1]}" r="3.8" fill="#fff" stroke="${se.color}" stroke-width="2"/>`;
+                    if (showVal && se.values[i]) s += `<text x="${p[0]}" y="${p[1] - 8 - (j % 2) * 0}" text-anchor="middle" font-size="10.5" font-weight="bold" fill="${se.color}">${se.values[i] || 0}</text>`;
+                });
+            });
+            return s + '</svg>';
+        }
+        // Biểu đồ tròn: o = { title, parts: [{ name, color, value }] }
+        function rptPieChart(o) {
+            const w = 640, h = 280, cx = 170, cy = 155, r = 100;
+            const parts = o.parts.filter(p => p.value > 0), total = parts.reduce((a, p) => a + p.value, 0);
+            let s = rptSvgOpen(w, h, o.title);
+            if (!total) return s + `<text x="${w / 2}" y="${h / 2}" text-anchor="middle" font-size="13" fill="#64748b">Chưa có số liệu trong kỳ</text></svg>`;
+            let a0 = -Math.PI / 2;
+            parts.forEach(p => {
+                const a1 = a0 + 2 * Math.PI * p.value / total;
+                if (parts.length === 1) s += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${p.color}"/>`;
+                else s += `<path d="M${cx},${cy} L${(cx + r * Math.cos(a0)).toFixed(1)},${(cy + r * Math.sin(a0)).toFixed(1)} A${r},${r} 0 ${a1 - a0 > Math.PI ? 1 : 0} 1 ${(cx + r * Math.cos(a1)).toFixed(1)},${(cy + r * Math.sin(a1)).toFixed(1)} Z" fill="${p.color}" stroke="#fff" stroke-width="2"/>`;
+                const am = (a0 + a1) / 2, pct = Math.round(p.value / total * 100);
+                if (pct >= 6) s += `<text x="${(cx + r * .62 * Math.cos(am)).toFixed(1)}" y="${(cy + r * .62 * Math.sin(am) + 4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">${pct}%</text>`;
+                a0 = a1;
+            });
+            s += `<circle cx="${cx}" cy="${cy}" r="${r * .38}" fill="#fff"/><text x="${cx}" y="${cy - 2}" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">${total}</text><text x="${cx}" y="${cy + 15}" text-anchor="middle" font-size="11" fill="#64748b">tổng</text>`;
+            const lh = Math.min(26, 200 / parts.length), ly = cy - lh * parts.length / 2 + 8;
+            parts.forEach((p, i) => {
+                const y = ly + i * lh;
+                s += `<rect x="320" y="${y - 10}" width="14" height="12" rx="2" fill="${p.color}"/><text x="342" y="${y}" font-size="12.5" fill="#334155">${svgEsc(p.name)}: <tspan font-weight="bold">${p.value}</tspan> (${Math.round(p.value / total * 100)}%)</text>`;
+            });
+            return s + '</svg>';
+        }
+        let rptFigNo = 0;
+        const rptFig = (svg, caption) => `<div class="rpt-fig" contenteditable="false">${svg}</div><p class="rpt-cap">Biểu đồ ${++rptFigNo}. ${caption}</p>`;
+
+        // Các mốc thời gian trong kỳ để vẽ biểu đồ đường: theo tuần (kỳ ≤ 2 tháng), theo tháng (≤ 2 năm), theo quý
+        function rptBuckets(from, to) {
+            const days = (to - from) / 86400000, out = [];
+            if (days <= 62) {
+                for (let d = new Date(from); d <= to; d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7)) {
+                    const e = new Date(Math.min(+to, +new Date(d.getFullYear(), d.getMonth(), d.getDate() + 6)));
+                    out.push({ s: d, e, label: `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}` });
+                }
+            } else {
+                const q = days > 730;
+                for (let d = new Date(from.getFullYear(), q ? Math.floor(from.getMonth() / 3) * 3 : from.getMonth(), 1); d <= to; d = new Date(d.getFullYear(), d.getMonth() + (q ? 3 : 1), 1)) {
+                    const e = new Date(d.getFullYear(), d.getMonth() + (q ? 3 : 1), 0, 23, 59);
+                    out.push({ s: d < from ? from : d, e: e > to ? to : e, label: q ? `Q${d.getMonth() / 3 + 1}/${d.getFullYear()}` : `T${d.getMonth() + 1}/${String(d.getFullYear()).slice(2)}` });
+                }
+            }
+            return out;
+        }
+        // Số mục bắt đầu, hoàn thành trong từng mốc và số mục đang thực hiện ở cuối mốc
+        function rptTrend(items, buckets, isDone, isLiq) {
+            const inB = (d, b) => { const x = rptParse(d); return x && x >= b.s && x <= b.e; };
+            return {
+                started: buckets.map(b => items.filter(it => inB(it.startDate, b)).length),
+                finished: buckets.map(b => items.filter(it => isDone(it) && inB(it.endDate, b)).length),
+                active: buckets.map(b => items.filter(it => {
+                    if (isLiq(it)) return false;
+                    const st = rptParse(it.startDate);
+                    if (st && st > b.e) return false;
+                    const en = rptParse(it.endDate);
+                    return !(isDone(it) && (!en || en <= b.e));
+                }).length)
+            };
+        }
+
+        // Đổi SVG sang ảnh PNG (dùng khi tải PDF, Word)
+        function rptSvgToPng(svgStr) {
+            return new Promise((resolve, reject) => {
+                if (!/xmlns=/.test(svgStr)) svgStr = svgStr.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+                const w = +(svgStr.match(/data-w="(\d+)"/) || [])[1] || 640, h = +(svgStr.match(/data-h="(\d+)"/) || [])[1] || 320;
+                const img = new Image();
+                img.onload = () => {
+                    const c = document.createElement('canvas');
+                    c.width = w * 2; c.height = h * 2;
+                    const g = c.getContext('2d');
+                    g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+                    g.drawImage(img, 0, 0, c.width, c.height);
+                    resolve({ url: c.toDataURL('image/png'), w, h });
+                };
+                img.onerror = () => reject(new Error('Không chuyển được biểu đồ thành ảnh.'));
+                img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+            });
+        }
+        async function rptSvgsToImgs(root) {
+            for (const svg of [...root.querySelectorAll('svg')]) {
+                const png = await rptSvgToPng(svg.outerHTML);
+                const img = document.createElement('img');
+                img.src = png.url; img.style.width = '100%'; img.style.maxWidth = png.w + 'px';
+                svg.replaceWith(img);
+            }
+        }
+        // Tải Word: có biểu đồ thì đóng gói thành tệp .doc dạng MHTML (văn bản + ảnh), Word mở được và giữ ảnh biểu đồ
+        async function rptDownloadWord(html, fileName) {
+            const svgs = html.match(/<svg\b[\s\S]*?<\/svg>/g) || [];
+            if (!svgs.length) { downloadBlob(new Blob(['\ufeff', html], { type: 'application/msword' }), fileName); return; }
+            const parts = [];
+            for (let i = 0; i < svgs.length; i++) {
+                const png = await rptSvgToPng(svgs[i]);
+                const loc = `file:///C:/nckh/bieu-do-${i + 1}.png`;
+                parts.push({ loc, data: png.url.split(',')[1] });
+                html = html.replace(svgs[i], `<img src="${loc}" width="600" height="${Math.round(600 * png.h / png.w)}" style="width:15.8cm">`);
+            }
+            const b64 = s => s.replace(/.{76}/g, '$&\r\n');
+            const utf8b64 = btoa(unescape(encodeURIComponent(html)));
+            const B = '----=_NextPart_NCKH_' + Date.now();
+            const mht = [`MIME-Version: 1.0`, `Content-Type: multipart/related; boundary="${B}"; type="text/html"`, '',
+                `--${B}`, 'Content-Type: text/html; charset="utf-8"', 'Content-Transfer-Encoding: base64', 'Content-Location: file:///C:/nckh/bao-cao.htm', '', b64(utf8b64),
+                ...parts.flatMap(p => [`--${B}`, 'Content-Type: image/png', 'Content-Transfer-Encoding: base64', `Content-Location: ${p.loc}`, '', b64(p.data)]),
+                `--${B}--`, ''].join('\r\n');
+            downloadBlob(new Blob([mht], { type: 'application/msword' }), fileName);
+        }
+        // Bộ biểu đồ theo nội dung báo cáo: chỉ đề tài, chỉ bài báo (có trong nước / quốc tế), hoặc cả hai (tách riêng từng loại + gộp)
+        // o: { F, scope, prj, art, from, to, open, risk, isDone, isLiq, isForeign, startedIn, pStages, aStages, head, extraBoth }
+        function rptChartSet(o) {
+            const F = o.F, chart = F('col') || F('line') || F('pie');
+            if (!chart) return '';
+            const st = l => [o.open(l).length - o.risk(l, 'warning') - o.risk(l, 'danger'), o.risk(l, 'warning'), o.risk(l, 'danger'), l.filter(o.isDone).length, l.filter(o.isLiq).length];
+            const stCol = [RPT_COLORS.run, RPT_COLORS.soon, RPT_COLORS.over, RPT_COLORS.done, RPT_COLORS.liq];
+            const stName = k => ['Đúng tiến độ', 'Sắp đến hạn', 'Quá hạn', k === 'p' ? 'Đã nghiệm thu' : 'Đã chấp nhận / đăng', k === 'p' ? 'Đã thanh lý' : 'Đã rút'];
+            const byStage = (l, stages) => stages.map(s => l.filter(it => !o.isLiq(it) && stageName(it.stage) === stageName(s)).length);
+            const stLabels = stages => stages.map(s => stageName(s).replace('Thông qua hội đồng khoa học & hội đồng đạo đức', 'Thông qua hội đồng KH & đạo đức'));
+            const bk = rptBuckets(o.from, o.to), lbl = bk.map(b => b.label);
+            const per = bk.length && bk[0].label[0] === 'Q' ? 'quý' : bk.length && bk[0].label[0] === 'T' ? 'tháng' : 'tuần';
+            const inB = (d, b) => { const x = rptParse(d); return x && x >= b.s && x <= b.e; };
+            const pubIn = (l, f) => bk.map(b => l.filter(it => o.isDone(it) && f(it) && inB(it.endDate, b)).length);
+            const dom = o.art.filter(it => !o.isForeign(it)), intl = o.art.filter(o.isForeign);
+            let html = '';
+            const one = (k, l, name, color) => {
+                let s = o.head(`Biểu đồ ${name}`);
+                if (F('col')) {
+                    s += rptFig(rptColChart({ title: `${name[0].toUpperCase() + name.slice(1)} theo tình trạng`, labels: stName(k), series: [{ name, color, colors: stCol, values: st(l) }] }), `Số ${name} theo tình trạng trong kỳ`);
+                    s += rptFig(rptColChart({ title: `${name[0].toUpperCase() + name.slice(1)} theo giai đoạn`, labels: stLabels(k === 'p' ? o.pStages : o.aStages), series: [{ name, color, values: byStage(l, k === 'p' ? o.pStages : o.aStages) }] }), `Số ${name} đang ở từng giai đoạn`);
+                    if (k === 'a') { const sa = st(dom), sb = st(intl);
+                        s += rptFig(rptColChart({ title: 'Bài báo trong nước và quốc tế', labels: ['Tổng số', 'Đang viết / nộp / phản biện', 'Đã chấp nhận / đăng', 'Quá hạn', 'Đã rút'],
+                            series: [{ name: 'Trong nước', color: '#0d9488', values: [dom.length, o.open(dom).length, sa[3], sa[2], sa[4]] }, { name: 'Quốc tế', color: '#7c3aed', values: [intl.length, o.open(intl).length, sb[3], sb[2], sb[4]] }] }),
+                            'So sánh bài báo trong nước và quốc tế theo tình trạng'); }
+                }
+                if (F('line')) {
+                    const tr = rptTrend(l, bk, o.isDone, o.isLiq);
+                    s += rptFig(rptLineChart({ title: `Diễn biến ${name} theo ${per}`, labels: lbl, series: [{ name: 'Đang thực hiện', color, values: tr.active }, { name: 'Bắt đầu mới', color: RPT_COLORS.soon, values: tr.started }, { name: k === 'p' ? 'Nghiệm thu' : 'Được chấp nhận / đăng', color: RPT_COLORS.done, values: tr.finished }] }),
+                        `Số ${name} đang thực hiện, bắt đầu mới và hoàn thành theo ${per}`);
+                    if (k === 'a') s += rptFig(rptLineChart({ title: `Bài báo được chấp nhận / đăng theo ${per}`, labels: lbl, series: [{ name: 'Trong nước', color: '#0d9488', values: pubIn(o.art, it => !o.isForeign(it)) }, { name: 'Quốc tế', color: '#7c3aed', values: pubIn(o.art, o.isForeign) }] }),
+                        `Số bài báo trong nước, quốc tế được chấp nhận / đăng theo ${per}`);
+                }
+                if (F('pie')) {
+                    s += rptFig(rptPieChart({ title: `Tỷ lệ ${name} theo tình trạng`, parts: stName(k).map((n, i) => ({ name: n, color: stCol[i], value: st(l)[i] })) }), `Tỷ lệ ${name} theo tình trạng`);
+                    const stg = k === 'p' ? o.pStages : o.aStages, v = byStage(l, stg);
+                    s += rptFig(rptPieChart({ title: `Tỷ lệ ${name} theo giai đoạn`, parts: stLabels(stg).map((n, i) => ({ name: n, color: RPT_PALETTE[i], value: v[i] })) }), `Tỷ lệ ${name} ở từng giai đoạn`);
+                    if (k === 'a') s += rptFig(rptPieChart({ title: 'Tỷ lệ bài báo trong nước và quốc tế', parts: [{ name: 'Trong nước', color: '#0d9488', value: dom.length }, { name: 'Quốc tế', color: '#7c3aed', value: intl.length }] }), 'Tỷ lệ bài báo trong nước và quốc tế');
+                }
+                return s;
+            };
+            if (o.scope !== 'article') html += one('p', o.prj, 'đề tài', RPT_COLORS.project);
+            if (o.scope !== 'project') html += one('a', o.art, 'bài báo', RPT_COLORS.article);
+            if (o.scope === 'both') {
+                html += o.head('Biểu đồ gộp đề tài và bài báo');
+                const sp = st(o.prj), sa = st(o.art), names = ['Đúng tiến độ', 'Sắp đến hạn', 'Quá hạn', 'Hoàn thành', 'Thanh lý / rút'];
+                if (F('col')) {
+                    html += rptFig(rptColChart({ title: 'Đề tài và bài báo theo tình trạng', labels: names, series: [{ name: 'Đề tài', color: RPT_COLORS.project, values: sp }, { name: 'Bài báo', color: RPT_COLORS.article, values: sa }] }), 'So sánh đề tài và bài báo theo tình trạng');
+                    html += rptFig(rptColChart({ title: 'Tổng hợp đề tài, bài báo trong nước, bài báo quốc tế', labels: ['Tổng số', 'Đang thực hiện', 'Hoàn thành', 'Quá hạn'],
+                        series: [{ name: 'Đề tài', color: RPT_COLORS.project, values: [o.prj.length, o.open(o.prj).length, sp[3], sp[2]] }, { name: 'Bài báo trong nước', color: '#0d9488', values: [dom.length, o.open(dom).length, st(dom)[3], st(dom)[2]] }, { name: 'Bài báo quốc tế', color: '#7c3aed', values: [intl.length, o.open(intl).length, st(intl)[3], st(intl)[2]] }] }),
+                        'Tổng hợp đề tài, bài báo trong nước và quốc tế');
+                }
+                if (F('line')) {
+                    const all = [...o.prj, ...o.art], tp = rptTrend(o.prj, bk, o.isDone, o.isLiq), ta = rptTrend(o.art, bk, o.isDone, o.isLiq), tt = rptTrend(all, bk, o.isDone, o.isLiq);
+                    html += rptFig(rptLineChart({ title: `Đang thực hiện theo ${per}`, labels: lbl, series: [{ name: 'Đề tài', color: RPT_COLORS.project, values: tp.active }, { name: 'Bài báo', color: RPT_COLORS.article, values: ta.active }, { name: 'Tổng cộng', color: '#0f172a', values: tt.active }] }),
+                        `Số đề tài, bài báo đang thực hiện theo ${per} (tách riêng và gộp)`);
+                    html += rptFig(rptLineChart({ title: `Hoàn thành theo ${per}`, labels: lbl, series: [{ name: 'Đề tài nghiệm thu', color: RPT_COLORS.project, values: tp.finished }, { name: 'Bài báo trong nước', color: '#0d9488', values: pubIn(o.art, it => !o.isForeign(it)) }, { name: 'Bài báo quốc tế', color: '#7c3aed', values: pubIn(o.art, o.isForeign) }, { name: 'Tổng cộng', color: '#0f172a', values: tt.finished }] }),
+                        `Số đề tài nghiệm thu, bài báo được chấp nhận / đăng theo ${per}`);
+                }
+                if (F('pie')) {
+                    html += rptFig(rptPieChart({ title: 'Cơ cấu đề tài, bài báo trong nước, quốc tế', parts: [{ name: 'Đề tài', color: RPT_COLORS.project, value: o.prj.length }, { name: 'Bài báo trong nước', color: '#0d9488', value: dom.length }, { name: 'Bài báo quốc tế', color: '#7c3aed', value: intl.length }] }), 'Cơ cấu đề tài và bài báo trong kỳ');
+                    html += rptFig(rptPieChart({ title: 'Tỷ lệ đề tài, bài báo (gộp) theo tình trạng', parts: names.map((n, i) => ({ name: n, color: stCol[i], value: sp[i] + sa[i] })) }), 'Tỷ lệ đề tài và bài báo (gộp) theo tình trạng');
+                }
+            }
+            return html + (o.extra || '');
+        }
+
+        rptFormsRender('reportForms', ['text', 'table', 'col', 'line', 'pie'], ['text', 'table']);
+
         function generateReport(regenerate) {
             const from = rptParse(document.getElementById('reportFrom').value);
             const to = rptParse(document.getElementById('reportTo').value);
@@ -3331,6 +3616,22 @@
                 <p>- Họ và tên: <b>${esc(name)}</b>${p.degree ? ' &nbsp;&nbsp; Học vị: ' + esc(p.degree) : ''}</p>
                 <p>- Đơn vị công tác: ${esc(dept)}, ${esc(hospital)}.</p>
                 ${H('Tổng hợp kết quả trong kỳ')}`;
+            const F = k => rptHas('reportForms', k);
+            rptFigNo = 0;
+            if (F('text')) {
+                const pOpen = open(prj), aOpen = open(art);
+                const parts = [];
+                if (scope !== 'article') parts.push(prj.length
+                    ? `Trong kỳ, tôi tham gia <b>${prj.length}</b> đề tài, trong đó ${prj.filter(it => inP(it.startDate)).length} đề tài mới bắt đầu. Hiện có ${pOpen.length} đề tài đang thực hiện (${pOpen.length - risk(prj, 'warning') - risk(prj, 'danger')} đúng tiến độ, ${risk(prj, 'warning')} sắp đến hạn, ${risk(prj, 'danger')} quá hạn) và ${accInP(prj)} đề tài đã nghiệm thu.`
+                    : 'Trong kỳ, tôi chưa có đề tài nghiên cứu nào.');
+                if (scope !== 'project') parts.push(art.length
+                    ? `Về bài báo, có <b>${art.length}</b> bài báo; ${accInP(art)} bài đã được chấp nhận hoặc đăng (${art.filter(it => !isLiquidated(it) && isItemAccepted(it) && !isArticleForeign(it)).length} trong nước, ${art.filter(it => !isLiquidated(it) && isItemAccepted(it) && isArticleForeign(it)).length} quốc tế), ${aOpen.length} bài đang viết, nộp hoặc phản biện${risk(art, 'danger') ? `, ${risk(art, 'danger')} bài quá hạn` : ''}.`
+                    : 'Trong kỳ, tôi chưa có bài báo nào.');
+                const lateN = risk(prj, 'danger') + risk(art, 'danger');
+                parts.push(lateN ? `Cần ưu tiên hoàn thành ${lateN} mục đã quá hạn trong kỳ tới.` : open([...prj, ...art]).length ? 'Các đề tài, bài báo đang thực hiện đều chưa quá hạn.' : '');
+                html += parts.filter(Boolean).map(t => `<p>${t}</p>`).join('');
+            }
+            if (F('table')) {
             if (scope !== 'article') html += `
                 <p class="bold">1. Đề tài nghiên cứu</p>
                 <table class="rpt-grid"><tr><th>Nội dung</th><th style="width:22%">Số lượng</th></tr>
@@ -3354,6 +3655,9 @@
                     ${statRow('Bài báo quá hạn', risk(art, 'danger'))}
                     ${statRow('Bài báo đã rút', art.filter(isLiquidated).length)}
                 </table>`;
+            }
+            html += rptChartSet({ F, scope, prj, art, from, to, open, risk, isDone: it => !isLiquidated(it) && isItemAccepted(it), isLiq: isLiquidated, isForeign: isArticleForeign,
+                pStages: milestonesList, aStages: articleMilestonesList, head: t => `<p class="bold" style="margin-top:10pt">${t}</p>` });
             if (scope !== 'article') html += `
                 ${H('Chi tiết tiến độ đề tài')}
                 <table class="rpt-grid rpt-detail"><tr><th style="width:5%">STT</th><th>Tên đề tài</th><th style="width:11%">Vai trò</th><th style="width:15%">Giai đoạn hiện tại</th><th style="width:13%">Bắt đầu / Hạn chót</th><th style="width:13%">Tình trạng</th><th style="width:13%">Ghi chú</th></tr>
@@ -3417,7 +3721,7 @@
         }
 
         function exportReportWord() {
-            downloadBlob(new Blob(['﻿', reportStandaloneHtml(true)], { type: 'application/msword' }), reportFileName('doc'));
+            rptDownloadWord(reportStandaloneHtml(true), reportFileName('doc')).catch(e => alert(e.message));
         }
 
         // In: mở hộp thoại in của trình duyệt (chọn máy in, hoặc "Lưu dưới dạng PDF")
@@ -3456,6 +3760,7 @@
                 holder.className = 'rpt-doc';
                 holder.style.cssText = 'width:160mm;background:#fff;';
                 holder.innerHTML = document.getElementById('reportDoc').innerHTML;
+                await rptSvgsToImgs(holder);
                 holder.querySelectorAll('tr, li, p').forEach(el => el.style.pageBreakInside = 'avoid');
                 // Tiêu đề mục đi liền với nội dung phía sau, không bị bỏ lại cuối trang
                 holder.querySelectorAll('h2').forEach(h => { const wrap = document.createElement('div'); wrap.style.pageBreakInside = 'avoid'; h.before(wrap); wrap.append(h); const next = wrap.nextElementSibling; if (next && next.tagName === 'P') wrap.append(next); });
